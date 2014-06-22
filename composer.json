@@ -1,0 +1,23 @@
+{
+  "name": "proger/habravel",
+  "description": "Community blog engine for Laravel.",
+  "keywords": ["blog"],
+  "homepage": "http://laravel.ru",
+  "license": "MIT",
+  "authors": [{
+    "name": "Proger",
+    "email": "proger.xp@gmail.com",
+    "homepage": "http://proger.me"
+  }],
+  "require": {
+    "illuminate/support": "4.2.*"
+  },
+  "autoload": {
+    "classmap": [
+      "src/migrations/"
+    ],
+    "psr-0": {
+      "Habravel": "src/"
+    }
+  }
+}
