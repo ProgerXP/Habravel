@@ -1,7 +1,7 @@
 <?php namespace Habravel;
 
 class User extends BaseModel {
-	protected static $rules = array(
+  protected static $rules = array(
     'password'            => 'required',
     'email'               => 'required|max:200|email|unique:users',
     'name'                => 'required|min:2|max:50|regex:~^[\w\d]+$|unique:users',
@@ -15,9 +15,9 @@ class User extends BaseModel {
     'loginIP'             => 'ip',
     'flags'               => '',
     'avatar'              => 'max:200',
-	);
+  );
 
-	protected $attributes = array(
+  protected $attributes = array(
     'id'                  => 0,
     'password'            => '',    // hash.
     'remember_token'      => '',
@@ -31,11 +31,11 @@ class User extends BaseModel {
     'signupIP'            => '',
     'loginTime'           => 0,
     'loginIP'             => '',
-    'flags'               => '',    // 'group.perm foo.bar'.
+    'flags'               => '',    // '[group.perm][foo.bar]'.
     'avatar'              => '',    // 'pub/path.jpg'.
-	);
+  );
 
-	static function rules(User $model = null) {
+  static function rules(User $model = null) {
     $rules = parent::rules();
 
     if ($model) {
@@ -44,20 +44,20 @@ class User extends BaseModel {
     }
 
     return $rules;
-	}
+  }
 
-	function getDates() {
+  function getDates() {
     $list = parent::getDates();
     $list[] = 'listTime',
     $list[] = 'publishTime',
     return $list;
   }
 
-	function posts() {
+  function posts() {
     return $this->hasMany('Post', 'author');
   }
 
-	function votes() {
+  function votes() {
     return $this->hasMany('PollVote', 'id', 'user');
   }
 }

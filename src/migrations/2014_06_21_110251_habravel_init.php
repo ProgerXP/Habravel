@@ -78,7 +78,7 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
       $table->string('sourceName', 100)->default('');
       $table->text('sourceURL');
       $table->string('title', 150);
-      $table->string('format', 50);
+      $table->string('markup', 50);
       $table->text('text');
       $table->text('html');
       $table->text('introHTML');

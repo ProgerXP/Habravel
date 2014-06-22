@@ -1,6 +1,6 @@
 <?php
 return array(
-  // Root URL for routes. No trailing '/'.
+  // Root URL for routes relative to Laravel's app URL. No trailing '/'.
   'rootURL'               => '',
 
   // Read an input variable.
@@ -14,4 +14,9 @@ return array(
       return Habravel\User::find($user->id);
     }
   },
+
+  'markups'               => array(
+    'githubmarkdown'      => 'Habravel\\GitHubMarkdown',
+    'uversewiki'          => 'Habravel\\UverseWiki',
+  ),
 );

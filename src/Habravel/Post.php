@@ -1,9 +1,9 @@
 <?php namespace Habravel;
 
 class Post extends BaseModel {
-	protected $with = array('tags');
+  protected $with = array('tags');
 
-	protected static $rules = array(
+  protected static $rules = array(
     'parent'              => 'exists:posts,id',
     'url'                 => 'required|max:50|regex:~^[\w\d\\-]+$~|unique:post',
     'author'              => 'required|exists:users,id',
@@ -14,14 +14,14 @@ class Post extends BaseModel {
     'sourceName'          => 'required_with:sourceURL|max:100',
     'sourceURL'           => 'regex:~^https?://~',
     'title'               => 'required|min:2|max:150',
-    'format'              => 'required',
+    'markup'              => 'required',
     'text'                => 'required|min:10',
     'flags'               => '',
     'listTime'            => 'date|after:2000-01-01',
     'publishTime'         => 'date|after:2000-01-01',
-	);
+  );
 
-	protected $attributes = array(
+  protected $attributes = array(
     'id'                  => 0,
     'parent'              => null,  // Post id or null; for comments.
     'url'                 => '',
@@ -33,16 +33,16 @@ class Post extends BaseModel {
     'sourceName'          => '',    // translation/other source.
     'sourceURL'           => '',
     'title'               => '',
-    'format'              => '',    // 'markdown', 'uversewiki'.
+    'markup'              => '',    // 'githubmarkdown', 'uversewiki'.
     'text'                => '',
     'html'                => '',
     'introHTML'           => '',
-    'flags'               => '',    // 'draft aa.bb'.
+    'flags'               => '',    // '[draft][aa.bb]'.
     'listTime'            => 0,
     'publishTime'         => 0,
-	);
+  );
 
-	static function rules(Post $model = null) {
+  static function rules(Post $model = null) {
     $rules = parent::rules();
 
     if ($model) {
@@ -50,28 +50,33 @@ class Post extends BaseModel {
     }
 
     return $rules;
-	}
+  }
 
-	function getDates() {
+  function __construct(array $attributes = array()) {
+    parent::__construct($attributes);
+    $this->markup or $this->markup = head(Core::markups());
+  }
+
+  function getDates() {
     $list = parent::getDates();
     $list[] = 'listTime';
     $list[] = 'publishTime';
     return $list;
   }
 
-	function author() {
+  function author() {
     return $this->hasOne('User', 'id', 'author');
   }
 
-	function children() {
+  function children() {
     return $this->hasMany(__CLASS__, 'parent', 'id');
   }
 
-	function parentPost() {
+  function parentPost() {
     return $this->belongsTo(__CLASS__, 'id', 'parent');
   }
 
-	function poll() {
+  function poll() {
     return $this->hasOne('Poll', 'id', 'poll');
   }
 

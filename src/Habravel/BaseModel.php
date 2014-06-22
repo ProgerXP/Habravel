@@ -16,14 +16,16 @@ class BaseModel extends \Eloquent {
     return $rules;
   }
 
-  // Usable if underlying table has 'flags' TEXT.
-  function hasFlags($flag_1) {
-    $flags = func_get_args();
+  // Usable if underlying table has 'flags' TEXT. Returns true if all given
+  // flags are present.
+  function hasFlag($flag_1) {
+    $flags = is_array($flag_1) ? $flag_1 : func_get_args();
     return count(array_intersect($this->flags(), $flags)) == count($flags);
   }
 
   // Usable if underlying table has 'flags' TEXT.
   function flags() {
-    return explode(' ', $this->flags);
+    preg_match_all('~\[([^\]]+)]~u', $this->flags, $matches);
+    return $matches ? $matches[1] : array();
   }
 }
