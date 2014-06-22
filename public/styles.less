@@ -1,0 +1,173 @@
+@import 'sprites.css';
+
+@Segoe: "Segoe UI", Calibri, "Trebuchet MS", sans-serif;
+@Gothic: "Century Gothic", Futura, @Segoe;
+@3px:   0.1875em;
+@5px:   0.3125em;
+@8px:   0.5em;
+@10px:  0.625em;
+@18px:  1.125em;
+@20px:  1.25em;
+@24px:  1.5em;
+@30px:  1.875em;
+@rootPadding: 1.5rem;
+
+/***
+  Generic Controls
+ ***/
+
+[class^="hvl-i-"] {
+  display: inline-block;
+  background: no-repeat 0 0 url(sprites.png);
+}
+
+.hvl-btn {
+  background: #DF5240;
+  font-size: 1em;
+  padding: @3px @8px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  color: white;
+  transition: background .15s;
+  box-shadow: 0.05em 0.05em 0.05em rgba(0, 0, 0, 0.2);
+
+  &:hover { background: #B50808; }
+  &:hover:active { box-shadow: 0.05em 0.05em 0.25em rgba(0, 0, 0, 0.5) inset; }
+  & + & { margin-left: 1em; }
+  i { margin-right: 1em; }
+  &.hvl-btn-20 { font-size: @20px; }
+
+  &.hvl-btn-orange {
+    background: #CF5900;
+    &:hover { background: #853900; }
+  }
+
+  &.hvl-btn-green {
+    background: #27A000;
+    &:hover { background: #1E6507; }
+  }
+}
+
+.hvl-input {
+  border: 1px solid #BABABA;
+  font-size: 1em;
+  box-shadow: 0 1px 2px #D4D4D4 inset;
+  padding: @5px @8px;
+}
+
+.hvl-h1 {
+  font-size: @30px;
+  font-family: @Gothic;
+  font-weight: normal;
+  margin: 0 0 1.5em;
+}
+
+.hvl-splitter {
+  > div > :first-child { margin-top: 0; }
+  > div > :last-child { margin-bottom: 0; }
+}
+
+.hvl-splitter-left {
+  width: 49%;
+  float: left;
+  margin-right: 1%;
+}
+
+.hvl-splitter-right {
+  width: 49%;
+  float: right;
+  margin-left: 1%;
+}
+
+.vsplitbar {
+  width: @5px;
+
+  &:hover { background: gray; }
+}
+
+/***
+  Page Layout
+ ***/
+
+.hvl-root {
+  font-family: @Segoe;
+  background: #F5F5F5;
+  padding: @rootPadding;
+
+  * { -moz-box-sizing: border-box; }
+  p, ol, ul, dl { margin: 0; padding: 0; }
+  a, u { cursor: pointer; text-decoration: none; color: #f00; }
+  a:hover, u:hover { text-decoration: underline; color: #d00; }
+}
+
+.hvl-uheader {
+  background: #E6E6E6;
+  padding: @10px;
+  margin: -@rootPadding -@rootPadding (@rootPadding * 1.5);
+  font-size: @18px;
+  overflow: auto;
+
+  * + a, * + u { margin-left: 2em; }
+}
+
+.hvl-uheader-left { float: left; }
+.hvl-uheader-right { float: right; }
+
+/***
+  Post Composition Page
+ ***/
+
+.hvl-pedit-topbtn {
+  font-size: @18px;
+  float: right;
+}
+
+.hvl-pedit-form {
+  clear: both;
+
+  .hvl-splitter-left [type=submit] { float: left; }
+}
+
+.hvl-pedit-ctl {
+  margin-top: 1.7em;
+
+  * + p { margin-top: 0.7em; }
+  > p > input { width: 100%; }
+}
+
+.hvl-pedit-ctl-caption {
+  text-align: right;
+  overflow: hidden;
+
+  > b:first-child { float: left; margin-right: 1em; }
+  + p { margin-top: 1em; }
+}
+
+.hvl-pedit-markup-help {
+  & + * { margin-left: 1em; }
+}
+
+.hvl-pedit-markup-text {
+  display: none;
+}
+
+.hvl-pedit-text {
+  width: 100%;
+  resize: vertical;
+}
+
+.hvl-pedit-polls {
+  label + label { margin-left: 1em; }
+}
+
+.hvl-pedit-poll-opt-num {
+  display: inline-block;
+  width: 7%;
+  padding-left: 1%;
+
+  .hvl-pedit-ctl & + input { width: 93%; }
+}
+
+.hvl-pedit-poll-add {
+  margin-top: 0.7em;
+}

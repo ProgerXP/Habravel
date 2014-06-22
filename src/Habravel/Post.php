@@ -11,9 +11,9 @@ class Post extends BaseModel {
     'score'               => '%INT%',
     'views'               => '%INT%|min:0',
     'info'                => '',
-    'sourceName'          => 'required_with:sourceURL|max:100',
     'sourceURL'           => 'regex:~^https?://~',
-    'title'               => 'required|min:2|max:150',
+    'sourceName'          => 'required_with:sourceURL|max:100',
+    'caption'             => 'required|min:2|max:150',
     'markup'              => 'required',
     'text'                => 'required|min:10',
     'flags'               => '',
@@ -30,9 +30,9 @@ class Post extends BaseModel {
     'score'               => 0,     // +/- int.
     'views'               => 0,     // uint.
     'info'                => '',    // serialized.
-    'sourceName'          => '',    // translation/other source.
     'sourceURL'           => '',
-    'title'               => '',
+    'sourceName'          => '',    // translation/other source.
+    'caption'             => '',
     'markup'              => '',    // 'githubmarkdown', 'uversewiki'.
     'text'                => '',
     'html'                => '',
@@ -82,5 +82,9 @@ class Post extends BaseModel {
 
   function tags() {
     return $this->belongsToMany('Tag');
+  }
+
+  function url() {
+    return \Config::get('habravel::g.rootURL').'/'.$this->url;
   }
 }

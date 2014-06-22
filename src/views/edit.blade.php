@@ -21,7 +21,7 @@
     </button>
   </div>
 
-  <h1>
+  <h1 class="hvl-h1">
     @if ($post->id)
       {{{ $post->caption }}}
     @else
@@ -30,7 +30,7 @@
   </h1>
 
   <form action="{{{ $root }}}/edit" method="post" class="hvl-splitter hvl-pedit-form"
-        data-post="{{{ $post->toJSON() }}}">
+        data-post="{{{ $post->toJSON() }}}" data-sqa="wr - ^$body{pb} -">
     <input type="hidden" name="id" value="{{{ $post['id'] }}}">
 
     <div class="hvl-splitter-left">
@@ -43,12 +43,9 @@
                 <input type="radio" name="markup" value="{{{ $markup }}}"
                        @if ($post['markup'] === $markup) checked="checked" @endif>
                 {{{ trans("habravel::g.markups.$markup") }}}
-                <u class="hvl-pedit-markup-help">?</u>
               </label>
 
-              <aside class="hvl-pedit-markup-text">
-                {{ trans("habravel::g.markups.{$markup}_help") }}
-              </aside>
+              <u class="hvl-pedit-markup-help">?</u>
             @endforeach
           </p>
         </div>
@@ -56,8 +53,8 @@
 
       <div class="hvl-pedit-ctl">
         <p>
-          <input name="caption" placeholder="{{{ trans("habravel::g.edit.caption") }}}"
-                 value="{{{ $post['caption'] }}}">
+          <input class="hvl-input" name="caption" value="{{{ $post['caption'] }}}"
+                 placeholder="{{{ trans("habravel::g.edit.caption") }}}">
         </p>
       </div>
 
@@ -67,13 +64,13 @@
         </p>
 
         <p>
-          <input name="sourceName" placeholder="{{{ trans("habravel::g.edit.sourceName") }}}"
-                 value="{{{ $post['sourceName'] }}}">
+          <input class="hvl-input" name="sourceName" value="{{{ $post['sourceName'] }}}"
+                 placeholder="{{{ trans("habravel::g.edit.sourceName") }}}">
         </p>
 
         <p>
-          <input name="sourceURL" placeholder="{{{ trans("habravel::g.edit.sourceURL") }}}"
-                 value="{{{ $post['sourceURL'] }}}">
+          <input class="hvl-input" name="sourceURL" value="{{{ $post['sourceURL'] }}}"
+                 placeholder="{{{ trans("habravel::g.edit.sourceURL") }}}">
         </p>
       </div>
 
@@ -91,46 +88,54 @@
         </p>
 
         <p>
-          <input name="poll[0][caption]" placeholder="{{{ trans('habravel::g.edit.poll') }}}">
+          <input class="hvl-input" name="polls[0][caption]"
+                 placeholder="{{{ trans('habravel::g.edit.poll') }}}">
         </p>
 
         <p>
           <label>
-            <input type="radio" name="poll[0][multiple]" value="0">
+            <input type="radio" name="polls[0][multiple]" value="0">
             {{{ trans('habravel::g.edit.pollSingle') }}}
           </label>
 
           <label>
-            <input type="radio" name="poll[0][multiple]" value="1">
+            <input type="radio" name="polls[0][multiple]" value="1">
             {{{ trans('habravel::g.edit.pollMultiple') }}}
           </label>
         </p>
 
         <p class="hvl-pedit-poll-opt">
-          <b class="hvl-pedit-poll-opt-num">1)</b>
-          <input name="pollOption[0][0][caption]" placeholder="{{{ trans('habravel::g.edit.option') }}}">
+          <b class="hvl-pedit-poll-opt-num">1)
+          </b><input class="hvl-input" name="options[0][0][caption]"
+                     placeholder="{{{ trans('habravel::g.edit.option') }}}">
         </p>
 
         <p>
-          <button type="button" class="hvl-pedit-poll-add">{{{ trans('habravel::g.edit.addPoll') }}}</button>
+          <button type="button" class="hvl-btn hvl-pedit-poll-add">
+            {{{ trans('habravel::g.edit.addPoll') }}}
+          </button>
         </p>
       </div>
 
       <div class="hvl-pedit-ctl">
         <p class="hvl-pedit-ctl-caption">
-          <button type="submit" name="publish" value="1">{{{ trans('habravel::g.edit.publish') }}}</button>
+          <button type="submit" class="hvl-btn hvl-btn-orange hvl-btn-20" name="publish" value="1">
+            {{{ trans('habravel::g.edit.publish') }}}
+          </button>
         </p>
       </div>
     </div>
 
     <div class="hvl-splitter-right">
-      <textarea name="text" placeholder="{{{ $textPlaceholder }}}">{{{ $post->text }}}</textarea>
-
-      <div class="hvl-pedit-ctl">
-        <p class="hvl-pedit-ctl-caption">
-          <button type="submit">{{{ trans('habravel::g.edit.save') }}}</button>
-        </p>
-      </div>
+      <textarea class="hvl-input hvl-pedit-text" name="text" data-sqa="wr - -"
+                rows="20" cols="50"
+                placeholder="{{{ $textPlaceholder }}}">{{{ $post->text }}}</textarea>
     </div>
   </div>
+
+  @foreach ($markups as $markup)
+    <aside class="hvl-pedit-markup-text" data-markup="{{{ $markup }}}">
+      {{ trans("habravel::g.markups.{$markup}_help") }}
+    </aside>
+  @endforeach
 @stop

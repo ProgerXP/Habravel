@@ -2,6 +2,6 @@
 
 @section('content')
   @foreach ($posts as $post)
-    <h1>{{{ $post['title'] }}}</h1>
+    <h1>{{{ $post['caption'] }}}</h1>
   @endforeach
 @stop

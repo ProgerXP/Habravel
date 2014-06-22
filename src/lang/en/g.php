@@ -13,14 +13,13 @@ return array(
   'uheader'               => array(
     'logout'              => 'Logout',
     'login'               => 'Who are you?',
-    'drafts'              => 'Drafts',
     'compose'             => 'Compose Article',
     'profile'             => 'Profile',
   ),
 
   'edit'                  => array(
-    'title'               => 'Editing Article',
-    'titleNew'            => 'Composing Article',
+    'title'               => 'Article Modification',
+    'titleNew'            => 'Article Composition',
     'preview'             => 'Preview',
     'expand'              => 'Expand editor',
     'markup'              => 'Markup Style:',
@@ -36,7 +35,6 @@ return array(
     'option'              => 'Poll option',
     'addPoll'             => 'Add another poll',
     'publish'             => 'Publish',
-    'save'                => 'Save to drafts',
 
     'placeholders'        => array(
       'Here is a good place to put your first mark.',

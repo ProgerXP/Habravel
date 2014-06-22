@@ -60,4 +60,17 @@ class User extends BaseModel {
   function votes() {
     return $this->hasMany('PollVote', 'id', 'user');
   }
+
+  function nameHTML() {
+    $name = e($this->name);
+    $score = $this->score;
+
+    if ($score != 0) {
+      $sign = $score > 0 ? '+' : '-';
+      $name .= ' <sup>'.$sign.((int) $this->score).'</sup>';
+    }
+
+    $class = $score == 0 ? 'zero' : ($score > 0 ? 'above' : 'below');
+    return "<span class=\"hvl-uname hvl-uname-$class\">$name</span>";
+  }
 }

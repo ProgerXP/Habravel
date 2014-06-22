@@ -75,9 +75,9 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
       $table->integer('score')->default(0);
       $table->integer('views')->unsigned()->default(0);
       $table->text('info');
-      $table->string('sourceName', 100)->default('');
       $table->text('sourceURL');
-      $table->string('title', 150);
+      $table->string('sourceName', 100)->default('');
+      $table->string('caption', 150);
       $table->string('markup', 50);
       $table->text('text');
       $table->text('html');

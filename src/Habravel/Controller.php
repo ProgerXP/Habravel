@@ -51,4 +51,36 @@ class Controller extends BaseController {
     $post = Post::where('url', '=', $url)->first();
     return $this->getEditPost($post);
   }
+
+  // Input POST:
+  // - id=123             - optional; updates existing post or creates new one
+  // - parent=567         - optional; parent post ID (for comments)
+  // - url=foo/bar        - optional; relative document URL
+  // - sourceURL=http://  - optional
+  // - sourceName=...     - required if sourceURL is given
+  // - caption=...        - required
+  // - markup=uversewiki  - required
+  // - text=...           - required; post body in given markup
+  // - tags[]=tag         - optional; array of tag names
+  // - polls[]            - optional; array of caption, multiple (0/1)
+  // - options[][]        - array of caption, one array per each item in polls
+  function postEditPost() {
+    $input = Core::input();
+
+    if (empty($input['id'])) {
+      $post = new Post;
+    } else {
+      $post = Post;:find($input['id']);
+      $post or App::abort(404);
+    }
+
+    $errors = Events::until('habravel.check.post', array($post, &$input));
+    if ($errors) {
+      foreach ($input as $key => &$value) { $post->$key = $value; }
+      return Event::until('habravel.out.edit', array($post, $errors));
+    } else {
+      Events::fire('habravel.save.post', array($post));
+      return Redirect::to($post->url());
+    }
+  }
 }

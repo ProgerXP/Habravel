@@ -10,7 +10,7 @@ define('VALIDATE', 10);
 define('CUSTOMIZE', 5);
 
 class Core extends \Illuminate\Support\ServiceProvider {
-  static function input($name, $default = null) {
+  static function input($name = null, $default = null) {
     return call_user_func(Config::get('habravel::g.input'), $name, $default);
   }
 
@@ -94,7 +94,7 @@ class Core extends \Illuminate\Support\ServiceProvider {
 
     /***
       Drafts Support
-     ***/
+     *** /
 
     $checkDraft = function ($action, Post $post) {
       if ($post->hasFlag('draft')) {
@@ -119,6 +119,13 @@ class Core extends \Illuminate\Support\ServiceProvider {
         $query->where('posts.flags', 'NOT LIKE', '%[draft]%');
       }
     }, CUSTOMIZE);
+
+      + put drafts link to uheader
+      + save to drafts button for compose view
+    + post links support
+    + comments support
+    + polls support
+    */
   }
 
   function composers() {
