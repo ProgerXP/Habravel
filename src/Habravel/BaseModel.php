@@ -3,13 +3,21 @@
 class BaseModel extends \Eloquent {
   protected static $rules = array();
 
+  static function find($id, $columns = array('*')) {
+    if ($id instanceof static) {
+      return $id;
+    } else {
+      return parent::find($id, $columns);
+    }
+  }
+
   static function rules() {
     $rules = static::$rules;
 
     foreach ($rules as &$rule) {
       $rule = strtr($rule, array(
         // Just 'integer' has too relaxed format and will match hexadecimal, etc.
-        '%INT%'           => 'integer|regex:~^[-+]\d+$~',
+        '%INT%'           => 'integer|regex:~^[-+]?\d+$~',
       ));
     }
 

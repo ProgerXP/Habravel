@@ -5,7 +5,7 @@ class Post extends BaseModel {
 
   protected static $rules = array(
     'parent'              => 'exists:posts,id',
-    'url'                 => 'required|max:50|regex:~^[\w\d\\-]+$~|unique:post',
+    'url'                 => 'max:50|regex:~^[\w\d\\-]+$~|unique:post,url',
     'author'              => 'required|exists:users,id',
     'poll'                => 'exists:poll,id',
     'score'               => '%INT%',
@@ -38,12 +38,13 @@ class Post extends BaseModel {
     'html'                => '',
     'introHTML'           => '',
     'flags'               => '',    // '[draft][aa.bb]'.
-    'listTime'            => 0,
-    'publishTime'         => 0,
+    'listTime'            => null,
+    'publishTime'         => null,
   );
 
   static function rules(Post $model = null) {
     $rules = parent::rules();
+    $rules['markup'] .= '|in:'.join(',', Core::markups());
 
     if ($model) {
       $rules['url'] .= ','.$model->id;
@@ -85,6 +86,16 @@ class Post extends BaseModel {
   }
 
   function url() {
-    return \Config::get('habravel::g.rootURL').'/'.$this->url;
+    return Core::url().'/'.urlencode($this->url);
+  }
+
+  protected function finishSave(array $options) {
+    parent::finishSave($options);
+
+    $url = str_replace('#', $this->id, $this->url);
+    if ($url !== $this->url) {
+      $this->url = $url;
+      $this->save();
+    }
   }
 }

@@ -2,14 +2,14 @@
   - $pageUser         - User instance or null (unauthorized)
 */?>
 
-<?php $root = url(Config::get('habravel::g.rootURL'))?>
+<?php $root = Habravel\Core::url()?>
 
 <header class="hvl-uheader">
   <div class="hvl-uheader-left">
-    <a href="{{{ $root }}}/~"><i class="hvl-i-laravel22"></i></a>
+    <a href="{{{ $root }}}/~" class="hvl-uheader-icon"><i class="hvl-i-laravel24"></i></a>
 
     @if ($pageUser)
-      <a href="{{{ $root }}}/~">{{ $pageUser->nameHTML() }}</a>
+      <a href="{{{ $pageUser->url() }}}">{{ $pageUser->nameHTML() }}</a>
       <a href="{{{ $root }}}/logout">{{{ trans('habravel::g.uheader.logout') }}}</a>
     @else
       <a href="{{{ $root }}}/~">{{{ trans('habravel::g.uheader.login') }}}</a>

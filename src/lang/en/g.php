@@ -17,6 +17,10 @@ return array(
     'profile'             => 'Profile',
   ),
 
+  /***
+    Article Routes
+   ***/
+
   'edit'                  => array(
     'title'               => 'Article Modification',
     'titleNew'            => 'Article Composition',
@@ -43,5 +47,31 @@ return array(
       'Make sure not to fall into meditation thinking about the introduction.',
       'Start writing - but don’t rewrite the first line more than 500 times.',
     ),
+  ),
+
+  /***
+    User Routes
+   ***/
+
+  'login'                 => array(
+    'title'               => 'Have we met before?',
+    'wrong'               => 'Sorry, can’t find anyone like that.',
+    'register'            => 'You can register an account here',
+    'login'               => 'Your e-mail or display name:',
+    'password'            => 'Your password:',
+    'submit'              => 'Log in',
+    'remember'            => '…and remember me next time',
+  ),
+
+  'register'              => array(
+    'title'               => 'Let’s get to know each other!',
+    'login1'              => 'Already registered?',
+    'login2'              => 'Login here',
+    'name'                => 'How to call you on public?',
+    'nameHint'            => '(start with a letter, use only A-Z _ 0-9)',
+    'email'               => 'What’s your e-mail?',
+    'password'            => 'Choose your very secret password',
+    'passwordHint'        => '(6 symbols or longer):',
+    'submit'              => 'Register',
   ),
 );

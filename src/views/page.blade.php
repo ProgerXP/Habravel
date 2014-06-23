@@ -8,7 +8,7 @@
 
     <link rel="shortcut icon" href="{{{ asset('favicon.ico') }}}" type="image/x-icon">
 
-    <link type="text/css" rel="stylesheet" rel="stylesheet" media="all"
+    <link type="text/css" rel="stylesheet" media="all"
           href="{{{ asset('packages/proger/habravel/normalize.css') }}}">
     <link rel="stylesheet/less" type="text/css" media="all"
           href="{{{ asset('packages/proger/habravel/styles.less') }}}">

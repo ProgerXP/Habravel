@@ -1,4 +1,5 @@
 <?php /*
+  - $errors           - optional; MessageBag instance
   - $post             - Post instance with loaded $post->tags relationship
   - $markups          - array of markup names ('githubmarkdown', 'uversewiki', etc.)
   - $textPlaceholder  - default text for textarea
@@ -6,14 +7,14 @@
 
 @extends('habravel::page')
 
-<?php $root = url(Config::get('habravel::g.rootURL'))?>
-
 @section('content')
   @include('habravel::part.uheader')
 
   <div class="hvl-pedit-topbtn">
+    <noscript>{{{ trans('habravel::g.needJS') }}}</noscript>
+
     <button class="hvl-btn hvl-pedit-preview">
-      <i class="hvl-i-preview"></i> {{{ trans('habravel::g.edit.preview') }}}
+      <i class="hvl-i-zoom"></i> {{{ trans('habravel::g.edit.preview') }}}
     </button>
 
     <button class="hvl-btn hvl-pedit-expand">
@@ -29,11 +30,16 @@
     @endif
   </h1>
 
-  <form action="{{{ $root }}}/edit" method="post" class="hvl-splitter hvl-pedit-form"
+  <form action="{{{ Habravel\Core::url() }}}/edit" method="post" class="hvl-splitter hvl-pedit-form"
         data-post="{{{ $post->toJSON() }}}" data-sqa="wr - ^$body{pb} -">
+    <input type="hidden" name="csrf" value="{{{ csrf_token() }}}">
     <input type="hidden" name="id" value="{{{ $post['id'] }}}">
 
     <div class="hvl-splitter-left">
+      @if (isset($errors))
+        {{ HTML::ul($errors->all(), array('class' => 'hvl-errors')) }}
+      @endif
+
       @if ($markups)
         <div class="hvl-pedit-ctl">
           <p class="hvl-pedit-ctl-caption">

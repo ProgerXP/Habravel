@@ -1,3 +1,4 @@
+// Sprites are generated with https://draeton.github.io/stitches/
 @import 'sprites.css';
 
 @Segoe: "Segoe UI", Calibri, "Trebuchet MS", sans-serif;
@@ -18,7 +19,9 @@
 
 [class^="hvl-i-"] {
   display: inline-block;
-  background: no-repeat 0 0 url(sprites.png);
+  background-repeat: no-repeat;
+  background-image: url(sprites.png);
+  vertical-align: baseline;
 }
 
 .hvl-btn {
@@ -32,14 +35,13 @@
   box-shadow: 0.05em 0.05em 0.05em rgba(0, 0, 0, 0.2);
 
   &:hover { background: #B50808; }
-  &:hover:active { box-shadow: 0.05em 0.05em 0.25em rgba(0, 0, 0, 0.5) inset; }
+  &:hover:active { box-shadow: 0.05em 0.05em 0.25em rgba(0, 0, 0, 0.8) inset; }
   & + & { margin-left: 1em; }
-  i { margin-right: 1em; }
   &.hvl-btn-20 { font-size: @20px; }
 
   &.hvl-btn-orange {
-    background: #CF5900;
-    &:hover { background: #853900; }
+    background: #EF6700;
+    &:hover { background: #9A4300; }
   }
 
   &.hvl-btn-green {
@@ -85,6 +87,11 @@
   &:hover { background: gray; }
 }
 
+.hvl-uname {
+  &.hvl-uname-above sup { color: #0b7200; }
+  &.hvl-uname-below { &, sup, { color: #999; } }
+}
+
 /***
   Page Layout
  ***/
@@ -107,11 +114,36 @@
   font-size: @18px;
   overflow: auto;
 
-  * + a, * + u { margin-left: 2em; }
+  .hvl-i-laravel24 { vertical-align: bottom; }
+  * + a, * + u { margin-left: 1em; }
+  .hvl-uheader-icon + * { margin-left: 0.2em; }
+  .hvl-uheader-left { float: left; }
+  .hvl-uheader-right { float: right; }
 }
 
-.hvl-uheader-left { float: left; }
-.hvl-uheader-right { float: right; }
+.hvl-form-list {
+  .hvl-form-list-value + .hvl-form-list-label {
+    margin-top: 1.5em;
+  }
+
+  .hvl-form-list-label {
+    margin-bottom: 0.5em;
+  }
+
+  .hvl-form-list-btn {
+    margin-top: 1.5em;
+
+    & + * { margin-top: 1em; }
+  }
+}
+
+.hvl-errors {
+  border-left: 5px solid red;
+  color: #A90000;
+
+  ul&, ol& { padding: 0.3em 0 0.3em 2em; }
+  + * { margin-top: 2em; }
+}
 
 /***
   Post Composition Page

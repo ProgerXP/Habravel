@@ -8,15 +8,37 @@ return array(
     return Input::get($name, $default);
   },
 
-  // Return null or Habravel\User instance. Result is cached.
-  'user'                  => function () {
-    if ($user = Auth::user()) {
+  // If $login is not given - return null or Habravel\User instance that is
+  // currently logged in.
+  //
+  // If $login is given it's an array with 'password', and 'remember' keys
+  // and either 'email' or 'name'. Return null or Habravel\User.
+  //
+  // If $login is === false then current client should be logged out.
+  'user'                  => function ($login = null) {
+    if (is_array($login)) {
+      return Auth::attempt($login) ? Habravel\User::find(Auth::user()->id) : null;
+    } elseif ($login === false) {
+      Auth::logout();
+    } elseif (!func_num_args() and $user = Auth::user()) {
       return Habravel\User::find($user->id);
+    }
+  },
+
+  'password'              => function ($plain, $hash = null) {
+    if (func_num_args() < 2) {
+      return \Hash::make($plain);
+    } else {
+      return \Hash::check($plain, $hash);
     }
   },
 
   'markups'               => array(
     'githubmarkdown'      => 'Habravel\\GitHubMarkdown',
     'uversewiki'          => 'Habravel\\UverseWiki',
+  ),
+
+  'userPerms'             => array(
+    'can.post', 'can.editSelf',
   ),
 );

@@ -31,8 +31,7 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
       $table->integer('poll')->unsigned()->nullable();
       $table->integer('score')->default(0);
       $table->integer('rating')->default(0);
-      $table->timestamp('signupTime');
-      $table->char('signupIP', 16);
+      $table->char('regIP', 16);
       $table->timestamp('loginTime');
       $table->char('loginIP', 16)->default('');
       $table->text('flags');

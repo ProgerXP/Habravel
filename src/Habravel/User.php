@@ -2,15 +2,14 @@
 
 class User extends BaseModel {
   protected static $rules = array(
-    'password'            => 'required',
-    'email'               => 'required|max:200|email|unique:users',
-    'name'                => 'required|min:2|max:50|regex:~^[\w\d]+$|unique:users',
+    'password'            => 'required|min:6',
+    'email'               => 'required|max:200|email|unique:users,email',
+    'name'                => 'required|max:50|regex:~^\w[\w\d]+$~|unique:users,name',
     'info'                => '',
     'poll'                => 'exists:poll,id',
     'score'               => '%INT%',
     'rating'              => '%INT%',
-    'signupTime'          => 'date|after:2000-01-01',
-    'signupIP'            => 'ip',
+    'regIP'               => 'ip',
     'loginTime'           => 'date|after:2000-01-01',
     'loginIP'             => 'ip',
     'flags'               => '',
@@ -27,9 +26,8 @@ class User extends BaseModel {
     'poll'                => null,  // Poll id; for counting score.
     'score'               => 0,
     'rating'              => 0,
-    'signupTime'          => 0,
-    'signupIP'            => '',
-    'loginTime'           => 0,
+    'regIP'               => '',
+    'loginTime'           => null,
     'loginIP'             => '',
     'flags'               => '',    // '[group.perm][foo.bar]'.
     'avatar'              => '',    // 'pub/path.jpg'.
@@ -48,8 +46,7 @@ class User extends BaseModel {
 
   function getDates() {
     $list = parent::getDates();
-    $list[] = 'listTime',
-    $list[] = 'publishTime',
+    $list[] = 'loginTime';
     return $list;
   }
 
@@ -59,6 +56,21 @@ class User extends BaseModel {
 
   function votes() {
     return $this->hasMany('PollVote', 'id', 'user');
+  }
+
+  function flags() {
+    $flags = $this->flags;
+    if ($flags === '-') {
+      return array();
+    } elseif ($flags === '') {
+      return \Config::get('habravel::g.userPerms');
+    } else {
+      return parent::flags();
+    }
+  }
+
+  function url() {
+    return Core::url().'/~'.urlencode($this->name);
   }
 
   function nameHTML() {
