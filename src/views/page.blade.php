@@ -17,12 +17,13 @@
       var less = {env: 'development'}
     </script>
     <script src="https://raw.githubusercontent.com/less/less.js/master/dist/less-1.7.2.min.js"></script>
+  </head>
+  <body class="hvl-root">
+    @yield('content')
 
     <script src="{{{ asset('packages/proger/habravel/underscore.js') }}}"></script>
     <script src="{{{ asset('packages/proger/habravel/jquery.js') }}}"></script>
     <script src="{{{ asset('packages/proger/habravel/sqaline.js') }}}"></script>
-  </head>
-  <body class="hvl-root">
-    @yield('content')
+    <script src="{{{ asset('packages/proger/habravel/app.js') }}}"></script>
   </body>
 </html>

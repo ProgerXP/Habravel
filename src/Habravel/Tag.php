@@ -18,6 +18,6 @@ class Tag extends BaseModel {
   }
 
   function posts() {
-    return $this->belongsToMany('Post');
+    return $this->belongsToMany(NS.'Post');
   }
 }

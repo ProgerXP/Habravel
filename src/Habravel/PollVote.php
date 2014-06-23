@@ -9,14 +9,14 @@ class PollVote extends BaseModel {
   );
 
   function poll() {
-    return $this->hasOne('Poll', 'id', 'poll');
+    return $this->hasOne(NS.'Poll', 'id', 'poll');
   }
 
   function option() {
-    return $this->hasOne('PollOption', 'id', 'option');
+    return $this->hasOne(NS.'PollOption', 'id', 'option');
   }
 
   function user() {
-    return $this->hasOne('User', 'id', 'user');
+    return $this->hasOne(NS.'User', 'id', 'user');
   }
 }

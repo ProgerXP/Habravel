@@ -8,6 +8,8 @@ use Redirect;
 use Carbon\Carbon;
 use Illuminate\Support\MessageBag;
 
+define('NS', __NAMESPACE__.'\\');
+
 // Priorities for Event::listen().
 define('VALIDATE', 10);
 define('CUSTOMIZE', 5);
@@ -33,7 +35,7 @@ class Core extends \Illuminate\Support\ServiceProvider {
     if ($class) {
       return new $class;
     } else {
-      throw new Error("Unknown markup [$name].");
+      App::abort(500, "Unknown markup [$name].");
     }
   }
 
@@ -52,18 +54,27 @@ class Core extends \Illuminate\Support\ServiceProvider {
 
   function boot() {
     $this->package('proger/habravel');
-    class_alias('Illuminate\\Database\\Eloquent\\Builder', __NAMESPACE__.'\\Query');
+    class_alias('Illuminate\\Database\\Eloquent\\Builder', NS.'Query');
 
     app('config')     ->addNamespace('habravel', __DIR__.'/../config');
     app('view')       ->addNamespace('habravel', __DIR__.'/../views');
     app('translator') ->addNamespace('habravel', __DIR__.'/../lang');
 
+    if (Config::get('habravel::g.csrfRegenTime') < time() - \Session::get('time')) {
+      \Session::regenerateToken();
+    }
+
+    App::after(array($this, 'shutdown'));
     $this->routes();
     $this->events();
     $this->composers();
   }
 
   function register() { }
+
+  static function shutdown() {
+    \Session::put('time', time());
+  }
 
   function routes() {
     Route::group(array('prefix' => Core::url(false)), function () {
@@ -77,6 +88,13 @@ class Core extends \Illuminate\Support\ServiceProvider {
       Route::get    ('edit/{habravel_any}',     "$ctl@getEditPostByURL");
       Route::post   ('edit',                    "$ctl@postEditPost");
       Route::get    ('tags/{habravel_any}',     "$ctl@getListByTags");
+      Route::get    ('up/{habravel_any}',       "$ctl@getVoteUpByURL");
+      Route::get    ('down/{habravel_any}',     "$ctl@getVoteDownByURL");
+      Route::get    ('reply/{habravel_any}',    "$ctl@getReply");
+      Route::post   ('reply',                   "$ctl@postReply");
+      Route::get    ('best/day',                "$ctl@getBestListDay");
+      Route::get    ('best/week',               "$ctl@getBestListWeek");
+      Route::get    ('best',                    "$ctl@getBestList");
       // User.
       Route::get    ('logout',                  "$ctl@getLogout");
       Route::get    ('login',                   "$ctl@getLogin");
@@ -88,7 +106,7 @@ class Core extends \Illuminate\Support\ServiceProvider {
       Route::get    ('users/{habravel_id}',     "$ctl@getUser");
       // Fallback.
       Route::get    ('{habravel_any}',          "$ctl@getPostByURL");
-      Route::get    ('',                        "$ctl@getList");
+      Route::get    ('',                        "$ctl@getBestListWeek");
     });
   }
 
@@ -100,11 +118,17 @@ class Core extends \Illuminate\Support\ServiceProvider {
       }
     });
 
+    //if (App::isLocal()) {
+    //  Event::listen('illuminate.query', function ($sql) { var_dump($sql); ob_flush(); });
+    //}
+
     /***
       Article Routes
      ***/
 
     Event::listen('habravel.out.post', function (Post $post) {
+      ++$post->views;
+      $post->save();
       return View::make('habravel::post', compact('post'));
     });
 
@@ -124,14 +148,17 @@ class Core extends \Illuminate\Support\ServiceProvider {
       return View::make('habravel::edit', compact('post', 'errors'));
     });
 
-    Event::listen('habravel.out.list', function (Query $query) {
-      $limit = 10;
-      $query->take($limit)->skip(Core::input('page') * $limit);
-    }, CUSTOMIZE);
+    Event::listen('habravel.out.preview', function (Post $post, MessageBag $errors = null) {
+      return View::make('habravel::preview', compact('post', 'errors'));
+    });
 
     Event::listen('habravel.out.list', function (Query $query) {
+      $query->forPage(Core::input('page'), 10);
+    }, CUSTOMIZE);
+
+    Event::listen('habravel.out.list', function (Query $query, array $vars) {
       $posts = $query->get();
-      return View::make('habravel::posts', compact('posts'));
+      return View::make('habravel::posts', compact('posts') + $vars);
     });
 
     Event::listen('habravel.check.post', function (Post $post, array $input, MessageBag $errors) {
@@ -149,7 +176,8 @@ class Core extends \Illuminate\Support\ServiceProvider {
       $post->markup = array_get($input, 'markup');
       $post->text = array_get($input, 'text');
       $post->listTime = $post->listTime ?: new Carbon;
-      $post->publishTime = $post->publishTime ?: new Carbon;
+      $post->pubTime = $post->pubTime ?: new Carbon;
+      $post->format();
     });
 
     Event::listen('habravel.check.post', function (Post $post, array $input, MessageBag $errors) {
@@ -162,9 +190,34 @@ class Core extends \Illuminate\Support\ServiceProvider {
       $post->save();
     });
 
+    Event::listen('habravel.check.vote', function ($up, Post $post) {
+      if (!$post->poll) {
+        App::aobrt(400, 'This post cannot be voted for.');
+      } elseif ($user = Core::user()) {
+        if (!$user->hasFlag('can.vote.'.($up ? 'up' : 'down'))) {
+          App::abort(403);
+        }
+      } else {
+        App::abort(401);
+      }
+    }, VALIDATE);
+
+    Event::listen('habravel.save.vote', function ($up, Post $post) {
+      $vote = new PollVote;
+      $vote->poll = $post->poll;
+      $vote->option = $up + 0;
+      $vote->user = Core::user()->id;
+      $vote->ip = \Request::getClientIp();
+      $vote->save();
+    });
+
     /***
       User Routes
      ***/
+
+    Event::listen('habravel.out.user', function (User $user) {
+      return View::make('habravel::user', compact('user'));
+    });
 
     Event::listen('habravel.out.login', function (array $input) {
       $vars = array(
@@ -190,6 +243,7 @@ class Core extends \Illuminate\Support\ServiceProvider {
       $user->email = array_get($input, 'email');
       $haser = Config::get('habravel::g.password');
       $user->password = call_user_func($haser, array_get($input, 'password'));
+      $user->regIP = \Request::getClientIp();
     });
 
     Event::listen('habravel.check.register', function (User $user, array $input, MessageBag $errors) {
@@ -199,7 +253,6 @@ class Core extends \Illuminate\Support\ServiceProvider {
     }, LAST);
 
     Event::listen('habravel.save.register', function (User $user) {
-      $user->regIP = \Request::getClientIp();
       $user->save();
     });
 
@@ -257,6 +310,19 @@ class Core extends \Illuminate\Support\ServiceProvider {
         $list = trans('habravel::g.edit.placeholders');
         $view->textPlaceholder = $list[array_rand($list)];
       }
+    });
+
+    View::composer('habravel::part.post', function ($view) {
+      $post = $view->post;
+
+      $post->parent = $post->parentPost()->first();
+      $post->author = $post->author()->first();
+      $post->tags = $post->tags()->get();
+
+      isset($view->classes) or $view->classes = '';
+      $post->sourceURL and $view->classes .= ' hvl-post-sourced';
+      $post->score > 0 and $view->classes .= ' hvl-post-above';
+      $post->score < 0 and $view->classes .= ' hvl-post-below';
     });
   }
 }

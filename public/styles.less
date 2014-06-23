@@ -1,5 +1,5 @@
 // Sprites are generated with https://draeton.github.io/stitches/
-@import 'sprites.css';
+@import 'sprites.less';
 
 @Segoe: "Segoe UI", Calibri, "Trebuchet MS", sans-serif;
 @Gothic: "Century Gothic", Futura, @Segoe;
@@ -7,6 +7,7 @@
 @5px:   0.3125em;
 @8px:   0.5em;
 @10px:  0.625em;
+@14px:  0.875em;
 @18px:  1.125em;
 @20px:  1.25em;
 @24px:  1.5em;
@@ -62,6 +63,20 @@
   font-family: @Gothic;
   font-weight: normal;
   margin: 0 0 1.5em;
+}
+
+.hvl-h2 {
+  font-size: @24px;
+  font-family: @Gothic;
+  font-weight: normal;
+  margin: 2.5em 0 1.5em;
+}
+
+.hvl-h3 {
+  font-size: @20px;
+  font-family: @Gothic;
+  font-weight: normal;
+  margin: 2.5em 0 1.5em;
 }
 
 .hvl-splitter {
@@ -146,6 +161,20 @@
 }
 
 /***
+  User Account Pages
+ ***/
+
+.hvl-puser-header {
+  overflow: auto;
+  margin-bottom: 2em;
+}
+
+.hvl-puser-avatar {
+  float: left;
+  margin-right: 2em;
+}
+
+/***
   Post Composition Page
  ***/
 
@@ -202,4 +231,41 @@
 
 .hvl-pedit-poll-add {
   margin-top: 0.7em;
+}
+
+/***
+  Post View Page
+ ***/
+
+.hvl-post-header {
+  margin: 1em 0 2em;
+  font-size: @14px;
+
+  p + p { margin-top: 1em; }
+  .hvl-post-author a { color: gray; }
+}
+
+.hvl-tag {
+  background: #df5240;
+  padding: @5px @10px;
+  color: white;
+}
+
+.hvl-post-footer {
+  color: gray;
+  margin-top: 1.5em;
+
+  i { margin-bottom: -0.2em; }
+}
+
+.hvl-post-footer-ctl {
+  margin: 0 1.5em 0 0;
+
+  > i:first-child { margin-right: 0.2em; }
+}
+
+.hvl-post-footer-score {
+  a { padding: 0.2em; }
+  a:hover .hvl-i-upg { .hvl-i-up; }
+  a:hover .hvl-i-downg { .hvl-i-down; }
 }

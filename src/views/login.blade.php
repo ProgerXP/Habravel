@@ -6,7 +6,7 @@
 @extends('habravel::page')
 
 @section('content')
-  @include('habravel::part.uheader')
+  @include('habravel::part.uheader', array(), array())
 
   <h1 class="hvl-h1">{{{ trans('habravel::g.login.title') }}}</h1>
 

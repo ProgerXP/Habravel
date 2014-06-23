@@ -10,7 +10,9 @@
     "homepage": "http://proger.me"
   }],
   "require": {
-    "illuminate/support": "4.2.*"
+    "illuminate/support": "4.2.*",
+    "proger/datefmt": "@dev",
+    "michelf/php-markdown": "1.*"
   },
   "autoload": {
     "classmap": [

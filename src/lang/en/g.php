@@ -49,6 +49,21 @@ return array(
     ),
   ),
 
+  'post'                  => array(
+    'source'              => 'Original source',
+    'author'              => 'Post author',
+    'views'               => 'View count, all time',
+    'comments'            => 'Number of comments',
+    'pubTime'             => 'Publication date',
+  ),
+
+  'posts'                 => array(
+    'title'               => 'Articles',
+    'bestDay'             => 'Best of the day',
+    'bestWeek'            => 'Best of the week',
+    'bestEver'            => 'Best articles, ever',
+  ),
+
   /***
     User Routes
    ***/
@@ -73,5 +88,12 @@ return array(
     'password'            => 'Choose your very secret password',
     'passwordHint'        => '(6 symbols or longer):',
     'submit'              => 'Register',
+  ),
+
+  'user'                  => array(
+    'posts'               => 'Articles',
+    'comments'            => 'Comments',
+    'regTime'             => 'Joined at: ',
+    'loginTime'           => 'Last seen around: ',
   ),
 );

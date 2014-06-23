@@ -8,10 +8,10 @@ class PollOption extends BaseModel {
   );
 
   function poll() {
-    return $this->hasOne('Poll', 'id', 'poll');
+    return $this->hasOne(NS.'Poll', 'id', 'poll');
   }
 
   function votes() {
-    return $this->hasMany('PollVote', 'id', 'option');
+    return $this->hasMany(NS.'PollVote', 'id', 'option');
   }
 }

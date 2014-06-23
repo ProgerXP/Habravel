@@ -9,7 +9,7 @@
     <a href="{{{ $root }}}/~" class="hvl-uheader-icon"><i class="hvl-i-laravel24"></i></a>
 
     @if ($pageUser)
-      <a href="{{{ $pageUser->url() }}}">{{ $pageUser->nameHTML() }}</a>
+      {{ $pageUser->nameHTML() }}
       <a href="{{{ $root }}}/logout">{{{ trans('habravel::g.uheader.logout') }}}</a>
     @else
       <a href="{{{ $root }}}/~">{{{ trans('habravel::g.uheader.login') }}}</a>

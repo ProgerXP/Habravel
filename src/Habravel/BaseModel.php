@@ -36,4 +36,12 @@ class BaseModel extends \Eloquent {
     preg_match_all('~\[([^\]]+)]~u', $this->flags, $matches);
     return $matches ? $matches[1] : array();
   }
+
+  function save(array $options = array()) {
+    if (parent::save($options)) {
+      return true;
+    } else {
+      App::abort(500, 'Cannot save '.get_class().'.');
+    }
+  }
 }

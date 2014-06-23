@@ -9,26 +9,47 @@ class Controller extends BaseController {
     Article Routes
    ***/
 
-  function getPost($id = 0) {
-    if ($post = Post::find($id)) {
-      return Event::until('habravel.out.post', array($post));
-    } else {
-      App::abort(404);
+  // GET input:
+  // - sort=score         - optional
+  // - desc=0/1           - optional; reverse sorting; defaults to 0
+  // - tags[]             - optional; array of tag captions
+  function getList(Query $query = null, $title = '') {
+    $query or $query = Post::orderBy('listTime', 'desc');
+
+    if ($sort = Core::input('sort') and in_array($sort, Post::$sortable)) {
+      $query->orders = array();
+      $query->orderBy($sort, Core::input('desc') ? 'desc' : 'asc');
     }
+
+    if ($tags = (array) Core::input('tags')) {
+      $query
+        ->join('tags', 'posts.id', '=', 'tags.id')
+        ->whereIn('tags.caption', $tags);
+    }
+
+    $title or $title = trans('habravel::g.posts.title');
+    $vars = compact('title');
+    return Event::until('habravel.out.list', array($query, &$vars));
   }
 
-  function getPostByURL($url = '') {
-    $post = Post::where('url', '=', $url)->first();
-    return $this->getPost($post);
+  function getBestList($interval = 0, $title = '') {
+    $query = Post::orderBy('score', 'desc');
+
+    if ($interval > 0) {
+      $query->where('listTime', '>=', \Carbon\Carbon::now()
+        ->subDays($interval)
+        ->subHours(2));
+    }
+
+    return $this->getList($query, $title ?: trans('habravel::g.posts.bestEver'));
   }
 
-  function getList(Query $query = null) {
-    $query or $query = Post
-      ::join('tags', 'posts.id', '=', 'tags.id')
-      ->where('listTime', '>=', time() - 25 * 3600)
-      ->orderBy('score', 'desc');
+  function getBestListDay() {
+    return $this->getBestList(1, trans('habravel::g.posts.bestDay'));
+  }
 
-    return Event::until('habravel.out.list', array($query));
+  function getBestListWeek() {
+    return $this->getBestList(7, trans('habravel::g.posts.bestWeek'));
   }
 
   function getListByTags($tags = '') {
@@ -40,6 +61,19 @@ class Controller extends BaseController {
       ->orderBy('listTime', 'desc');
 
     return $this->getList($query);
+  }
+
+  function getPost($id = 0) {
+    if ($post = Post::find($id)) {
+      return Event::until('habravel.out.post', array($post));
+    } else {
+      App::abort(404);
+    }
+  }
+
+  function getPostByURL($url = '') {
+    $post = Post::where('url', '=', $url)->first();
+    return $this->getPost($post);
   }
 
   function getEditPost($id = 0) {
@@ -59,6 +93,7 @@ class Controller extends BaseController {
   }
 
   // POST input:
+  // - preview=0/1        - optional; if given renders the post instead of saving
   // - id=123             - optional; updates existing post or creates new one
   // - parent=567         - optional; parent post ID (for comments)
   // - url=foo/bar        - optional; relative document URL
@@ -67,7 +102,7 @@ class Controller extends BaseController {
   // - caption=...        - required
   // - markup=uversewiki  - required
   // - text=...           - required; post body in given markup
-  // - tags[]=tag         - optional; array of tag names
+  // - tags[]=tag         - optional; array of tag captions
   // - polls[]            - optional; array of caption, multiple (0/1)
   // - options[][]        - array of caption, one array per each item in polls
   function postEditPost() {
@@ -84,12 +119,35 @@ class Controller extends BaseController {
     $errors = new MessageBag;
     Event::until('habravel.check.post', array($post, &$input, $errors));
 
-    if (count($errors)) {
+    if (!empty($input['preview'])) {
+      count($errors) or $errors = null;
+      return Event::until('habravel.out.preview', array($post, $errors));
+    } elseif (count($errors)) {
       $input = array_intersect_key($input, Post::rules());
       foreach ($input as $key => $value) { $post->$key = $value; }
       return Event::until('habravel.out.edit', array($post, $errors));
     } else {
       Event::fire('habravel.save.post', array($post));
+      return Redirect::to($post->url());
+    }
+  }
+
+  function getVoteUpByURL($url = '') {
+    return $this->outVote(true, Post::where('url', '=', $url));
+  }
+
+  function getVoteDownByURL($url = '') {
+    return $this->outVote(false, Post::where('url', '=', $url));
+  }
+
+  protected function outVote($up, Post $post = null) {
+    static::checkCSRF();
+    $post or App::abort(404);
+
+    if ($resp = Event::until('habravel.check.vote', array(&$up, $post))) {
+      return $res;
+    } else {
+      Event::fire('habravel.save.vote', array(&$up, $post));
       return Redirect::to($post->url());
     }
   }

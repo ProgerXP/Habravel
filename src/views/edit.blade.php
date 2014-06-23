@@ -1,6 +1,6 @@
 <?php /*
   - $errors           - optional; MessageBag instance
-  - $post             - Post instance with loaded $post->tags relationship
+  - $post             - Post instance
   - $markups          - array of markup names ('githubmarkdown', 'uversewiki', etc.)
   - $textPlaceholder  - default text for textarea
 */?>
@@ -8,32 +8,34 @@
 @extends('habravel::page')
 
 @section('content')
-  @include('habravel::part.uheader')
-
-  <div class="hvl-pedit-topbtn">
-    <noscript>{{{ trans('habravel::g.needJS') }}}</noscript>
-
-    <button class="hvl-btn hvl-pedit-preview">
-      <i class="hvl-i-zoom"></i> {{{ trans('habravel::g.edit.preview') }}}
-    </button>
-
-    <button class="hvl-btn hvl-pedit-expand">
-      <i class="hvl-i-expand"></i> {{{ trans('habravel::g.edit.expand') }}}
-    </button>
-  </div>
-
-  <h1 class="hvl-h1">
-    @if ($post->id)
-      {{{ $post->caption }}}
-    @else
-      {{{ trans('habravel::g.edit.titleNew') }}}
-    @endif
-  </h1>
+  @include('habravel::part.uheader', array(), array())
 
   <form action="{{{ Habravel\Core::url() }}}/edit" method="post" class="hvl-splitter hvl-pedit-form"
         data-post="{{{ $post->toJSON() }}}" data-sqa="wr - ^$body{pb} -">
     <input type="hidden" name="csrf" value="{{{ csrf_token() }}}">
     <input type="hidden" name="id" value="{{{ $post['id'] }}}">
+
+    <aside>
+      <div class="hvl-pedit-topbtn">
+        <noscript>{{{ trans('habravel::g.needJS') }}}</noscript>
+
+        <button class="hvl-btn hvl-pedit-preview" type="submit" name="preview" value="1">
+          <i class="hvl-i-zoom"></i> {{{ trans('habravel::g.edit.preview') }}}
+        </button>
+
+        <button class="hvl-btn hvl-pedit-expand" type="button">
+          <i class="hvl-i-expand"></i> {{{ trans('habravel::g.edit.expand') }}}
+        </button>
+      </div>
+
+      <h1 class="hvl-h1">
+        @if ($post->id)
+          {{{ $post->caption }}}
+        @else
+          {{{ trans('habravel::g.edit.titleNew') }}}
+        @endif
+      </h1>
+    </aside>
 
     <div class="hvl-splitter-left">
       @if (isset($errors))
@@ -137,7 +139,7 @@
                 rows="20" cols="50"
                 placeholder="{{{ $textPlaceholder }}}">{{{ $post->text }}}</textarea>
     </div>
-  </div>
+  </form>
 
   @foreach ($markups as $markup)
     <aside class="hvl-pedit-markup-text" data-markup="{{{ $markup }}}">

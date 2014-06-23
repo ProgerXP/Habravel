@@ -51,11 +51,11 @@ class User extends BaseModel {
   }
 
   function posts() {
-    return $this->hasMany('Post', 'author');
+    return $this->hasMany(NS.'Post', 'author');
   }
 
   function votes() {
-    return $this->hasMany('PollVote', 'id', 'user');
+    return $this->hasMany(NS.'PollVote', 'id', 'user');
   }
 
   function flags() {
@@ -73,16 +73,13 @@ class User extends BaseModel {
     return Core::url().'/~'.urlencode($this->name);
   }
 
-  function nameHTML() {
-    $name = e($this->name);
-    $score = $this->score;
+  function avatarURL() {
+    $url = $this->avatar ?: 'default.png';
+    return asset('packages/proger/habravel/avatars').'/'.$url;
+  }
 
-    if ($score != 0) {
-      $sign = $score > 0 ? '+' : '-';
-      $name .= ' <sup>'.$sign.((int) $this->score).'</sup>';
-    }
-
-    $class = $score == 0 ? 'zero' : ($score > 0 ? 'above' : 'below');
-    return "<span class=\"hvl-uname hvl-uname-$class\">$name</span>";
+  function nameHTML(array $options = array()) {
+    $options += array('link' => true);
+    return \View::make('habravel::part.user', array('user' => $this) + $options);
   }
 }

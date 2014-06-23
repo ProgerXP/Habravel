@@ -2,6 +2,8 @@
 return array(
   // Root URL for routes relative to Laravel's app URL. No trailing '/'.
   'rootURL'               => '',
+  // CSRF token regeneration timeout in seconds.
+  'csrfRegenTime'         => 3 * 3600,
 
   // Read an input variable or all variables if $name is omitted.
   'input'                 => function ($name = null, $default = null) {
