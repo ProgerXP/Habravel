@@ -32,6 +32,7 @@ $(document.body)
       area.prependTo(form.find('.hvl-split-right'))
     }
 
+    area.focus()
     Sqaline.resizeAll(form)
   })
 
@@ -75,7 +76,9 @@ $(document.body)
     show && el.show()
   })
   .on('click', '.hvl-markup-text', function (e) {
-    if (e.target === e.currentTarget || e.target.tagName == 'PRE') {
+    if ($(e.target).is('h3:first-child')) {
+      $(this).toggleClass('hvl-markup-text-opposite')
+    } else if (e.target === e.currentTarget || e.target.tagName == 'PRE') {
       $(e.currentTarget).fadeOut('fast')
     }
   })

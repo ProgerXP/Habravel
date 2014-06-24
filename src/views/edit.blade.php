@@ -56,7 +56,8 @@
       <div class="hvl-pedit-ctl">
         <p>
           <input class="hvl-input" name="caption" value="{{{ $post->caption }}}"
-                 placeholder="{{{ trans("habravel::g.edit.caption") }}}">
+                 placeholder="{{{ trans("habravel::g.edit.caption") }}}"
+                 required="required" autofocus="autofocus">
         </p>
       </div>
 
@@ -130,7 +131,7 @@
 
     <div class="hvl-split-right">
       <textarea class="hvl-input hvl-pedit-text" name="text" data-sqa="wr - w$body{pb}"
-                rows="20" cols="50"
+                rows="20" cols="50" tabindex="2" required="required"
                 placeholder="{{{ $textPlaceholder }}}">{{{ $post->text }}}</textarea>
     </div>
   </form>
