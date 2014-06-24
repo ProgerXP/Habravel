@@ -71,11 +71,11 @@ class Post extends BaseModel {
   }
 
   function author() {
-    return $this->hasOne(NS.'User', 'id', 'author');
+    return User::find($this->author);
   }
 
   function children() {
-    return $this->hasMany(__CLASS__, 'parent', 'id');
+    return static::whereParent($this->id);
   }
 
   function childCount() {
@@ -83,15 +83,15 @@ class Post extends BaseModel {
   }
 
   function top() {
-    return $this->belongsTo(__CLASS__, 'id', 'top');
+    return static::find($this->top);
   }
 
   function parentPost() {
-    return $this->belongsTo(__CLASS__, 'id', 'parent');
+    return static::find($this->parent);
   }
 
   function poll() {
-    return $this->hasOne(NS.'Poll', 'id', 'poll');
+    return Poll::find($this->poll);
   }
 
   function tags() {

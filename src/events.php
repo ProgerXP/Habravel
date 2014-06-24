@@ -17,7 +17,11 @@ App::error(function ($e) {
 });
 
 if (App::isLocal()) {
-  Event::listen('illuminate.query', function ($sql) {
+  Event::listen('illuminate.query', function ($sql, array $bindings) {
+    foreach ($bindings as $binding) {
+      $sql = preg_replace('/\?/', $binding, $sql, 1);
+    }
+
     file_put_contents('/1.sql', "$sql\n", FILE_APPEND | LOCK_EX);
   });
 }
@@ -121,7 +125,7 @@ Event::listen('habravel.save.reply', function (Post $post) {
 }, VALIDATE);
 
 Event::listen('habravel.save.reply', function (Post $post, Post $parent) {
-  $post->url = $parent->url.'#cmt-%ID%';
+  $post->url = strtok($parent->url, '#').'#cmt-%ID%';
   $post->save();
 });
 
@@ -235,8 +239,8 @@ Event::listen('habravel.out.list', function (Query $query) {
 View::composer('habravel::post', function ($view) {
   $post = $view->post;
 
-  if (!isset($post->children)) {
-    $all = Post::with('author')->whereTop($post->id)->orderBy('listTime')->get()->all();
+  if (!isset($post->_children)) {
+    $all = Post::whereTop($post->id)->orderBy('listTime')->get()->all();
     array_unshift($all, $post);
     $byID = $tree = array();
 
@@ -245,8 +249,8 @@ View::composer('habravel::post', function ($view) {
       $byID[$post->id] = $post;
     }
 
-    foreach ($all as $i => $post) {
-      $post->children = (array) array_get($tree, $post->id);
+    foreach ($all as $post) {
+      $post->_children = (array) array_get($tree, $post->id);
     }
   }
 });
@@ -306,9 +310,9 @@ View::composer('habravel::part.markups', function ($view) {
 View::composer('habravel::part.post', function ($view) {
   $post = $view->post;
 
-  $post->parent = $post->parentPost()->first();
-  $post->author = $post->author()->first();
-  $post->tags = $post->tags()->get();
+  $post->_parent = $post->parentPost();
+  $post->_author = $post->author();
+  $post->_tags = $post->tags()->get();
 
   isset($view->classes) or $view->classes = '';
   $post->sourceURL and $view->classes .= ' hvl-post-sourced';
@@ -318,7 +322,10 @@ View::composer('habravel::part.post', function ($view) {
 
 View::composer('habravel::part.comment', function ($view) {
   $post = $view->post;
-  isset($post->authorModel) or $post->authorModel = $post->author()->first();
+
+  isset($post->_top) or $post->_top = $post->top();
+  isset($post->_author) or $post->_author = $post->author();
+  isset($post->_children) or $post->_children = array();
 });
 
 View::composer('habravel::page', function ($view) {

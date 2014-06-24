@@ -85,7 +85,6 @@ class Core extends \Illuminate\Support\ServiceProvider {
       Route::get    ('tags/{habravel_any}',     "$ctl@getListByTags");
       Route::get    ('up/{habravel_id}',        "$ctl@getVoteUpByURL");
       Route::get    ('down/{habravel_id}',      "$ctl@getVoteDownByURL");
-      Route::get    ('reply/{habravel_id}',     "$ctl@getReply");
       Route::post   ('reply',                   "$ctl@postReply");
       Route::get    ('best/day',                "$ctl@getBestListDay");
       Route::get    ('best/week',               "$ctl@getBestListWeek");
@@ -98,6 +97,8 @@ class Core extends \Illuminate\Support\ServiceProvider {
       Route::post   ('register',                "$ctl@postRegister");
       Route::get    ('~',                       "$ctl@getCurrentUser");
       Route::get    ('~{habravel_user}',        "$ctl@getUserByName");
+      Route::get    ('~{habravel_user}/posts',  "$ctl@getUserByNamePosts");
+      Route::get    ('~{habravel_user}/comments', "$ctl@getUserByNameComments");
       Route::get    ('users/{habravel_id}',     "$ctl@getUser");
       // Fallback.
       Route::get    ('{habravel_any}',          "$ctl@getPostByURL");

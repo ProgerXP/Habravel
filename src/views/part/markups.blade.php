@@ -17,7 +17,7 @@
       <u class="hvl-markup-help">?</u>
 
       <aside class="hvl-markup-text">
-        {{ trans("habravel::g.markups.{$markup}_help") }}
+        @include("habravel::markup.{$markup}", array(), array())
       </aside>
     @endforeach
   @endif

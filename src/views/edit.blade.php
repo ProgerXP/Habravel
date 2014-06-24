@@ -11,7 +11,7 @@
   @include('habravel::part.uheader', array(), array())
 
   <form action="{{{ Habravel\Core::url() }}}/edit" method="post" class="hvl-pedit-form"
-        data-post="{{{ $post->toJSON() }}}">
+        data-hvl-post="{{{ $post->toJSON() }}}">
     <input type="hidden" name="_token" value="{{{ csrf_token() }}}">
     <input type="hidden" name="id" value="{{{ $post->id }}}">
 

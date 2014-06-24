@@ -1,6 +1,6 @@
 <?php /*
   - $classes          - optional; string of space-separated CSS classes
-  - $post             - Post instance with loaded author, tags
+  - $post             - Post instance with loaded _author, _tags
 */?>
 
 <?php $root = url(Habravel\Core::url())?>
@@ -16,11 +16,15 @@
       @endif
 
       <span title="{{{ trans('habravel::g.post.author') }}}">
-        {{ $post->author->nameHTML() }}
+        <a href="{{{ $post->_author->url() }}}" class="hvl-post-author-avatar">
+          <img src="{{{ $post->_author->avatarURL() }}}" alt="{{{ $post->_author->name }}}">
+        </a>
+
+        {{ $post->_author->nameHTML() }}
       </span>
     </p>
 
-    @include('habravel::part.tags', array('tags' => $post->tags()), array())
+    @include('habravel::part.tags', array('tags' => $post->_tags), array())
   </header>
 
   <article class="hvl-markedup">

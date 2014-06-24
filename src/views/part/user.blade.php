@@ -10,7 +10,7 @@
 @endif
   class="hvl-uname hvl-uname-{{{ $user->score == 0 ? 'zero' : ($user->score > 0 ? 'above' : 'below') }}}">
 
-  {{{ $user->name }}}
+  <i>{{{ $user->name }}}</i>
 
   @if ($user->score)
     <sup>

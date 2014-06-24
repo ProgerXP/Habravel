@@ -9,6 +9,18 @@ class Controller extends BaseController {
     Article Routes
    ***/
 
+  function getUserByNamePosts($name = '', $comments = true) {
+    $user = User::whereName($name)->first();
+    $user or App::abort(404);
+    $query = Post::whereAuthor($user->id)->orderBy('listTime', 'desc');
+    $comments ? $query->whereNotNull('top') : $query->whereTop(null);
+    return $this->getList($query);
+  }
+
+  function getUserByNameComments($name = '') {
+    return $this->getUserByNamePosts($name, true);
+  }
+
   // GET input:
   // - sort=score         - optional
   // - desc=0/1           - optional; reverse sorting; defaults to 0

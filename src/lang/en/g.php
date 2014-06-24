@@ -5,9 +5,7 @@ return array(
 
   'markups'               => array(
     'githubmarkdown'      => 'Markdown',
-    'githubmarkdown_help' => '<a href="https://help.github.com/articles/github-flavored-markdown">Docs</a>',
     'uversewiki'          => 'UverseWiki',
-    'uversewiki_help'     => '<a href="http://uverse.i-forge.net/wiki/">Docs</a>',
   ),
 
   'uheader'               => array(
@@ -56,7 +54,6 @@ return array(
     'commentCount'        => 'Number of comments',
     'pubTime'             => 'Publication date',
     'comments'            => 'Comments',
-    'reply'               => 'Reply',
   ),
 
   'ncomment'              => array(
@@ -65,6 +62,11 @@ return array(
     'text'                => 'What\'s on your mind?',
     'submit'              => 'Post',
     'preview'             => 'Preview',
+  ),
+
+  'comment'               => array(
+    'reply'               => 'Reply',
+    'anchor'              => 'Link to this comment',
   ),
 
   'posts'                 => array(

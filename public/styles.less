@@ -90,7 +90,7 @@
 }
 
 .hvl-h3 {
-  font-size: @20px;
+  font-size: 1.1875em;
   font-family: @Gothic;
   font-weight: normal;
   margin: 2.5em 0 1.5em;
@@ -118,8 +118,14 @@
 }
 
 .hvl-uname {
+  i { font-style: normal; }
   &.hvl-uname-above sup { color: #0b7200; }
-  &.hvl-uname-below { text-decoration: line-through; }
+  &.hvl-uname-below i { text-decoration: line-through; }
+
+  .hvl-root a&, .hvl-root u& {
+    &:hover { text-decoration: none; }
+    &:hover i { text-decoration: underline; }
+  }
 }
 
 /***
@@ -175,9 +181,26 @@
   + * { margin-top: 2em; }
 }
 
+.hvl-markup-help {
+  padding: 0.1em 0.2em;
+}
+
 .hvl-markup-text {
   display: none;
-  + * { margin-left: 1em; }
+  background: white;
+  border: 1px dashed #ccc;
+  box-shadow: 1px 1px 7px #9C9C9C;
+  max-height: 50%;
+  width: 30em;
+  overflow: auto;
+  position: fixed;
+  right: 2%;
+  top: 3%;
+
+  + * { margin-left: 0.8em; }
+  .hvl-markedup { padding: 1em; }
+  h3 { margin: 0; }
+  pre { white-space: pre-wrap; font-size: @14px; }
 }
 
 .hvl-markedup {
@@ -274,7 +297,15 @@
   font-size: @14px;
 
   p + p { margin-top: 1em; }
-  .hvl-post-author a { color: gray; }
+}
+
+.hvl-post-author a { color: gray; }
+
+.hvl-post-author-avatar {
+  margin-right: 0.5em;
+
+  .hvl-root &:hover { text-decoration: none; }
+  img { height: 20px; vertical-align: top; }
 }
 
 .hvl-tag {
@@ -287,6 +318,7 @@
   color: gray;
   margin-top: 1.5em;
 
+  a { color: gray; text-decoration: underline; }
   i { margin-bottom: -0.2em; }
 }
 
@@ -316,7 +348,7 @@
     width: 100%;
   }
 
-  .hvl-btn:last-child { float: right; }
+  .hvl-ncomment-btns { text-align: center; }
 }
 
 .hvl-ncomment-preview {
@@ -329,17 +361,17 @@
 
   position: relative;
   min-height: 50px;   // for avatar.
-  margin: 2em 0;
-  padding: 0 6px 10px 76px;
+  margin-top: 2em;
+  padding: 0 0 0 70px;
 
-  &:target {
+  &:target > .hvl-markedup {
     background: repeat url(stripew.png);
   }
 }
 
 .hvl-comment-avatar {
-  left: 6px;
-  top: 8px;
+  left: 0;
+  margin-top: 6px;
   position: absolute;
 
   img { width: 50px; }
@@ -355,5 +387,14 @@
 }
 
 .hvl-comment-children {
-  margin-left: 3em;
+  > .hvl-ncomment {
+    margin-top: 2em;
+
+    > .hvl-h2, > .hvl-h3 { display: none; }
+    textarea { height: 10em; }
+  }
+}
+
+.hvl-comment-top {
+  margin: 0 0 0.7em -70px;
 }

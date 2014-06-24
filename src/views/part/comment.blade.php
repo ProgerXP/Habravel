@@ -1,11 +1,19 @@
 <?php /*
-  - $post             - Post instance, the comment itself, with authorModel
-  - $post->children   - array of Post instances, replies to this comment
+  - $post             - Post instance, the comment itself, with _author
+  - $post->-children  - array of Post instances, replies to this comment
+  - $hasTop           - optional; true to display original post title; needs _top
+  - $hasReply         - optional; true to display Reply button
 */?>
 
 <div class="hvl-comment" id="cmt-{{{ $post->id }}}">
-  <a href="{{{ $post->authorModel->url() }}}" class="hvl-comment-avatar" title="{{{ $post->authorModel->name }}}">
-    <img src="{{{ $post->authorModel->avatarURL() }}}" alt="{{{ $post->authorModel->name }}}">
+  @if (!empty($hasTop))
+    <div class="hvl-comment-top">
+      <a href="{{{ $post->_top->url() }}}">{{{ $post->_top->caption }}}</a>
+    </div>
+  @endif
+
+  <a href="{{{ $post->_author->url() }}}" class="hvl-comment-avatar" title="{{{ $post->_author->name }}}">
+    <img src="{{{ $post->_author->avatarURL() }}}" alt="{{{ $post->_author->name }}}">
   </a>
 
   <article class="hvl-markedup">
@@ -13,23 +21,24 @@
   </article>
 
   <footer class="hvl-comment-footer">
-    <a class="hvl-btn" href="{{{ Habravel\Core::url() }}}/reply/{{{ $post->id }}}">
-      {{{ trans('habravel::g.post.reply') }}}</a>
+    @if (!empty($hasReply))
+      <u class="hvl-btn" data-hvl-reply-to="{{{ $post->id }}}">
+        {{{ trans('habravel::g.comment.reply') }}}</u>
+    @endif
 
-    {{ $post->authorModel->nameHTML() }}
+    {{ $post->_author->nameHTML() }}
 
     <time pubdate="pubdate" datetime="{{{ date(DATE_ATOM, $post->pubTime->timestamp) }}}">
-      <a href="{{{ $post->url() }}}">
+      <a href="{{{ $post->url() }}}" title="{{{ trans('habravel::g.comment.anchor') }}}">
         {{{ DateFmt::Format('AGO-AT[s-d]IF>2[d# m__ y##]AT h#m', $post->pubTime->timestamp, Config::get('application.language')) }}}
       </a>
     </time>
   </footer>
 
-  @if ($post->children)
-    <div class="hvl-comment-children">
-      @foreach ($post->children as $comment)
-        @include('habravel::part.comment', array('post' => $comment), array())
-      @endforeach
-    </div>
-  @endif
+  {{-- Must be present because Reply button puts reply form here. --}}
+  <div class="hvl-comment-children">
+    @foreach ($post->_children as $post)
+      @include('habravel::part.comment')
+    @endforeach
+  </div>
 </div>

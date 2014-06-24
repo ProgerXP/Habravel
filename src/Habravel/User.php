@@ -51,11 +51,11 @@ class User extends BaseModel {
   }
 
   function posts() {
-    return $this->hasMany(NS.'Post', 'author');
+    return Post::whereAuthor($this->id);
   }
 
   function votes() {
-    return $this->hasMany(NS.'PollVote', 'id', 'user');
+    return PollVote::whereUser($this->id);
   }
 
   function flags() {

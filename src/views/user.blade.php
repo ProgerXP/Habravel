@@ -35,8 +35,10 @@
     ({{{ $commentCount }}})
   </h2>
 
+  <?php $prevTop = null?>
   @foreach ($comments as $post)
-    @include('habravel::part.comment', compact('post'), array())
+    @include('habravel::part.comment', compact('post'), array('hasTop' => $prevTop !== $post->top))
+    <?php $prevTop = $post->top?>
   @endforeach
 
   @if ($commentCount > count($comments))

@@ -65,6 +65,44 @@ $(document.body)
   })
 
   /***
+    Other Pages
+   ***/
+
+  .on('click', '.hvl-markup-help', function (e) {
+    var el = $(e.currentTarget).next('.hvl-markup-text')
+    var show = !el.is(':visible')
+    $('.hvl-markup-text').hide()
+    show && el.show()
+  })
+  .on('click', '.hvl-markup-text', function (e) {
+    if (e.target === e.currentTarget || e.target.tagName == 'PRE') {
+      $(e.currentTarget).fadeOut('fast')
+    }
+  })
+
+  .on('click', '[data-hvl-reply-to]', function (e) {
+    var parentID = parseInt($(e.currentTarget).attr('data-hvl-reply-to'))
+    var form = $('.hvl-ncomment:last')
+
+    if (!isNaN(parentID) && form.length) {
+      var comment = $(e.currentTarget).parents('.hvl-comment:first')
+      var dest = comment.find('> .hvl-comment-children')
+      dest.length || (dest = $('<div class="hvl-comment-children">').appendTo(comment))
+
+      var area = dest.find('> .hvl-ncomment textarea')
+      if (area.length) {
+        return area.focus()
+      }
+
+      form.clone()
+        .append('<input type="hidden" name="parent" value="' + parentID + '">')
+        .prependTo(dest)
+        .find('textarea').focus().end()
+        .find('.hvl-markup-text').hide().end()
+    }
+  })
+
+  /***
     Splitter
    ***/
 

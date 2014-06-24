@@ -15,10 +15,10 @@ class Poll extends BaseModel {
   );
 
   function options() {
-    return $this->hasMany(NS.'PollOption', 'poll', 'id');
+    return PollOption::wherePoll($this->id);
   }
 
   function votes() {
-    return $this->hasMany(NS.'PollVote', 'id', 'poll');
+    return PollVote::wherePoll($this->id);
   }
 }
