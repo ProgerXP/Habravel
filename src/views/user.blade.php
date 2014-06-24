@@ -1,8 +1,53 @@
 <?php /*
   - $user             - User instance
+  - $posts            - array of Post
+  - $postCount        - integer
+  - $comments         - array of Post
+  - $commentCount     - integer
 */?>
 
 @extends('habravel::page')
+
+@section('posts')
+  <h2 class="hvl-h2">
+    <a href="{{{ $user->url() }}}/posts">{{{ trans('habravel::g.user.posts') }}}</a>
+    ({{{ $postCount }}})
+  </h2>
+
+  @foreach ($posts as $post)
+    @include('habravel::part.postTitle', compact('post'), array('level' => 3, 'link' => true))
+    @include('habravel::part.post', compact('post'), array())
+  @endforeach
+
+  @if ($postCount > count($posts))
+    <p>
+      <a href="{{{ $user->url() }}}/posts">
+        {{{ trans('habravel::g.user.allPosts') }}}
+      </a>
+      &rarr;
+    </p>
+  @endif
+@stop
+
+@section('comments')
+  <h2 class="hvl-h2">
+    <a href="{{{ $user->url() }}}/comments">{{{ trans('habravel::g.user.comments') }}}</a>
+    ({{{ $commentCount }}})
+  </h2>
+
+  @foreach ($comments as $post)
+    @include('habravel::part.comment', compact('post'), array())
+  @endforeach
+
+  @if ($commentCount > count($comments))
+    <p>
+      <a href="{{{ $user->url() }}}/comments">
+        {{{ trans('habravel::g.user.allComments') }}}
+      </a>
+      &rarr;
+    </p>
+  @endif
+@stop
 
 @section('content')
   @include('habravel::part.uheader', array(), array())
@@ -27,41 +72,18 @@
       @endif
     </header>
 
-    <?php $posts = $user->posts()->get()?>
-    <?php $comments = array()?>
-
-    @if ($posts and $comments)
-      <div class="hvl-split">
-        <div class="hvl-split-left">
-          <h2 class="hvl-h2">{{{ trans('habravel::g.user.posts') }}}</h2>
-
-          @foreach ($posts as $post)
-            @include('habravel::part.postTitle', compact('post'), array('level' => 3, 'link' => true))
-            @include('habravel::part.post', compact('post'), array())
-          @endforeach
-        </div>
-
-        <div class="hvl-split-right">
-          <h2 class="hvl-h2">{{{ trans('habravel::g.user.comments') }}}</h2>
-
-          @foreach ($comments as $post)
-            @include('habravel::part.comment', compact('post'), array())
-          @endforeach
-        </div>
+    @if (count($posts) and count($comments))
+      <div class="hvl-split-left">
+        @yield('posts')
       </div>
-    @elseif ($posts)
-      <h2 class="hvl-h2">{{{ trans('habravel::g.user.posts') }}}</h2>
 
-      @foreach ($posts as $post)
-        @include('habravel::part.postTitle', compact('post'), array('level' => 3, 'link' => true))
-        @include('habravel::part.post', compact('post'), array())
-      @endforeach
-    @elseif ($comments)
-      <h2 class="hvl-h2">{{{ trans('habravel::g.user.comments') }}}</h2>
-
-      @foreach ($comments as $post)
-        @include('habravel::part.comment', compact('post'), array())
-      @endforeach
+      <div class="hvl-split-right">
+        @yield('comments')
+      </div>
+    @elseif (count($posts))
+      @yield('posts')
+    @elseif (count($comments))
+      @yield('comments')
     @endif
   </div>
 @stop

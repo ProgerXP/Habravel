@@ -7,8 +7,9 @@ class Post extends BaseModel {
                            'listTime', 'pubTime', 'created_at');
 
   protected static $rules = array(
+    'top'                 => 'exists:posts,id',
     'parent'              => 'exists:posts,id',
-    'url'                 => 'max:50|regex:~^[\w\d\\-]+$~|unique:post,url',
+    'url'                 => 'max:50|regex:~^[\w\d\\-]+$~|unique:posts,url',
     'author'              => 'required|exists:users,id',
     'poll'                => 'exists:poll,id',
     'score'               => '%INT%',
@@ -16,9 +17,9 @@ class Post extends BaseModel {
     'info'                => '',
     'sourceURL'           => 'regex:~^https?://~',
     'sourceName'          => 'required_with:sourceURL|max:100',
-    'caption'             => 'required|min:2|max:150',
+    'caption'             => 'max:150',
     'markup'              => 'required',
-    'text'                => 'required|min:10',
+    'text'                => 'required',
     'flags'               => '',
     'listTime'            => 'date|after:2000-01-01',
     'pubTime'             => 'date|after:2000-01-01',
@@ -26,6 +27,7 @@ class Post extends BaseModel {
 
   protected $attributes = array(
     'id'                  => 0,
+    'top'                 => null,  // Post id or null; for comments.
     'parent'              => null,  // Post id or null; for comments.
     'url'                 => '',
     'author'              => 0,     // User id.
@@ -76,6 +78,14 @@ class Post extends BaseModel {
     return $this->hasMany(__CLASS__, 'parent', 'id');
   }
 
+  function childCount() {
+    return static::whereTop($this->id)->count();
+  }
+
+  function top() {
+    return $this->belongsTo(__CLASS__, 'id', 'top');
+  }
+
   function parentPost() {
     return $this->belongsTo(__CLASS__, 'id', 'parent');
   }
@@ -102,7 +112,7 @@ class Post extends BaseModel {
   protected function finishSave(array $options) {
     parent::finishSave($options);
 
-    $url = str_replace('#', $this->id, $this->url);
+    $url = str_replace('%ID%', $this->id, $this->url);
     if ($url !== $this->url) {
       $this->url = $url;
       $this->save();

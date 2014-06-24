@@ -10,21 +10,21 @@
 @section('content')
   @include('habravel::part.uheader', array(), array())
 
-  <form action="{{{ Habravel\Core::url() }}}/edit" method="post" class="hvl-splitter hvl-pedit-form"
-        data-post="{{{ $post->toJSON() }}}" data-sqa="wr - ^$body{pb} -">
-    <input type="hidden" name="csrf" value="{{{ csrf_token() }}}">
-    <input type="hidden" name="id" value="{{{ $post['id'] }}}">
+  <form action="{{{ Habravel\Core::url() }}}/edit" method="post" class="hvl-pedit-form"
+        data-post="{{{ $post->toJSON() }}}">
+    <input type="hidden" name="_token" value="{{{ csrf_token() }}}">
+    <input type="hidden" name="id" value="{{{ $post->id }}}">
 
     <aside>
       <div class="hvl-pedit-topbtn">
         <noscript>{{{ trans('habravel::g.needJS') }}}</noscript>
 
         <button class="hvl-btn hvl-pedit-preview" type="submit" name="preview" value="1">
-          <i class="hvl-i-zoom"></i> {{{ trans('habravel::g.edit.preview') }}}
+          <i class="hvl-i-zoomw"></i> {{{ trans('habravel::g.edit.preview') }}}
         </button>
 
         <button class="hvl-btn hvl-pedit-expand" type="button">
-          <i class="hvl-i-expand"></i> {{{ trans('habravel::g.edit.expand') }}}
+          <i class="hvl-i-expandw"></i> {{{ trans('habravel::g.edit.expand') }}}
         </button>
       </div>
 
@@ -37,31 +37,25 @@
       </h1>
     </aside>
 
-    <div class="hvl-splitter-left">
+    <div class="hvl-split-left">
       @if (isset($errors))
         {{ HTML::ul($errors->all(), array('class' => 'hvl-errors')) }}
       @endif
 
-      @if ($markups)
+      @if (count($markups) > 1)
         <div class="hvl-pedit-ctl">
-          <p class="hvl-pedit-ctl-caption">
+          <div class="hvl-pedit-ctl-caption">
             <b>{{{ trans('habravel::g.edit.markup') }}}</b>
-            @foreach ($markups as $markup)
-              <label>
-                <input type="radio" name="markup" value="{{{ $markup }}}"
-                       @if ($post['markup'] === $markup) checked="checked" @endif>
-                {{{ trans("habravel::g.markups.$markup") }}}
-              </label>
-
-              <u class="hvl-pedit-markup-help">?</u>
-            @endforeach
-          </p>
+            @include('habravel::part.markups', compact('markup'), array('current' => $post->markup))
+          </div>
         </div>
+      @else
+        @include('habravel::part.markups', compact('markup'), array())
       @endif
 
       <div class="hvl-pedit-ctl">
         <p>
-          <input class="hvl-input" name="caption" value="{{{ $post['caption'] }}}"
+          <input class="hvl-input" name="caption" value="{{{ $post->caption }}}"
                  placeholder="{{{ trans("habravel::g.edit.caption") }}}">
         </p>
       </div>
@@ -72,12 +66,12 @@
         </p>
 
         <p>
-          <input class="hvl-input" name="sourceName" value="{{{ $post['sourceName'] }}}"
+          <input class="hvl-input" name="sourceName" value="{{{ $post->sourceName }}}"
                  placeholder="{{{ trans("habravel::g.edit.sourceName") }}}">
         </p>
 
         <p>
-          <input class="hvl-input" name="sourceURL" value="{{{ $post['sourceURL'] }}}"
+          <input class="hvl-input" name="sourceURL" value="{{{ $post->sourceURL }}}"
                  placeholder="{{{ trans("habravel::g.edit.sourceURL") }}}">
         </p>
       </div>
@@ -134,16 +128,10 @@
       </div>
     </div>
 
-    <div class="hvl-splitter-right">
-      <textarea class="hvl-input hvl-pedit-text" name="text" data-sqa="wr - -"
+    <div class="hvl-split-right">
+      <textarea class="hvl-input hvl-pedit-text" name="text" data-sqa="wr - w$body{pb}"
                 rows="20" cols="50"
                 placeholder="{{{ $textPlaceholder }}}">{{{ $post->text }}}</textarea>
     </div>
   </form>
-
-  @foreach ($markups as $markup)
-    <aside class="hvl-pedit-markup-text" data-markup="{{{ $markup }}}">
-      {{ trans("habravel::g.markups.{$markup}_help") }}
-    </aside>
-  @endforeach
 @stop

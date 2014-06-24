@@ -1,23 +1,35 @@
 <?php /*
-  - $post             - Post instance, the comment itself
+  - $post             - Post instance, the comment itself, with authorModel
+  - $post->children   - array of Post instances, replies to this comment
 */?>
 
-<article class="hvl-comment">
-  <a href="{{{ $post->author->url() }}}" class="hvl-comment-avatar" title="{{{ $post->author->name }}}">
-    <img src="{{{ $post->author->avatarURL() }}}" alt="{{{ $post->author->name }}}">
+<div class="hvl-comment" id="cmt-{{{ $post->id }}}">
+  <a href="{{{ $post->authorModel->url() }}}" class="hvl-comment-avatar" title="{{{ $post->authorModel->name }}}">
+    <img src="{{{ $post->authorModel->avatarURL() }}}" alt="{{{ $post->authorModel->name }}}">
   </a>
 
-  {{ $post->html }}
+  <article class="hvl-markedup">
+    {{ $post->html }}
+  </article>
 
   <footer class="hvl-comment-footer">
-    <a class="hvl-btn" href="{{{ Habravel\Core::url() }}}/reply/{{{ $post->parent()->url }}}">
-      {{{ trans('habravel::g.comment.reply') }}}
-    </a>
+    <a class="hvl-btn" href="{{{ Habravel\Core::url() }}}/reply/{{{ $post->id }}}">
+      {{{ trans('habravel::g.post.reply') }}}</a>
 
-    {{ $comment->author->nameHTML() }}
+    {{ $post->authorModel->nameHTML() }}
 
     <time pubdate="pubdate" datetime="{{{ date(DATE_ATOM, $post->pubTime->timestamp) }}}">
-      {{{ DateFmt::Format('AGO-AT[s-db]IF>2[d# m__ y##]AT h#m', $post->pubTime->timestamp, Config::get('application.language')) }}}
+      <a href="{{{ $post->url() }}}">
+        {{{ DateFmt::Format('AGO-AT[s-d]IF>2[d# m__ y##]AT h#m', $post->pubTime->timestamp, Config::get('application.language')) }}}
+      </a>
     </time>
   </footer>
-</article>
+
+  @if ($post->children)
+    <div class="hvl-comment-children">
+      @foreach ($post->children as $comment)
+        @include('habravel::part.comment', array('post' => $comment), array())
+      @endforeach
+    </div>
+  @endif
+</div>

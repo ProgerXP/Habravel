@@ -15,7 +15,7 @@
   @endif
 
   <form action="{{{ Habravel\Core::url() }}}/register" method="post" class="hvl-form-list">
-    <input type="hidden" name="csrf" value="{{{ csrf_token() }}}">
+    <input type="hidden" name="_token" value="{{{ csrf_token() }}}">
 
     <p class="hvl-form-list-label">
       <b>{{{ trans('habravel::g.register.name') }}}</b>

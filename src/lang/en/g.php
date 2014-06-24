@@ -26,8 +26,8 @@ return array(
     'titleNew'            => 'Article Composition',
     'preview'             => 'Preview',
     'expand'              => 'Expand editor',
-    'markup'              => 'Markup Style:',
-    'caption'             => 'Article Title',
+    'markup'              => 'Markup style:',
+    'caption'             => 'Article title',
     'source'              => 'Source link (e.g. if a translation):',
     'sourceName'          => 'Source name (author)',
     'sourceURL'           => 'Source URL',
@@ -53,8 +53,18 @@ return array(
     'source'              => 'Original source',
     'author'              => 'Post author',
     'views'               => 'View count, all time',
-    'comments'            => 'Number of comments',
+    'commentCount'        => 'Number of comments',
     'pubTime'             => 'Publication date',
+    'comments'            => 'Comments',
+    'reply'               => 'Reply',
+  ),
+
+  'ncomment'              => array(
+    'title'               => 'Post a Comment',
+    'markup'              => 'Markup style:',
+    'text'                => 'What\'s on your mind?',
+    'submit'              => 'Post',
+    'preview'             => 'Preview',
   ),
 
   'posts'                 => array(
@@ -92,7 +102,9 @@ return array(
 
   'user'                  => array(
     'posts'               => 'Articles',
+    'allPosts'            => 'There are more articles',
     'comments'            => 'Comments',
+    'allComments'         => 'Even more comments',
     'regTime'             => 'Joined at: ',
     'loginTime'           => 'Last seen around: ',
   ),

@@ -80,6 +80,7 @@ class User extends BaseModel {
 
   function nameHTML(array $options = array()) {
     $options += array('link' => true);
-    return \View::make('habravel::part.user', array('user' => $this) + $options);
+    $html = \View::make('habravel::part.user', array('user' => $this) + $options);
+    return preg_replace('~\s+</~u', '</', $html);
   }
 }

@@ -17,7 +17,7 @@
   @endif
 
   <form action="{{{ Habravel\Core::url() }}}/login" method="post" class="hvl-form-list">
-    <input type="hidden" name="csrf" value="{{{ csrf_token() }}}">
+    <input type="hidden" name="_token" value="{{{ csrf_token() }}}">
     <input type="hidden" name="back" value="{{{ $backURL }}}">
 
     <p class="hvl-form-list-label">

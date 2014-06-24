@@ -132,12 +132,36 @@ class Controller extends BaseController {
     }
   }
 
-  function getVoteUpByURL($url = '') {
-    return $this->outVote(true, Post::where('url', '=', $url));
+  // POST input:
+  // - preview=0/1        - optional
+  // - parent=123         - required
+  // - markup=uversewiki  - required
+  // - text=...           - required
+  function postReply() {
+    $input = Core::input();
+    $parent = Post::find($input['parent']);
+    $parent or App::abort(404, 'Parent post not found.');
+    $post = new Post;
+
+    $errors = new MessageBag;
+    Event::until('habravel.check.reply', array($post, &$input, $errors, $parent));
+
+    if (count($errors)) {
+      return \Response::json($errors->all(), 400);
+    } elseif (!empty($input['preview'])) {
+      return $post->html;
+    } else {
+      Event::fire('habravel.save.reply', array($post, $parent));
+      return Redirect::to($post->url());
+    }
   }
 
-  function getVoteDownByURL($url = '') {
-    return $this->outVote(false, Post::where('url', '=', $url));
+  function getVoteUpByURL($id = 0) {
+    return $this->outVote(true, Post::find($id));
+  }
+
+  function getVoteDownByURL($id = 0) {
+    return $this->outVote(false, Post::find($id));
   }
 
   protected function outVote($up, Post $post = null) {

@@ -67,6 +67,7 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
     Schema::create('posts', function ($table) {
       $table->increments('id');
       $table->timestamps();
+      $table->integer('top')->unsigned()->nullable()->default(null);
       $table->integer('parent')->unsigned()->nullable()->default(null);
       $table->string('url', 50);
       $table->integer('author')->unsigned();
@@ -90,6 +91,9 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
       $table->index(array('score', 'listTime'));
       $table->index('listTime');
       $table->index('sourceName');
+
+      $table->foreign('top')->references('id')->on('posts')
+        ->onUpdate('cascade')->onDelete('cascade');
 
       $table->foreign('parent')->references('id')->on('posts')
         ->onUpdate('cascade')->onDelete('cascade');

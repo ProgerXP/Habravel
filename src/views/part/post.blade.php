@@ -1,12 +1,11 @@
 <?php /*
   - $classes          - optional; string of space-separated CSS classes
   - $post             - Post instance with loaded author, tags
-  - $commentCount     - total number of comments for this post
 */?>
 
 <?php $root = url(Habravel\Core::url())?>
 
-<article class="hvl-post {{{ $classes }}}">
+<div class="hvl-post {{{ $classes }}}">
   <header class="hvl-post-header">
     <p class="hvl-post-author">
       @if ($post->sourceURL)
@@ -24,7 +23,9 @@
     @include('habravel::part.tags', array('tags' => $post->tags()), array())
   </header>
 
-  {{ $post->html }}
+  <article class="hvl-markedup">
+    {{ $post->html }}
+  </article>
 
   <footer class="hvl-post-footer">
     <span class="hvl-post-footer-ctl hvl-post-footer-score">
@@ -38,10 +39,10 @@
       {{{ $post->views }}}
     </span>
 
-    @if (!empty($commentCount))
-      <span class="hvl-post-footer-ctl" title="{{{ trans('habravel::g.post.comments') }}}">
+    @if ($count = $post->childCount())
+      <span class="hvl-post-footer-ctl" title="{{{ trans('habravel::g.post.commentCount') }}}">
         <i class="hvl-i-commentsg"></i>
-        {{{ $commentCount }}}
+        <a href="{{{ $post->url() }}}#comments">{{{ $count }}}</a>
       </span>
     @endif
 
@@ -51,4 +52,4 @@
       {{{ DateFmt::Format('AGO-AT[s-d]IF>7[d# m__ y##]', $post->pubTime->timestamp, Config::get('application.language')) }}}
     </time>
   </footer>
-</article>
+</div>
