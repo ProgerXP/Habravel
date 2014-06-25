@@ -1,6 +1,6 @@
 <?php /*
   - $classes          - optional; string of space-separated CSS classes
-  - $post             - Post instance with loaded _author, _tags
+  - $post             - Post instance with loaded x_author, x_tags
   - $canEdit          - boolean
 */?>
 
@@ -13,15 +13,15 @@
         <a href="{{{ $post->sourceURL }}}" title="{{{ trans('habravel::g.post.source') }}}">
           {{{ $post->sourceName }}}
         </a>
-        &larr;
+        <span class="hvl-post-author-separ">&larr;</span>
       @endif
 
       <span title="{{{ trans('habravel::g.post.author') }}}">
-        <a href="{{{ $post->_author->url() }}}" class="hvl-post-author-avatar">
-          <img src="{{{ $post->_author->avatarURL() }}}" alt="{{{ $post->_author->name }}}">
+        <a href="{{{ $post->x_author->url() }}}" class="hvl-post-author-avatar">
+          <img src="{{{ $post->x_author->avatarURL() }}}" alt="{{{ $post->x_author->name }}}">
         </a>
 
-        {{ $post->_author->nameHTML() }}
+        {{ $post->x_author->nameHTML() }}
       </span>
 
       @if (!empty($canEdit))
@@ -31,7 +31,7 @@
       @endif
     </p>
 
-    @include('habravel::part.tags', array('tags' => $post->_tags), array())
+    @include('habravel::part.tags', array('tags' => $post->x_tags), array())
   </header>
 
   <article class="hvl-markedup">

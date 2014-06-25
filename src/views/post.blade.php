@@ -1,7 +1,7 @@
 <?php /*
   - $classes          - optional; string of space-separated CSS classes
   - $post             - Post instance with loaded author, tags
-  - $post->_children   - array of Post, root comments for this post
+  - $post->x_children - array of Post, root comments for this post
 */?>
 
 @extends('habravel::page')
@@ -14,18 +14,18 @@
 
   <a id="comments"></a>
 
-  @if ($post->_children)
+  @if ($post->x_children)
     <div class="hvl-comments">
       <h2 class="hvl-h2">{{{ trans('habravel::g.post.comments') }}}</h2>
 
-      @foreach ($post->_children as $comment)
+      @foreach ($post->x_children as $comment)
         @include('habravel::part.comment', array('post' => $comment, 'hasReply' => true), array())
       @endforeach
     </div>
   @endif
 
   <form action="{{{ Habravel\Core::url() }}}/reply" method="post" class="hvl-ncomment">
-    <?php $tag = $post->_children ? 'h3' : 'h2'?>
+    <?php $tag = $post->x_children ? 'h3' : 'h2'?>
     <{{ $tag }} class="hvl-{{ $tag }}">{{{ trans('habravel::g.ncomment.title') }}}</{{ $tag }}>
 
     <input type="hidden" name="_token" value="{{{ csrf_token() }}}">

@@ -23,4 +23,10 @@
       </div>
     @endif
   @endforeach
+
+  @if (!count($posts))
+    <p class="hvl-none">{{{ trans('habravel::g.posts.none') }}}</p>
+  @endif
+
+  @include('habravel::part.pages', compact('perPage', 'page', 'morePages', 'pageURL'), array())
 @stop

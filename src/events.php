@@ -83,12 +83,18 @@ Event::listen('habravel.out.preview', function (Post $post, MessageBag $errors =
   return View::make('habravel::preview', compact('post', 'errors'));
 });
 
-Event::listen('habravel.out.list', function (Query $query) {
-  $query->forPage(Core::input('page'), 10);
+Event::listen('habravel.out.list', function (Query $query, array &$vars) {
+  $vars['page'] = Core::input('page') ?: 1;
+  $vars['perPage'] = Core::input('limit') ?: 10;
+  $url = \Request::fullUrl();
+  $vars['pageURL'] = $url.(strrchr($url, '?') ? '&' : '?').'page=';
+
+  $query->forPage(Core::input('page'), $vars['perPage']);
 }, CUSTOMIZE);
 
-Event::listen('habravel.out.list', function (Query $query, array $vars) {
+Event::listen('habravel.out.list', function (Query $query, array &$vars) {
   $posts = $query->get();
+  $vars['morePages'] = $vars['perPage'] <= count($posts);
   return View::make('habravel::posts', compact('posts') + $vars);
 });
 
@@ -100,8 +106,18 @@ Event::listen('habravel.check.post', function (Post $post, array $input, Message
   }
 
   if (isset($input['sourceURL'])) {
-    $url = $post->sourceURL = $input['sourceURL'];
-    preg_match('~^https?://~', $url) or $post->sourceURL = 'http://'.ltrim($url, '\\/:');
+    $url = $post->sourceURL = (string) $input['sourceURL'];
+    if ($url !== '' and !preg_match('~^https?://~', $url)) {
+      $post->sourceURL = 'http://'.ltrim($url, '\\/:');
+    }
+  }
+
+  if (isset($input['tags'])) {
+    $post->x_tags = array_map(function ($caption) {
+      $tag = new Tag;
+      $tag->caption = trim($caption);
+      return $tag;
+    }, (array) $input['tags']);
   }
 
   $post->author or $post->author = $user->id;
@@ -109,8 +125,8 @@ Event::listen('habravel.check.post', function (Post $post, array $input, Message
   isset($input['caption']) and $post->caption = $input['caption'];
   isset($input['markup']) and $post->markup = $input['markup'];
   isset($input['text']) and $post->text = $input['text'];
-  isset($input['listTime']) and $post->listTime = new Carbon;
-  isset($input['pubTime']) and $post->pubTime = new Carbon;
+  isset($post->listTime) or $post->listTime = new Carbon;
+  isset($post->pubTime) or $post->pubTime = new Carbon;
   $post->format();
 
   if (!$post->id or ($post->caption === '' and $post->getOriginal('caption') !== '')) {
@@ -129,8 +145,30 @@ Event::listen(
 );
 
 Event::listen('habravel.save.post', function (Post $post) {
-  $post->url or $post->url = 'posts/%ID%';
-  $post->save();
+  \DB::transaction(function () use ($post) {
+    $post->url or $post->url = 'posts/%ID%';
+    $post->save();
+
+    if (isset($post->x_tags)) {
+      $captions = array();
+      foreach ($post->x_tags as $tag) {
+        $captions[] = $tag->caption;
+        try {
+          $tag->save();
+        } catch (\Illuminate\Database\QueryException $e) {
+          // Ignore duplicate entry error.
+        }
+      }
+
+      $ids = array();
+      foreach (Tag::whereIn('caption', $captions)->lists('id') as $id) {
+        $records[] = array('post_id' => $post->id, 'tag_id' => $id);
+      }
+
+      \DB::table('post_tag')->where('post_id', '=', $post->id)->delete();
+      \DB::table('post_tag')->insert($records);
+    }
+  });
 });
 
 Event::listen('habravel.check.reply', function (Post $post, array $input, MessageBag $errors, Post $parent) {
@@ -267,7 +305,7 @@ Event::listen('habravel.out.list', function (Query $query) {
 View::composer('habravel::post', function ($view) {
   $post = $view->post;
 
-  if (!isset($post->_children)) {
+  if (!isset($post->x_children)) {
     $all = Post::whereTop($post->id)->orderBy('listTime')->get()->all();
     array_unshift($all, $post);
     $byID = $tree = array();
@@ -278,7 +316,7 @@ View::composer('habravel::post', function ($view) {
     }
 
     foreach ($all as $post) {
-      $post->_children = (array) array_get($tree, $post->id);
+      $post->x_children = (array) array_get($tree, $post->id);
     }
   }
 });
@@ -303,6 +341,9 @@ View::composer('habravel::edit', function ($view) {
     $list = trans('habravel::g.edit.placeholders');
     $view->textPlaceholder = $list[array_rand($list)];
   }
+
+  isset($view->tags) or $view->tags = Tag::take(14)->lists('caption');
+  isset($view->post->x_tags) or $view->post->x_tags = $view->post->tags()->get();
 });
 
 View::composer('habravel::user', function ($view) {
@@ -338,9 +379,9 @@ View::composer('habravel::part.markups', function ($view) {
 View::composer('habravel::part.post', function ($view) {
   $post = $view->post;
 
-  $post->_parent = $post->parentPost();
-  $post->_author = $post->author();
-  $post->_tags = $post->tags()->get();
+  isset($post->x_parent) or $post->x_parent = $post->parentPost();
+  isset($post->x_author) or $post->x_author = $post->author();
+  isset($post->x_tags) or $post->x_tags = $post->tags()->get();
 
   isset($view->classes) or $view->classes = '';
   $post->sourceURL and $view->classes .= ' hvl-post-sourced';
@@ -353,9 +394,9 @@ View::composer('habravel::part.post', function ($view) {
 View::composer('habravel::part.comment', function ($view) {
   $post = $view->post;
 
-  isset($post->_top) or $post->_top = $post->top();
-  isset($post->_author) or $post->_author = $post->author();
-  isset($post->_children) or $post->_children = array();
+  isset($post->x_top) or $post->x_top = $post->top();
+  isset($post->x_author) or $post->x_author = $post->author();
+  isset($post->x_children) or $post->x_children = array();
 
   isset($view->canEdit) or $view->canEdit = ($user = Core::user() and $post->isEditable($user));
 });

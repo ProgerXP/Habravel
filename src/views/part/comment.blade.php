@@ -1,7 +1,7 @@
 <?php /*
-  - $post             - Post instance, the comment itself, with _author
+  - $post             - Post instance, the comment itself, with x_author
   - $post->-children  - array of Post instances, replies to this comment
-  - $hasTop           - optional; true to display original post title; needs _top
+  - $hasTop           - optional; true to display original post title; needs x_top
   - $hasReply         - optional; true to display Reply button
   - $canEdit          - boolean
 */?>
@@ -9,12 +9,12 @@
 <div class="hvl-comment" id="cmt-{{{ $post->id }}}" data-hvl-post-id="{{{ $post->id }}}">
   @if (!empty($hasTop))
     <div class="hvl-comment-top">
-      <a href="{{{ $post->_top->url() }}}">{{{ $post->_top->caption }}}</a>
+      <a href="{{{ $post->x_top->url() }}}">{{{ $post->x_top->caption }}}</a>
     </div>
   @endif
 
-  <a href="{{{ $post->_author->url() }}}" class="hvl-comment-avatar" title="{{{ $post->_author->name }}}">
-    <img src="{{{ $post->_author->avatarURL() }}}" alt="{{{ $post->_author->name }}}">
+  <a href="{{{ $post->x_author->url() }}}" class="hvl-comment-avatar" title="{{{ $post->x_author->name }}}">
+    <img src="{{{ $post->x_author->avatarURL() }}}" alt="{{{ $post->x_author->name }}}">
   </a>
 
   <article class="hvl-markedup">
@@ -33,7 +33,7 @@
       </u>
     @endif
 
-    {{ $post->_author->nameHTML() }}
+    {{ $post->x_author->nameHTML() }}
 
     <time pubdate="pubdate" datetime="{{{ date(DATE_ATOM, $post->pubTime->timestamp) }}}">
       <a href="{{{ $post->url() }}}" title="{{{ trans('habravel::g.comment.anchor') }}}">
@@ -44,7 +44,7 @@
 
   {{-- Must be present because Reply button puts reply form here. --}}
   <div class="hvl-comment-children">
-    @foreach ($post->_children as $post)
+    @foreach ($post->x_children as $post)
       @include('habravel::part.comment')
     @endforeach
   </div>

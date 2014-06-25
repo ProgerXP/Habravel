@@ -38,10 +38,21 @@ class BaseModel extends \Eloquent {
   }
 
   function save(array $options = array()) {
-    if (parent::save($options)) {
-      return true;
-    } else {
-      App::abort(500, 'Cannot save '.get_class().'.');
+    $attrs = array();
+    foreach ($this->attributes as $key => &$value) {
+      if (substr($key, 0, 2) === 'x_') {
+        $attrs[$key] = &$value;
+        unset($this->attributes[$key]);
+      }
+    }
+
+    try {
+      $res = parent::save($options);
+      $this->attributes += $attrs;
+      return $res or App::abort(500, 'Cannot save '.get_class().'.');
+    } catch (\Exception $e) {
+      $this->attributes += $attrs;
+      throw $e;
     }
   }
 }

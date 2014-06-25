@@ -65,6 +65,52 @@ $(document.body)
     return false
   })
 
+  .on('click', '.hvl-pedit-tags u, .hvl-pedit-tags a', function (e) {
+    var el = $(e.currentTarget)
+    var to = el.parents('.hvl-pedit-tags:first').find('.hvl-pedit-tags-to')
+
+    function update() {
+      to.find('[name="tags[]"]').remove()
+      to.find('a').each(function () {
+        $('<input type="hidden" name="tags[]">').val($(this).text()).appendTo(to)
+      })
+    }
+
+    if (el.is('.hvl-pedit-tags-new')) {
+      $('<input class="hvl-input">').prependTo(to).focus()
+        .blur(function () {
+          var tag = $.trim($(this).val())
+          if (tag === '') {
+            $(this).remove()
+          } else {
+            var url = el.parents('form:first').attr('action')
+              .replace(/\/[^\/]*$/, '/tags/' + encodeURIComponent(tag))
+
+            $('<a class="hvl-pedit-tags-custom">')
+              .attr('href', url)
+              .text(tag)
+              .replaceAll(this)
+
+            update()
+          }
+        })
+        .keypress(function (e) {
+          switch (e.keyCode) {
+          case 27:  $(this).val('')
+          case 13:  return this.blur()
+          }
+        })
+    } else if (el.parent().is('.hvl-pedit-tags-to')) {
+      el.prependTo(to.nextAll('.hvl-pedit-tags-from'))
+      update()
+    } else {
+      el.prependTo(to)
+      update()
+    }
+
+    return false
+  })
+
   /***
     Other Pages
    ***/

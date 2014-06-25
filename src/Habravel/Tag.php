@@ -20,4 +20,8 @@ class Tag extends BaseModel {
   function posts() {
     return $this->belongsToMany(NS.'Post');
   }
+
+  function url() {
+    return Core::url().'/tags/'.urlencode($this->caption);
+  }
 }

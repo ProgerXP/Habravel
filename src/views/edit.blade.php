@@ -1,8 +1,9 @@
 <?php /*
   - $errors           - optional; MessageBag instance
-  - $post             - Post instance
+  - $post             - Post instance with x_tags
   - $markups          - array of markup names ('githubmarkdown', 'uversewiki', etc.)
   - $textPlaceholder  - default text for textarea
+  - $tags             - array of string
 */?>
 
 @extends('habravel::page')
@@ -77,10 +78,33 @@
         </p>
       </div>
 
-      <div class="hvl-pedit-ctl hvl-pedit-tags">
+      <div class="hvl-pedit-ctl hvl-pedit-tags" data-sqa="wr mnh: Math.max(mnh, h)">
         <p class="hvl-pedit-ctl-caption">
           <b>{{{ trans('habravel::g.edit.tags') }}}</b>
           <noscript>{{{ trans('habravel::g.needJS') }}}</noscript>
+        </p>
+
+        <p class="hvl-pedit-tags-to">
+          @foreach ($post->x_tags as $tag)
+            @if (false !== $index = array_search($tag->caption, $tags))
+              <?php unset($tags[$index])?>
+              <a target="_blank" href="{{{ $tag->url() }}}">{{{ $tag->caption }}}</a>
+            @else
+              <a class="hvl-pedit-tags-custom" target="_blank" href="{{{ $tag->url() }}}">{{{ $tag->caption }}}</a>
+            @endif
+          @endforeach
+
+          <span class="hvl-pedit-tags-none">{{{ trans('habravel::g.edit.tagHelp') }}}</span>
+        </p>
+
+        <p class="hvl-pedit-tags-from">
+          @foreach ($tags as $tag)
+            <a target="_blank" href="{{{ Habravel\Core::url().'/tags/'.urlencode($tag) }}}">
+              {{{ $tag }}}
+            </a>
+          @endforeach
+
+          <u class="hvl-pedit-tags-new">{{{ trans('habravel::g.edit.newTag') }}}</u>
         </p>
       </div>
 

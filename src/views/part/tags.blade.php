@@ -1,12 +1,10 @@
 <?php /*
-  - $tags             - array of Tag instances
+  - $tags             - array of Tag
 */?>
 
 <p class="hvl-tags">
   @foreach ($tags as $tag)
-    <a href="{{{ $root }}}/tags/{{{ $tag->caption }}}"
-       class="hvl-tag-{{{ $tag->type }}}">
-      {{{ $tag->caption }}}
-    </a>
+    <a href="{{{ $tag->url() }}}" class="hvl-tag hvl-tag-{{{ $tag->type }}}">
+      {{{ $tag->caption }}}</a>
   @endforeach
 </p>

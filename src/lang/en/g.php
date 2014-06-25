@@ -8,6 +8,11 @@ return array(
     'uversewiki'          => 'UverseWiki',
   ),
 
+  'pages'                 => array(
+    'back'                => 'Back',
+    'next'                => 'Forward',
+  ),
+
   'uheader'               => array(
     'logout'              => 'Logout',
     'login'               => 'Who are you?',
@@ -30,6 +35,8 @@ return array(
     'sourceName'          => 'Source name (author)',
     'sourceURL'           => 'Source URL',
     'tags'                => 'Tags:',
+    'tagHelp'             => 'Click on a tag below to assign',
+    'newTag'              => '+ custom tag',
     'polls'               => 'Polls:',
     'poll'                => 'Poll question',
     'pollSingle'          => 'Single choice',
@@ -83,6 +90,7 @@ return array(
     'bestDay'             => 'Best of the day',
     'bestWeek'            => 'Best of the week',
     'bestEver'            => 'Best articles, ever',
+    'none'                => 'End of the road. No posts here.',
   ),
 
   /***
