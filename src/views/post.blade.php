@@ -27,6 +27,8 @@
   <form action="{{{ Habravel\Core::url() }}}/reply" method="post" class="hvl-ncomment">
     <?php $tag = $post->_children ? 'h3' : 'h2'?>
     <{{ $tag }} class="hvl-{{ $tag }}">{{{ trans('habravel::g.ncomment.title') }}}</{{ $tag }}>
+
+    <input type="hidden" name="_token" value="{{{ csrf_token() }}}">
     <input type="hidden" name="parent" value="{{{ $post->id }}}">
 
     <b>{{{ trans('habravel::g.ncomment.markup') }}}</b>

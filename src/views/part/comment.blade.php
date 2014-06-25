@@ -3,9 +3,10 @@
   - $post->-children  - array of Post instances, replies to this comment
   - $hasTop           - optional; true to display original post title; needs _top
   - $hasReply         - optional; true to display Reply button
+  - $canEdit          - boolean
 */?>
 
-<div class="hvl-comment" id="cmt-{{{ $post->id }}}">
+<div class="hvl-comment" id="cmt-{{{ $post->id }}}" data-hvl-post-id="{{{ $post->id }}}">
   @if (!empty($hasTop))
     <div class="hvl-comment-top">
       <a href="{{{ $post->_top->url() }}}">{{{ $post->_top->caption }}}</a>
@@ -22,8 +23,14 @@
 
   <footer class="hvl-comment-footer">
     @if (!empty($hasReply))
-      <u class="hvl-btn" data-hvl-reply-to="{{{ $post->id }}}">
+      <u class="hvl-comment-reply-btn">
         {{{ trans('habravel::g.comment.reply') }}}</u>
+    @endif
+
+    @if (!empty($canEdit))
+      <u class="hvl-comment-edit-btn">
+        {{{ trans('habravel::g.post.edit') }}}
+      </u>
     @endif
 
     {{ $post->_author->nameHTML() }}

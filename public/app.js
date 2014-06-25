@@ -70,38 +70,61 @@ $(document.body)
    ***/
 
   .on('click', '.hvl-markup-help', function (e) {
-    var el = $(e.currentTarget).next('.hvl-markup-text')
-    var show = !el.is(':visible')
-    $('.hvl-markup-text').hide()
-    show && el.show()
+    var url = $(e.currentTarget).attr('href')
+    var el = $('[data-hvl-markup-text="' + url + '"]')
+    $('.hvl-markup-text').remove()
+
+    el.length || $.ajax({
+      url: url,
+      dataType: 'text',
+      success: function (html) {
+        $('<aside class="hvl-markup-text">').html(html).appendTo('body').show()
+          .attr('data-hvl-markup-text', url)
+      },
+    })
+
+    return false
   })
   .on('click', '.hvl-markup-text', function (e) {
     if ($(e.target).is('h3:first-child')) {
       $(this).toggleClass('hvl-markup-text-opposite')
     } else if (e.target === e.currentTarget || e.target.tagName == 'PRE') {
-      $(e.currentTarget).fadeOut('fast')
+      $(e.currentTarget).remove()
     }
   })
 
-  .on('click', '[data-hvl-reply-to]', function (e) {
-    var parentID = parseInt($(e.currentTarget).attr('data-hvl-reply-to'))
+  .on('click', '.hvl-comment-reply-btn, .hvl-comment-edit-btn', function (e) {
+    var comment = $(e.currentTarget).parents('[data-hvl-post-id]:first')
+    var parentID = parseInt(comment.attr('data-hvl-post-id'))
     var form = $('.hvl-ncomment:last')
+    var editing =e.currentTarget.className.indexOf('hvl-comment-edit-btn') != -1
 
     if (!isNaN(parentID) && form.length) {
-      var comment = $(e.currentTarget).parents('.hvl-comment:first')
       var dest = comment.find('> .hvl-comment-children')
       dest.length || (dest = $('<div class="hvl-comment-children">').appendTo(comment))
+      dest.find('> .hvl-ncomment').remove()
 
-      var area = dest.find('> .hvl-ncomment textarea')
-      if (area.length) {
-        return area.focus()
-      }
-
-      form.clone()
+      form = form.clone()
         .append('<input type="hidden" name="parent" value="' + parentID + '">')
+        .find('.hvl-ncomment-preview').remove().end()
         .prependTo(dest)
-        .find('textarea').focus().end()
-        .find('.hvl-markup-text').hide().end()
+        .find('textarea').val('').focus().end()
+
+      if (editing) {
+        $.ajax({
+          url: form.attr('action').replace(/\/[^\/]*$/, '/source/' + parentID + '?dl=1'),
+          dataType: 'text',
+          success: function (text) {
+            form.find('textarea').val(function (i, s) { return s || text }).focus()
+          },
+        })
+
+        form.submit(function () {
+          form
+            .attr('action', function (i, s) { return s.replace(/\/[^\/]*$/, '/edit') })
+            .find('[name=parent]').attr('name', 'id').end()
+        })
+      }
     }
   })
 

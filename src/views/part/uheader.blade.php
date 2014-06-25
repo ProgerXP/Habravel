@@ -10,7 +10,7 @@
 
     @if ($pageUser)
       {{ $pageUser->nameHTML() }}
-      <a href="{{{ $root }}}/logout">{{{ trans('habravel::g.uheader.logout') }}}</a>
+      <a href="{{{ $root }}}/logout?_token={{{ urlencode(csrf_token()) }}}">{{{ trans('habravel::g.uheader.logout') }}}</a>
     @else
       <a href="{{{ $root }}}/~">{{{ trans('habravel::g.uheader.login') }}}</a>
     @endif

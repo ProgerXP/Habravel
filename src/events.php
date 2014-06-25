@@ -30,6 +30,30 @@ if (App::isLocal()) {
   Article Routes
  ***/
 
+Event::listen('habravel.out.markup', function (BaseMarkup $markup) {
+  return \Response::make($markup->help(), 200, array(
+    'Expires'             => gmdate('D, d M Y H:i:s', time() + 3600 * 6).' GMT',
+  ));
+});
+
+Event::listen('habravel.out.source', function (Post $post, $dl) {
+  if ($dl) {
+    $class = get_class(Core::markup($post->markup));
+    $name = preg_replace('~[\0-\x1F"]+~u', '', $post->caption).
+            '.'.$class::$extension;
+
+    return \Response::make($post->text, 200, array(
+      'Content-Description'       => 'File Transfer',
+      'Content-Disposition'       => 'attachment; filename="'.$name.'"',
+      'Content-Length'            => strlen($post->text),
+      'Content-Transfer-Encoding' => 'binary',
+      'Content-Type'              => 'text/plain; charset=utf-8',
+    ));
+  } else {
+    return View::make('habravel::source', compact('post'));
+  }
+});
+
 Event::listen('habravel.out.post', function (Post $post) {
   ++$post->views;
   $post->save();
@@ -41,8 +65,7 @@ Event::listen(
   function (Post $post) {
     if (!($user = Core::user())) {
       App::abort(401);
-    } elseif ($user->hasFlag('can.'.($post->id ? 'edit' : 'post')) or
-              ($post->id and $post->author === $user->id and $user->hasFlag('can.editSelf'))) {
+    } elseif ( $post->id ? $post->isEditable($user) : $user->hasFlag('can.post') ) {
       return;   // Okay, permit.
     } else {
       App::abort(403);
@@ -76,19 +99,24 @@ Event::listen('habravel.check.post', function (Post $post, array $input, Message
     $post->url = $input['url'];
   }
 
-  $post->author = $user->id;
-  $url = $post->sourceURL = array_get($input, 'sourceURL');
-  preg_match('~^https?://~', $url) or $url = 'http://'.ltrim($url, '\\/:');
-  $post->sourceName = array_get($input, 'sourceName');
-  $post->caption = array_get($input, 'caption');
-  $post->markup = array_get($input, 'markup');
-  $post->text = array_get($input, 'text');
-  $post->listTime = $post->listTime ?: new Carbon;
-  $post->pubTime = $post->pubTime ?: new Carbon;
+  if (isset($input['sourceURL'])) {
+    $url = $post->sourceURL = $input['sourceURL'];
+    preg_match('~^https?://~', $url) or $post->sourceURL = 'http://'.ltrim($url, '\\/:');
+  }
+
+  $post->author or $post->author = $user->id;
+  isset($input['sourceName']) and $post->sourceName = $input['sourceName'];
+  isset($input['caption']) and $post->caption = $input['caption'];
+  isset($input['markup']) and $post->markup = $input['markup'];
+  isset($input['text']) and $post->text = $input['text'];
+  isset($input['listTime']) and $post->listTime = new Carbon;
+  isset($input['pubTime']) and $post->pubTime = new Carbon;
   $post->format();
 
-  $validator = \Validator::make($input, array('caption' => 'required'));
-  $validator->fails() and $errors->merge($validator->messages());
+  if (!$post->id or ($post->caption === '' and $post->getOriginal('caption') !== '')) {
+    $validator = \Validator::make($input, array('caption' => 'required'));
+    $validator->fails() and $errors->merge($validator->messages());
+  }
 });
 
 Event::listen(
@@ -318,6 +346,8 @@ View::composer('habravel::part.post', function ($view) {
   $post->sourceURL and $view->classes .= ' hvl-post-sourced';
   $post->score > 0 and $view->classes .= ' hvl-post-above';
   $post->score < 0 and $view->classes .= ' hvl-post-below';
+
+  isset($view->canEdit) or $view->canEdit = ($user = Core::user() and $post->isEditable($user));
 });
 
 View::composer('habravel::part.comment', function ($view) {
@@ -326,6 +356,8 @@ View::composer('habravel::part.comment', function ($view) {
   isset($post->_top) or $post->_top = $post->top();
   isset($post->_author) or $post->_author = $post->author();
   isset($post->_children) or $post->_children = array();
+
+  isset($view->canEdit) or $view->canEdit = ($user = Core::user() and $post->isEditable($user));
 });
 
 View::composer('habravel::page', function ($view) {

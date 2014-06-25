@@ -48,9 +48,11 @@ return array(
   ),
 
   'post'                  => array(
+    'edit'                => 'Edit',
     'source'              => 'Original source',
     'author'              => 'Post author',
     'views'               => 'View count, all time',
+    'size'                => ':chars characters; :words words',
     'commentCount'        => 'Number of comments',
     'pubTime'             => 'Publication date',
     'comments'            => 'Comments',
@@ -62,6 +64,13 @@ return array(
     'text'                => 'What\'s on your mind?',
     'submit'              => 'Post',
     'preview'             => 'Preview',
+  ),
+
+  'source'                => array(
+    'size'                => 'Text statistics:',
+    'markup'              => 'Markup style used:',
+    'dl'                  => 'Download (:size KiB)',
+    'see'                 => 'View normal',
   ),
 
   'comment'               => array(

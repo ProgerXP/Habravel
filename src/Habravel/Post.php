@@ -9,7 +9,7 @@ class Post extends BaseModel {
   protected static $rules = array(
     'top'                 => 'exists:posts,id',
     'parent'              => 'exists:posts,id',
-    'url'                 => 'max:50|regex:~^[\w\d\\-]+$~|unique:posts,url',
+    'url'                 => 'max:50|regex:~^[\w\d\\-/#]+$~|unique:posts,url',
     'author'              => 'required|exists:users,id',
     'poll'                => 'exists:poll,id',
     'score'               => '%INT%',
@@ -100,6 +100,22 @@ class Post extends BaseModel {
 
   function url() {
     return Core::url().'/'.$this->url;
+  }
+
+  function isEditable(User $user) {
+    if ($this->id) {
+      return $user->hasFlag('can.edit') or
+             ($this->author === $user->id and $user->hasFlag('can.editSelf'));
+    }
+  }
+
+  function size() {
+    return mb_strlen($this->text);
+  }
+
+  function wordCount() {
+    preg_match_all('~[\pC\pZ#>*\-_`|/(\~+=%[]\pL{2,}~u', ' '.$this->text, $matches);
+    return count($matches[0]);
   }
 
   function format() {

@@ -14,11 +14,7 @@
         {{{ trans("habravel::g.markups.$markup") }}}
       </label>
 
-      <u class="hvl-markup-help">?</u>
-
-      <aside class="hvl-markup-text">
-        @include("habravel::markup.{$markup}", array(), array())
-      </aside>
+      <a class="hvl-markup-help" href="{{{ Habravel\Core::url()."/markup/$markup" }}}">?</a>
     @endforeach
   @endif
 </span>

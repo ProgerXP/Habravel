@@ -1,6 +1,8 @@
 <?php namespace Habravel;
 
 abstract class BaseMarkup {
+  static $extension = 'txt';
+
   public $text;
 
   // If set is an object for which the text is being formatted - like Post.
@@ -9,6 +11,11 @@ abstract class BaseMarkup {
   // doToHTML() must populate these fields.
   public $html;
   public $introHTML;
+
+  static function help() {
+    return \View::make('habravel::markup.'.strtolower(class_basename(get_called_class())))
+      ->render();
+  }
 
   static function format($text, $target = null) {
     $self = new static;

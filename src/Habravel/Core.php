@@ -79,8 +79,10 @@ class Core extends \Illuminate\Support\ServiceProvider {
 
       $ctl = 'Habravel\\Controller';
       // Article.
+      Route::get    ('markup/{name}',           "$ctl@getMarkupHelp");
       Route::get    ('compose',                 "$ctl@getEditPost");
-      Route::get    ('edit/{habravel_any}',     "$ctl@getEditPostByURL");
+      Route::get    ('source/{habravel_id}',    "$ctl@getPostSource");
+      Route::get    ('edit/{habravel_id}',      "$ctl@getEditPost");
       Route::post   ('edit',                    "$ctl@postEditPost");
       Route::get    ('tags/{habravel_any}',     "$ctl@getListByTags");
       Route::get    ('up/{habravel_id}',        "$ctl@getVoteUpByURL");

@@ -1,9 +1,8 @@
-<div class="hvl-markedup">
-  <h3><a href="https://guides.github.com/features/mastering-markdown/" target="_blank">GitHub Markdown</a></h3>
+<h3 class="hvl-h3"><a href="https://guides.github.com/features/mastering-markdown/" target="_blank">GitHub Markdown</a></h3>
 
-  <p><a href="https://help.github.com/articles/github-flavored-markdown" target="_blank">Differences from traditional Markdown</a> &rarr;</p>
+<p><a href="https://help.github.com/articles/github-flavored-markdown" target="_blank">Differences from traditional Markdown</a> &rarr;</p>
 
-  <pre>
+<pre>
 # Topmost heading
 ## Second heading
 ###### Smallest heading
@@ -38,4 +37,3 @@ Table Header  | Second Cell
 ------------- | ------------
 Content of 1  | Content of 2
 Second row    | Another column</pre>
-</div>

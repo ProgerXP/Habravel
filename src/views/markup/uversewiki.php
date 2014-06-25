@@ -1,9 +1,8 @@
-<div class="hvl-markedup">
-  <h3><a href="http://uverse.i-forge.net/wiki/demo/Basic" target="_blank">UverseWiki</a></h3>
+<h3 class="hvl-h3"><a href="http://uverse.i-forge.net/wiki/demo/Basic" target="_blank">UverseWiki</a></h3>
 
-  <p><a href="http://laravel.ru/forum/viewtopic.php?id=15" target="_blank">Examples</a> &rarr;</p>
+<p><a href="http://laravel.ru/forum/viewtopic.php?id=15" target="_blank">Examples</a> &rarr;</p>
 
-  <pre>
+<pre>
 == Topmost heading
 === Second heading
 ====== Smallest heading
@@ -23,19 +22,19 @@
 &gt;&gt;Right-aligned text.&gt;&gt;
 &gt;&gt;Centered text.&lt;&lt;
 
-  * Unordered list
-  * Second item
-  - Another marker
+* Unordered list
+* Second item
+- Another marker
 
-  1. Ordered list
-  b. Another item
-    - Nested list
+1. Ordered list
+b. Another item
+  - Nested list
 
-  = Associative == List
-  = Another == Item
-    a. Combined
-      * With other
-    ii. List types
+= Associative == List
+= Another == Item
+  a. Combined
+    * With other
+  ii. List types
 
 %%
 Code block
@@ -53,4 +52,3 @@ Multiline quote.
 With nested markup
 %%
 ]&gt;</pre>
-</div>

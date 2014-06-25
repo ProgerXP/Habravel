@@ -88,6 +88,26 @@ class Controller extends BaseController {
     return $this->getPost($post);
   }
 
+  function getMarkupHelp($markup = '') {
+    try {
+      $markup = Core::markup($markup);
+    } catch (\Exception $e) { }
+
+    if (isset($markup)) {
+      return Event::until('habravel.out.markup', array($markup));
+    } else {
+      App::abort(404);
+    }
+  }
+
+  function getPostSource($id = 0) {
+    if ($post = Post::find($id)) {
+      return Event::until('habravel.out.source', array($post, Core::input('dl')));
+    } else {
+      App::abort(404);
+    }
+  }
+
   function getEditPost($id = 0) {
     if ($id) {
       $post = Post::find($id);
@@ -150,6 +170,7 @@ class Controller extends BaseController {
   // - markup=uversewiki  - required
   // - text=...           - required
   function postReply() {
+    static::checkCSRF();
     $input = Core::input();
     $parent = Post::find($input['parent']);
     $parent or App::abort(404, 'Parent post not found.');
@@ -214,6 +235,7 @@ class Controller extends BaseController {
   }
 
   function getLogout() {
+    static::checkCSRF();
     Core::user(false);
     return Redirect::to(Core::url());
   }

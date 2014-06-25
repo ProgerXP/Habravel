@@ -1,6 +1,7 @@
 <?php /*
   - $classes          - optional; string of space-separated CSS classes
   - $post             - Post instance with loaded _author, _tags
+  - $canEdit          - boolean
 */?>
 
 <?php $root = url(Habravel\Core::url())?>
@@ -22,6 +23,12 @@
 
         {{ $post->_author->nameHTML() }}
       </span>
+
+      @if (!empty($canEdit))
+        <a href="{{{ $root }}}/edit/{{{ $post->id }}}" class="hvl-btn">
+          {{{ trans('habravel::g.post.edit') }}}
+        </a>
+      @endif
     </p>
 
     @include('habravel::part.tags', array('tags' => $post->_tags), array())
@@ -49,6 +56,13 @@
         <a href="{{{ $post->url() }}}#comments">{{{ $count }}}</a>
       </span>
     @endif
+
+    <?php $size = $post->size()?>
+    <span class="hvl-post-footer-ctl" title="{{{ trans('habravel::g.post.size', array('chars' => $size, 'words' => $post->wordCount())) }}}">
+      <i class="hvl-i-file"></i>
+      <a href="{{{ "$root/source/$post->id" }}}">
+        {{{ $size >= 1000 ? round($size / 1000).'K' : $size }}}</a>
+    </span>
 
     <time pubdate="pubdate" datetime="{{{ date(DATE_ATOM, $post->pubTime->timestamp) }}}"
           class="hvl-post-footer-ctl" title="{{{ trans('habravel::g.post.pubTime') }}}">

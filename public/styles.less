@@ -81,7 +81,7 @@
   font-size: @30px;
   font-family: @Gothic;
   font-weight: normal;
-  margin: 0 0 1.5em;
+  margin: 0 0 1.06em;
 }
 
 .hvl-h2 {
@@ -185,9 +185,12 @@
 
 .hvl-markup-help {
   padding: 0.1em 0.2em;
+
+  + * { margin-left: 1em; }
 }
 
 .hvl-markup-text {
+  .unmargin;
   display: none;
   background: white;
   border: 1px dashed #ccc;
@@ -200,36 +203,51 @@
   top: 3%;
   text-align: left;
   font-size: 1rem;
+  padding: 1em;
 
   + * { margin-left: 0.8em; }
-  .hvl-markedup { padding: 1em; }
   &.hvl-markup-text-opposite { right: 2%; left: auto; }
-  pre { white-space: pre-wrap; font-size: @14px; cursor: pointer; }
-
-  pre:hover:before, pre:hover:after {
-    position: absolute;
-    content: "";
-    display: block;
-    top: 0;
-    bottom: 0;
-    width: 0.5em;
-    border: 1px dotted gray;
-    border-width: 0 1px;
-  }
-
-  pre:hover:after {
-    margin-left: 0.5em;
-    padding-right: 2px;
-    border-left: 0;
-  }
 
   h3:first-child {
     margin: -1rem -1rem 0;
     padding: 1em 1em 0.5em;
     cursor: pointer;
-    transition: all .15s;
 
     &:hover { background: #eee; }
+
+    &:hover ~ pre {
+      & {
+        border-color: gray;
+      }
+
+      &:before, &:after {
+        position: absolute;
+        content: "";
+        display: block;
+        top: 0;
+        bottom: 0;
+        width: 0.5em;
+        border: 1px dotted gray;
+        border-width: 0 1px;
+      }
+
+      &:after {
+        margin-left: 0.5em;
+        padding-right: 2px;
+        border-left: 0;
+      }
+    }
+  }
+
+  pre {
+    white-space: pre-wrap;
+    font-size: @14px;
+    cursor: pointer;
+    border: 1px dotted transparent;
+    border-width: 1px 0;
+    margin-left: -1rem;
+    margin-right: -1rem;
+    padding: 0 1em;
   }
 }
 
@@ -276,7 +294,8 @@
   .hvl-split-left [type=submit] { float: left; }
 
   &.hvl-pedit-expanded > textarea {
-    margin-top: -2em;
+    margin-top: -1em;
+
     ~ * { display: none; }
   }
 }
@@ -327,6 +346,7 @@
   font-size: @14px;
 
   p + p { margin-top: 1em; }
+  .hvl-btn { margin-left: 1em; }
 }
 
 .hvl-post-author a { color: gray; }
@@ -394,8 +414,9 @@
   margin-top: 2em;
   padding: 0 0 0 70px;
 
-  &:target > .hvl-markedup {
-    background: url(stripew.png);
+  &:target {
+    > .hvl-markedup { background: url(stripew.png); }
+    > .hvl-comment-footer time a { text-decoration: underline; }
   }
 }
 
@@ -411,9 +432,8 @@
   font-size: @14px;
   margin-top: 1.2em;
 
-  a, u { color: gray; }
-  .hvl-btn { margin-right: 1.2em; }
-  time { margin-left: 3.5em; }
+  a, u { color: gray; margin-right: 1.2em; }
+  time { margin-left: 2em; }
 }
 
 .hvl-comment-children {
@@ -425,6 +445,25 @@
   }
 }
 
+.hvl-comment-children .hvl-comment-children .hvl-comment-children .hvl-comment-children {
+  margin-left: -70px;
+}
+
 .hvl-comment-top {
   margin: 0 0 0.7em -70px;
+}
+
+.hvl-psource-header {
+  margin: 2em 0;
+
+  p { margin: 0.5em 0; }
+}
+
+.hvl-psource-source {
+  width: 100%;
+  font-family: monospace;
+  font-size: 1em;
+  padding: 1em;
+  background: white;
+  border: 0;
 }

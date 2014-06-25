@@ -4,6 +4,8 @@
 use \Michelf\MarkdownExtra as Markdown;
 
 class GitHubMarkdown extends BaseMarkup {
+  static $extension = 'md';
+
   protected function doToHTML() {
     $parser = new Markdown;
 
