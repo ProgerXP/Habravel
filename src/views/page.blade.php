@@ -24,6 +24,7 @@
     <script src="{{{ asset('packages/proger/habravel/underscore.js') }}}"></script>
     <script src="{{{ asset('packages/proger/habravel/jquery.js') }}}"></script>
     <script src="{{{ asset('packages/proger/habravel/sqaline.js') }}}"></script>
+    <script src="{{{ asset('packages/proger/habravel/chart.js') }}}"></script>
     <script src="{{{ asset('packages/proger/habravel/app.js') }}}"></script>
   </body>
 </html>

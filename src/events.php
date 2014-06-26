@@ -151,9 +151,9 @@ Event::listen('habravel.check.post', function (Post $post, array $input, Message
   // - polls[index][id] - if editing existing poll
   // - options[index][optindex][caption]=...
   // - options[index][optindex][id] - if editing existing option
-debugBreak();
+
   if ($polls = array_get($input, 'polls') and $options = array_get($input, 'options')) {
-    $post->x_polls = $post->x_deletedPolls = $post->x_deletedOptions = array();
+    $x_polls = $x_deletedPolls = $x_deletedOptions = array();
 
     foreach ($post->polls()->get() as $pollIndex => $poll) {
       foreach ($polls as &$pollItem) {
@@ -162,9 +162,9 @@ debugBreak();
           // Update existing and kept poll.
           $poll->caption = $pollItem['caption'];
           $poll->multiple = $pollItem['multiple'];
-          $post->x_polls[] = $poll;
+          $x_polls[] = $poll;
           $poll->validateAndMerge($errors);
-          $poll->x_options = array();
+          $x_options = array();
 
           // Remove/update its options.
           foreach ($poll->options->get() as $option) {
@@ -173,7 +173,7 @@ debugBreak();
                   trim($optItem['caption']) !== '') {
                 // Update existing option.
                 $option->caption = $optItem['caption'];
-                $poll->x_options[] = $option;
+                $x_options[] = $option;
                 $option->validateAndMerge($errors);
                 $optItem = null;
                 $option = null;
@@ -181,7 +181,7 @@ debugBreak();
               }
             }
 
-            $option and $post->x_deletedOptions = $option;
+            $option and $x_deletedOptions[] = $option;
           }
 
           // Add new options.
@@ -190,11 +190,12 @@ debugBreak();
               $option = new PollOption;
               $option->caption = $optItem['caption'];
               $option->poll = $poll->id;
-              $poll->x_options[] = $option;
+              $x_options[] = $option;
               $option->validateAndMerge($errors);
             }
           }
 
+          $poll->x_options = $x_options;
           $pollItem = null;
           // If poll has no options - delete it.
           $poll->x_options and $poll = null;
@@ -202,10 +203,13 @@ debugBreak();
         }
 
         // Old poll not found, has empty caption or no options.
-        $poll and $post->x_deletedPolls[] = $poll;
+        $poll and $x_deletedPolls[] = $poll;
       }
     }
   }
+
+  $post->x_deletedPolls = $x_deletedPolls;
+  $post->x_deletedOptions = $x_deletedOptions;
 
   foreach ($polls as $pollIndex => &$pollItem) {
     if ($pollItem and trim($pollItem['caption']) !== '') {
@@ -214,21 +218,23 @@ debugBreak();
       $poll->caption = $pollItem['caption'];
       $poll->multiple = $pollItem['multiple'];
       $poll->validateAndMerge($errors);
-      $poll->x_options = array();
+      $x_options = array();
 
       // Add its options.
       foreach ($options[$pollIndex] as &$optItem) {
         if (trim($optItem['caption']) !== '') {
           $option = new PollOption;
           $option->caption = $optItem['caption'];
-          $poll->x_options[] = $option;
+          $x_options[] = $option;
           $option->validateAndMerge($errors);
         }
       }
 
-      $poll->x_options and $post->x_polls[] = $poll;
+      $poll->x_options = $x_options and $x_polls[] = $poll;
     }
   }
+
+  $post->x_polls = $x_polls;
 });
 
 Event::listen(
@@ -484,33 +490,36 @@ View::composer('habravel::post', function ($view) {
 });
 
 View::composer('habravel::post', function ($view) {
-  if (!isset($view->x_polls)) {
-    $view->x_polls = $polls = $view->post->polls()->get();
+  if (!isset($view->post->x_polls)) {
+    $x_polls = $view->post->polls()->get();
 
-    if (count($polls)) {
-      $options = PollOption::whereIn('poll', $polls->lists('id'))->get();
+    if (count($x_polls)) {
+      $options = PollOption::whereIn('poll', $x_polls->lists('id'))->get();
 
       // array('optionID' => vote_count).
       $votes = PollVote
-        ::whereIn('poll', $polls->lists('id'))
+        ::whereIn('poll', $x_polls->lists('id'))
         ->groupBy('option')
         ->lists(\DB::raw('COUNT(1)'), 'option');
 
-      foreach ($polls as $poll) {
+      foreach ($x_polls as $poll) {
         $sumVotes = 0;
-        $poll->x_options = array();
+        $x_options = array();
 
         foreach ($options as $option) {
           if ($option->poll === $poll->id) {
             $sumVotes += $option->x_voteCount = $votes[$option->id];
-            $poll->x_options[] = $option;
+            $x_options[] = $option;
             $option->id or $option->caption = trans('habravel::g.post.abstain');
           }
         }
 
+        $poll->x_options = $x_options;
         $poll->x_voteCount = $sumVotes;
       }
     }
+
+    $view->post->x_polls = $x_polls;
   }
 });
 
@@ -543,11 +552,13 @@ View::composer('habravel::edit', function ($view) {
     count($polls) and $options = PollOption::whereIn('poll', $polls->lists('id'))->get();
 
     foreach ($polls as $poll) {
-      $poll->x_options = array();
+      $x_options = array();
 
       foreach ($options as $option) {
-        $option['poll'] === $poll->id and $poll->x_options[] = $option;
+        $option['poll'] === $poll->id and $x_options[] = $option;
       }
+
+      $poll->x_options = $x_options;
     }
   }
 });

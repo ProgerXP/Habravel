@@ -244,10 +244,60 @@ $(document.body)
       })
   })
 
+function setupChart(el) {
+  var colors = []
+  var allColors = ['#ff0000']
+  var types = []
+  var allTypes = ['Pie', 'PolarArea', 'Radar', 'Bar', 'Line']
+
+  var votes = el.attr('data-hvl-poll').split(' ')
+  var options = el.find('.hvl-poll-option')
+  var data = []
+  var sumVotes = 0
+
+  $.each(votes, function (i, voteCount) {
+    sumVotes += voteCount = parseInt(voteCount) || 0
+    colors.length || (colors = allColors.concat())
+    options.eq(i).find('hr').css('borderColor', colors[0])
+    data.push({value: voteCount, color: colors.shift()})
+  })
+
+  sumVotes || data.push({value: 1, color: '#ddd'})
+  var canvas = el.find('canvas')
+  var chart = new Chart(canvas[0].getContext('2d'))
+
+  function toggle() {
+    types.length || (types = allTypes.concat())
+    var type = types.shift()
+
+    if (type == 'Pie' || type == 'PolarArea' || type == 'Doughnut') {
+      var typeData = data
+    } else {
+      var typeData = {
+        labels: Array(data.length),
+        datasets: [{data: data}],
+      }
+    }
+
+    chart[type](typeData, {animationSteps: 1})
+  }
+
+  toggle()
+  sumVotes && canvas.click(toggle)
+}
+
 $(function () {
   $('.hvl-split-right').each(function () {
     $('<div class="hvl-splitter">')
       .css('height', Math.max( $(this).height(), $(this).prev().height() ))
       .insertBefore(this)
   })
+
+  var polls = $('.hvl-poll[data-hvl-poll]').toArray()
+  setTimeout(function () {
+    if (polls.length) {
+      setupChart( $(polls.shift()) )
+      setTimeout(arguments.callee, 300)
+    }
+  }, 500)
 })

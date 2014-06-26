@@ -65,6 +65,7 @@ return array(
     'poll'                => 'Poll:',
     'abstain'             => 'Abstain',
     'vote'                => 'Vote',
+    'voteAll'             => 'Vote for :count polls',
     'comments'            => 'Comments',
   ),
 

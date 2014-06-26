@@ -524,3 +524,39 @@ body .hvl-pedit-tags-from {
   background: white;
   border: 0;
 }
+
+.hvl-polls {
+  margin: 2.5em;
+
+  .hvl-btn { margin-top: 1.5em; }
+}
+
+.hvl-poll {
+  overflow: auto;
+  margin-top: 1.5em;
+
+  canvas {
+    height: 0;
+    float: left;
+    margin: 0 2em 0 0;
+    min-height: 120px;
+  }
+
+  .hvl-h2 { color: silver; margin: 0 0 1em; }
+  .hvl-h2 span { color: black; }
+}
+
+.hvl-poll-option {
+  color: gray;
+  max-width: 30em;    // to limit hr.
+
+  label { color: black; }
+
+  hr {
+    background: red;
+    height: 5px;
+    margin: 0.5em 0;
+    width: 0;
+    border: 0;
+  }
+}

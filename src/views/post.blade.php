@@ -18,29 +18,31 @@
       <input type="hidden" name="_token" value="{{{ csrf_token() }}}">
 
       @foreach ($post->x_polls as $poll)
-        <div class="hvl-poll" data-hvl-poll="{{{ join(' ', $poll->x_options->pluck('x_voteCount')) }}}">
-          <h2 id="poll-{{{ $poll->id }}}">
+        <div class="hvl-poll" data-sqa="poll"
+             data-hvl-poll="{{{ join(' ', array_pluck($poll->x_options, 'x_voteCount')) }}}">
+          <h2 id="poll-{{{ $poll->id }}}" class="hvl-h2">
             {{{ trans('habravel::g.post.poll') }}}
-            <span>{{{ $poll->x_caption }}}</span>
-            @if ($poll->x_voteCount) ({{{ $poll->x_voteCount }}}) @endif
+            <span>{{{ $poll->caption }}}</span>
+            @if ($poll->x_voteCount) ({{{ (int) $poll->x_voteCount }}}) @endif
           </h2>
 
-          --------- javascript chart + change type on click
+          <canvas data-sqa="poll - | [height: h | [width: h"></canvas>
 
           @foreach ($poll->x_options as $option)
             <div class="hvl-poll-option">
               <p>
-                @if ($poll->multiple)
-                  <input type="checkbox" name="votes[]" value="{{{ $option->id }}}">
-                @else
-                  <input type="radio" name="votes[{{{ $poll->id }}}]" value="{{{ $option->id }}}">
-                @endif
-
-                <span>{{{ $option->caption }}}</span>
-                ({{{ $option->x_voteCount }}})
+                <label>
+                  @if ($poll->multiple)
+                    <input type="checkbox" name="votes[]" value="{{{ $option->id }}}">
+                  @else
+                    <input type="radio" name="votes[{{{ $poll->id }}}]" value="{{{ $option->id }}}">
+                  @endif
+                  {{{ $option->caption }}}
+                </label>
+                ({{{ (int) $option->x_voteCount }}})
               </p>
 
-              <hr style="width: {{{ $option->x_voteCount / $poll->x_voteCount * 100 }}}%">
+              <hr style="width: {{{ $poll->x_voteCount ? $option->x_voteCount / $poll->x_voteCount * 100 : 0 }}}%">
             </div>
           @endforeach
         </div>
@@ -48,9 +50,9 @@
 
       <p>
         <button type="submit" class="hvl-btn">
-          {{{ trans('habravel::g.post.vote') }}}
+          {{{ trans('habravel::g.post.vote'.(count($post->x_polls) > 1 ? 'All' : ''), array('count' => count($post->x_polls))) }}}
         </button>
-      <</p>
+      </p>
     </form>
   @endif
 

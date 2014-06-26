@@ -10,6 +10,15 @@
   Sqaline expressions are regular JavaScript with certain convenient shortcuts.
   You can also create resize callbacks by listening to Sqaline events.
 
+  Sqaline reuqires jQuery or Zepto included before it. Here's how:
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script>
+      // Only if you need to set any custom options before Sqaline initializes.
+      var Sqaline = {verbose: true}
+    </script>
+    <script src="sqaline.js"></script>
+
   The easiest way to align ("sqaline") an element is via data-sqa attribute or
   another attribute name specified in Sqaline.attribute:
 
@@ -25,6 +34,11 @@
   taken by <header> and <footer> and will set its width to window's width
   without <nav> outerWidth(true) and css('marginRight').
 
+  This example will adjust number of cols to the maximum fitting in the
+  container (cols is first reset to determine the width of 1 column):
+
+    <textarea data-sqa="wrapper cols: 1 | cols: Math.floor(^{w} / wi)">
+
   Sqaline attribute begins with comma-separated (no spaces) names of ANCHORS
   relative to which the expression is evaluated; first anchor becomes anchor
   name of this element in turn. Anchors are searched upwards in the DOM tree.
@@ -38,10 +52,12 @@
   around "|"). Each rule modifies a particular CSS property or an HTML attribute.
   They can duplicate for one target (property or attribute) and are evaluated in
   order of definition. A rule begins with property/attribute name followed by a
-  colon. The target is set to CSS property if the name is listed in $(el).css('name'),
-  otherwise $(el).attr('name') is used to set the calculated value. The target
-  can be a shortcut CSS defined in Sqaline.exprShortcuts - for example, 'fns'
-  equals to 'fontSize' and 'mr' to 'marginRight'.
+  colon. The target is detected as CSS property if the name is listed in
+  $(el).css('name'), otherwise $(el).attr('name') is used to set the calculated
+  value. This detection can be overriden by prefixing the target with '{' for
+  CSS and '[' for tag attribute, e.g. '[height' and '{height' - see opt.appliers.
+  The target can also be a shortcut CSS defined in Sqaline.exprShortcuts - for
+  example, 'fns' equals to 'fontSize' and 'mr' to 'marginRight'.
 
   The first RULE can omit target name and the colon - in this case it's assumed
   to be Sqaline.defaultProperty: data-sqa="wrapper win{h}".
@@ -221,6 +237,13 @@ window.Sqaline = new (function ($, opt) {
     // 'data-' to be W3C-compliant.
     // If changed on runtime clearCache() must be called.
     attribute:        'data-sqa',
+
+    // Prefixes before property names to explicitly specify jQuery function
+    // used to set the calculated value.
+    appliers:         {
+      '[':            'attr',
+      '{':            'css',
+    },
 
     // "Cuts" are shortcuts for common rules on certain properties that are
     // activated by starting (leftCut) or ending (rightCut) an expression
@@ -602,12 +625,12 @@ window.Sqaline = new (function ($, opt) {
 
       $.each(opt.rules, function (i, rule) {
         rule = $.trim(rule)
-        // [prop:] [-] [...] [-]
-        var parsed = rule.match(/^(?:([\w-]+):)?\s*(([-+]?\s*)(.*?)(\s*[-+]?))$/)
+        // [ ['['|{] prop:] [-] [...] [-]
+        var parsed = rule.match(/^(?:([[{]?)([\w-]+):)?\s*(([-+]?\s*)(.*?)(\s*[-+]?))$/)
         parsed || self.fail('Bad Sqaline rule: ' + rule)
 
-        var prop = parsed[1], expr = parsed[2], leftCut = parsed[3],
-            innerExpr = parsed[4], rightCut = parsed[5]
+        var applier = parsed[1], prop = parsed[2], expr = parsed[3],
+            leftCut = parsed[4], innerExpr = parsed[5], rightCut = parsed[6]
 
         if (prop) {
           prop = self.exprShortcuts[prop] || prop
@@ -632,7 +655,8 @@ window.Sqaline = new (function ($, opt) {
           source:     rule,
           code:       func._sqaCode,
           func:       func,
-          applier:    testEl.css(prop) === undefined ? 'attr' : 'css',
+          applier:    self.opt.appliers[applier] ||
+                      (testEl.css(prop) === undefined ? 'attr' : 'css'),
         })
       })
     }
