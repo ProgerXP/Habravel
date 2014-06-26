@@ -5,13 +5,14 @@
 use App;
 use View;
 use Config;
+use Request;
 use Redirect;
 use Carbon\Carbon;
 use Illuminate\Support\MessageBag;
 
 App::error(function ($e) {
   if (method_exists($e, 'getStatusCode') and $e->getStatusCode() === 401) {
-    $url = \Request::fullUrl();
+    $url = Request::fullUrl();
     return Redirect::to(Core::url().'/login?back='.urlencode($url));
   }
 });
@@ -55,8 +56,13 @@ Event::listen('habravel.out.source', function (Post $post, $dl) {
 });
 
 Event::listen('habravel.out.post', function (Post $post) {
-  ++$post->views;
-  $post->save();
+  if ($post->addSeen(Core::user() ?: Request::getClientIp())) {
+    ++$post->views;
+    $post->save();
+  }
+});
+
+Event::listen('habravel.out.post', function (Post $post) {
   return View::make('habravel::post', compact('post'));
 });
 
@@ -86,7 +92,7 @@ Event::listen('habravel.out.preview', function (Post $post, MessageBag $errors =
 Event::listen('habravel.out.list', function (Query $query, array &$vars) {
   $vars['page'] = Core::input('page') ?: 1;
   $vars['perPage'] = Core::input('limit') ?: 10;
-  $url = \Request::fullUrl();
+  $url = Request::fullUrl();
   $vars['pageURL'] = $url.(strrchr($url, '?') ? '&' : '?').'page=';
 
   $query->forPage(Core::input('page'), $vars['perPage']);
@@ -212,7 +218,7 @@ Event::listen('habravel.save.vote', function ($up, Post $post) {
   $vote->poll = $post->poll;
   $vote->option = $up + 0;
   $vote->user = Core::user()->id;
-  $vote->ip = \Request::getClientIp();
+  $vote->ip = Request::getClientIp();
   $vote->save();
 });
 
@@ -235,7 +241,7 @@ Event::listen('habravel.out.login', function (array $input) {
 
 Event::listen('habravel.save.login', function (User $user, array $input) {
   $user->loginTime = new Carbon;
-  $user->loginIP = \Request::getClientIp();
+  $user->loginIP = Request::getClientIp();
   return Redirect::to( array_get($input, 'back', $user->url()) );
 });
 
@@ -248,7 +254,7 @@ Event::listen('habravel.check.register', function (User $user, array $input, Mes
   $user->email = array_get($input, 'email');
   $haser = Config::get('habravel::g.password');
   $user->password = call_user_func($haser, array_get($input, 'password'));
-  $user->regIP = \Request::getClientIp();
+  $user->regIP = Request::getClientIp();
 });
 
 Event::listen('habravel.check.register', function (User $user, array $input, MessageBag $errors) {

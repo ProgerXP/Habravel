@@ -5,7 +5,7 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
     Schema::create('polls', function ($table) {
       $table->increments('id');
       $table->timestamps();
-      $table->string('target', 50);
+      $table->string('target', 254);
       $table->text('caption');
       $table->boolean('multiple');
     });
@@ -23,19 +23,19 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
     Schema::create('users', function ($table) {
       $table->increments('id');
       $table->timestamps();
-      $table->string('password', 256);
-      $table->string('remember_token', 200);
-      $table->string('email', 200);
-      $table->string('name', 50);
-      $table->text('info');
+      $table->string('password', 254);
+      $table->string('remember_token', 254);
+      $table->string('email', 254);
+      $table->string('name', 254);
+      $table->mediumText('info');
       $table->integer('poll')->unsigned()->nullable();
       $table->integer('score')->default(0);
       $table->integer('rating')->default(0);
-      $table->char('regIP', 16);
+      $table->char('regIP', 15);
       $table->timestamp('loginTime');
-      $table->char('loginIP', 16)->default('');
-      $table->text('flags');
-      $table->string('avatar', 200)->default('');
+      $table->char('loginIP', 15)->default('');
+      $table->mediumText('flags');
+      $table->string('avatar', 254)->default('');
 
       $table->unique('email');
       $table->unique('name');
@@ -50,7 +50,7 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
       $table->integer('poll')->unsigned();
       $table->integer('option')->unsigned();
       $table->integer('user')->unsigned();
-      $table->char('ip', 16);
+      $table->char('ip', 15);
 
       $table->primary(array('poll', 'user'));
 
@@ -69,20 +69,21 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
       $table->timestamps();
       $table->integer('top')->unsigned()->nullable()->default(null);
       $table->integer('parent')->unsigned()->nullable()->default(null);
-      $table->string('url', 50);
+      $table->string('url', 254);
       $table->integer('author')->unsigned();
       $table->integer('poll')->unsigned()->nullable();
       $table->integer('score')->default(0);
       $table->integer('views')->unsigned()->default(0);
-      $table->text('info');
+      $table->mediumBlob('seen');
+      $table->mediumText('info');
       $table->text('sourceURL');
-      $table->string('sourceName', 100)->default('');
-      $table->string('caption', 150);
-      $table->string('markup', 50);
-      $table->text('text');
-      $table->text('html');
-      $table->text('introHTML');
-      $table->text('flags');
+      $table->string('sourceName', 254)->default('');
+      $table->string('caption', 254);
+      $table->string('markup', 254);
+      $table->mediumText('text');
+      $table->mediumText('html');
+      $table->mediumText('introHTML');
+      $table->mediumText('flags');
       $table->timestamp('listTime');
       $table->timestamp('pubTime');
 
@@ -109,9 +110,9 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
       $table->increments('id');
       $table->timestamps();
       $table->integer('parent')->unsigned()->nullable()->default(null);
-      $table->string('type', 50)->default('');
-      $table->string('caption', 50);
-      $table->text('flags');
+      $table->string('type', 254)->default('');
+      $table->string('caption', 254);
+      $table->mediumText('flags');
 
       $table->index('type');
       $table->unique('caption');

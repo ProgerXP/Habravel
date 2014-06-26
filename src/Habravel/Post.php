@@ -125,6 +125,31 @@ class Post extends BaseModel {
     return $this;
   }
 
+  // Returns true if $client hasn't yet seen this post and also adds it
+  // to $this->seen. $this->views isn't incremented.
+  //
+  //? addSeen('1.2.3.4')        // IP
+  //? addSeen(User::find(33))
+  function addSeen($client) {
+    if (is_object($client)) {
+      $id = pack('N', $client->id);
+    } else {
+      // $ip = 32-bit integer in reverse (BE) order - since 0.xx.xx.xx is
+      // a reserved IP $ip[0] will always be !== '\0' and so we get 24 bits
+      // for local users' IDs which are ~16 mln accounts. Should be enough.
+      $id = pack('N', ip2long($client));
+    }
+
+    for ($seen = $this->seen, $pos = 0; isset($seen[$pos]); $pos += 4) {
+      if ($seen[$pos][0] === $id[0] and substr($seen, $pos, 4) === $id) {
+        return false;
+      }
+    }
+
+    $this->seen .= $id;
+    return true;
+  }
+
   protected function finishSave(array $options) {
     parent::finishSave($options);
 
