@@ -5,6 +5,7 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
     Schema::create('polls', function ($table) {
       $table->increments('id');
       $table->timestamps();
+      $table->softDeletes();
       $table->string('target', 254);
       $table->text('caption');
       $table->boolean('multiple');
@@ -13,6 +14,7 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
     Schema::create('poll_options', function ($table) {
       $table->increments('id');
       $table->timestamps();
+      $table->softDeletes();
       $table->integer('poll')->unsigned();
       $table->text('caption');
 
@@ -48,7 +50,8 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
     Schema::create('poll_votes', function ($table) {
       $table->timestamps();
       $table->integer('poll')->unsigned();
-      $table->integer('option')->unsigned();
+      // NULL = abstained.
+      $table->integer('option')->unsigned()->nullable();
       $table->integer('user')->unsigned();
       $table->char('ip', 15);
 
@@ -124,8 +127,38 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
     Schema::create('post_tag', function ($table) {
       $table->integer('post_id')->unsigned();
       $table->integer('tag_id')->unsigned();
+
       $table->primary(array('post_id', 'tag_id'));
+
+      $table->foreign('post_id')->references('id')->on('posts')
+        ->onUpdate('cascade')->onDelete('cascade');
+
+      $table->foreign('tag_id')->references('id')->on('tags')
+        ->onUpdate('cascade')->onDelete('cascade');
     });
+
+    Schema::create('poll_post', function ($table) {
+      $table->integer('post_id')->unsigned();
+      $table->integer('poll_id')->unsigned();
+
+      $table->primary(array('post_id', 'poll_id'));
+
+      $table->foreign('post_id')->references('id')->on('posts')
+        ->onUpdate('cascade')->onDelete('cascade');
+
+      $table->foreign('poll_id')->references('id')->on('tags')
+        ->onUpdate('cascade')->onDelete('cascade');
+    });
+
+    DB::table('polls')->insert(array(array(
+      'id'                => 1,
+      'caption'           => 'Vote up/down',
+      'multiple'          => 0,
+    )));
+
+    // So that id = ((int) true/false) + 1.
+    DB::table('poll_options')->insert(array(array('id' => 1, 'caption' => 'down'),
+                                            array('id' => 2, 'caption' => 'up')));
   }
 
   function down() {

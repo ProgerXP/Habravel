@@ -18,6 +18,20 @@ class Core extends \Illuminate\Support\ServiceProvider {
     return $absolute ? url($url) : $url;
   }
 
+  static function normReferer($url) {
+    $root = static::url();
+
+    if (!$url) {
+      return $root;
+    } else if (strpos($url, $root.'/') === 0) {
+      // Prevent redirection to an external URL.
+      return substr($url, strlen($root));
+    } else {
+      // Location: //google.com actually works as well as \/google.com.
+      return $root.ltrim($url, '\\/');
+    }
+  }
+
   static function input($name = null, $default = null) {
     return call_user_func(Config::get('habravel::g.input'), $name, $default);
   }
@@ -85,8 +99,9 @@ class Core extends \Illuminate\Support\ServiceProvider {
       Route::get    ('edit/{habravel_id}',      "$ctl@getEditPost");
       Route::post   ('edit',                    "$ctl@postEditPost");
       Route::get    ('tags/{habravel_any}',     "$ctl@getListByTags");
-      Route::get    ('up/{habravel_id}',        "$ctl@getVoteUpByURL");
-      Route::get    ('down/{habravel_id}',      "$ctl@getVoteDownByURL");
+      Route::get    ('vote',                    "$ctl@postVote");
+      Route::get    ('up/{habravel_id}',        "$ctl@postVoteUpByPost");
+      Route::get    ('down/{habravel_id}',      "$ctl@postVoteDownByPost");
       Route::post   ('reply',                   "$ctl@postReply");
       Route::get    ('best/day',                "$ctl@getBestListDay");
       Route::get    ('best/week',               "$ctl@getBestListWeek");
@@ -101,6 +116,8 @@ class Core extends \Illuminate\Support\ServiceProvider {
       Route::get    ('~{habravel_user}',        "$ctl@getUserByName");
       Route::get    ('~{habravel_user}/posts',  "$ctl@getUserByNamePosts");
       Route::get    ('~{habravel_user}/comments', "$ctl@getUserByNameComments");
+      Route::get    ('~{habravel_user}/up',     "$ctl@postVoteUpByUser");
+      Route::get    ('~{habravel_user}/down',   "$ctl@postVoteUpByUser");
       Route::get    ('users/{habravel_id}',     "$ctl@getUser");
       // Fallback.
       Route::get    ('{habravel_any}',          "$ctl@getPostByURL");

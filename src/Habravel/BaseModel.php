@@ -24,6 +24,12 @@ class BaseModel extends \Eloquent {
     return $rules;
   }
 
+  function validateAndMerge(\Illuminate\Support\MessageBag $errors) {
+    $validator = \Validator::make($this->getAttributes(), $this->rules($this));
+    $validator->fails() and $errors->merge($validator->messages());
+    return $this;
+  }
+
   // Usable if underlying table has 'flags' field. Returns true if all given
   // flags are present.
   function hasFlag($flag_1) {

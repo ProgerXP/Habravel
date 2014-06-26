@@ -111,6 +111,36 @@ $(document.body)
     return false
   })
 
+  .on('keydown', '.hvl-pedit-poll-opt:last-child input', function (e) {
+    var cur = $(e.target).parents('.hvl-pedit-poll-opt:first')
+
+    cur.clone()
+      .find('input').val('').attr('name', function (i, s) {
+        return s.replace(/(\d\D+)(\d+)/, function (m, l, r) {
+          return l + (+r + 1)
+        })
+      }).end()
+      .find('.hvl-pedit-poll-opt-num').text(function (i, s) {
+        return s.replace(/\d+/, function (m) { return +m + 1 })
+      }).end()
+      .find('[name*="[id]"]').remove().end()
+      .insertAfter(cur)
+  })
+
+  .on('click', '.hvl-pedit-poll-add', function (e) {
+    var cur = $(e.currentTarget).parents('p:first').prevAll('.hvl-pedit-poll:first')
+
+    cur.clone()
+      .find('[name]').attr('name', function (i, s) {
+        return s.replace(/\d+/, function (m) { return +m + 1 })
+      }).end()
+      .find('.hvl-pedit-poll-opt ~ .hvl-pedit-poll-opt').remove().end()
+      .find('[name*="[id]"]').remove().end()
+      .insertAfter(cur)
+      .find('.hvl-input').val('')
+        .first().focus()
+  })
+
   /***
     Other Pages
    ***/

@@ -118,14 +118,6 @@ Event::listen('habravel.check.post', function (Post $post, array $input, Message
     }
   }
 
-  if (isset($input['tags'])) {
-    $post->x_tags = array_map(function ($caption) {
-      $tag = new Tag;
-      $tag->caption = trim($caption);
-      return $tag;
-    }, (array) $input['tags']);
-  }
-
   $post->author or $post->author = $user->id;
   isset($input['sourceName']) and $post->sourceName = $input['sourceName'];
   isset($input['caption']) and $post->caption = $input['caption'];
@@ -136,16 +128,113 @@ Event::listen('habravel.check.post', function (Post $post, array $input, Message
   $post->format();
 
   if (!$post->id or ($post->caption === '' and $post->getOriginal('caption') !== '')) {
-    $validator = \Validator::make($input, array('caption' => 'required'));
+    $validator = \Validator::make(array('caption' => trim(array_get($input, 'caption'))),
+                                  array('caption' => 'required'));
     $validator->fails() and $errors->merge($validator->messages());
+  }
+});
+
+Event::listen('habravel.check.post', function (Post $post, array $input, MessageBag $errors) {
+  if (isset($input['tags'])) {
+    $post->x_tags = array_map(function ($caption) {
+      $tag = new Tag;
+      $tag->caption = trim($caption);
+      return $tag;
+    }, (array) $input['tags']);
+  }
+});
+
+Event::listen('habravel.check.post', function (Post $post, array $input, MessageBag $errors) {
+  // Input:
+  // - polls[index][caption]=...
+  // - polls[index][multiple]=0/1
+  // - polls[index][id] - if editing existing poll
+  // - options[index][optindex][caption]=...
+  // - options[index][optindex][id] - if editing existing option
+debugBreak();
+  if ($polls = array_get($input, 'polls') and $options = array_get($input, 'options')) {
+    $post->x_polls = $post->x_deletedPolls = $post->x_deletedOptions = array();
+
+    foreach ($post->polls()->get() as $pollIndex => $poll) {
+      foreach ($polls as &$pollItem) {
+        if ($pollItem and array_get($pollItem, 'id') == $poll->id and
+            trim($pollItem['caption']) !== '') {
+          // Update existing and kept poll.
+          $poll->caption = $pollItem['caption'];
+          $poll->multiple = $pollItem['multiple'];
+          $post->x_polls[] = $poll;
+          $poll->validateAndMerge($errors);
+          $poll->x_options = array();
+
+          // Remove/update its options.
+          foreach ($poll->options->get() as $option) {
+            foreach ($options[$pollIndex] as &$optItem) {
+              if ($optItem and array_get($optItem, 'id') == $option->id and
+                  trim($optItem['caption']) !== '') {
+                // Update existing option.
+                $option->caption = $optItem['caption'];
+                $poll->x_options[] = $option;
+                $option->validateAndMerge($errors);
+                $optItem = null;
+                $option = null;
+                break;
+              }
+            }
+
+            $option and $post->x_deletedOptions = $option;
+          }
+
+          // Add new options.
+          foreach ($options[$pollIndex] as &$optItem) {
+            if ($optItem) {
+              $option = new PollOption;
+              $option->caption = $optItem['caption'];
+              $option->poll = $poll->id;
+              $poll->x_options[] = $option;
+              $option->validateAndMerge($errors);
+            }
+          }
+
+          $pollItem = null;
+          // If poll has no options - delete it.
+          $poll->x_options and $poll = null;
+          break;
+        }
+
+        // Old poll not found, has empty caption or no options.
+        $poll and $post->x_deletedPolls[] = $poll;
+      }
+    }
+  }
+
+  foreach ($polls as $pollIndex => &$pollItem) {
+    if ($pollItem and trim($pollItem['caption']) !== '') {
+      // Found a new poll to be created. Input [id] values must not be used.
+      $poll = new Poll;
+      $poll->caption = $pollItem['caption'];
+      $poll->multiple = $pollItem['multiple'];
+      $poll->validateAndMerge($errors);
+      $poll->x_options = array();
+
+      // Add its options.
+      foreach ($options[$pollIndex] as &$optItem) {
+        if (trim($optItem['caption']) !== '') {
+          $option = new PollOption;
+          $option->caption = $optItem['caption'];
+          $poll->x_options[] = $option;
+          $option->validateAndMerge($errors);
+        }
+      }
+
+      $poll->x_options and $post->x_polls[] = $poll;
+    }
   }
 });
 
 Event::listen(
   array('habravel.check.post', 'habravel.check.reply'),
   function (Post $post, array $input, MessageBag $errors) {
-    $validator = \Validator::make($post->getAttributes(), Post::rules($post));
-    $validator->fails() and $errors->merge($validator->messages());
+    $post->validateAndMerge($errors);
   },
   LAST
 );
@@ -154,9 +243,14 @@ Event::listen('habravel.save.post', function (Post $post) {
   \DB::transaction(function () use ($post) {
     $post->url or $post->url = 'posts/%ID%';
     $post->save();
+  });
+});
 
+Event::listen('habravel.save.post', function (Post $post) {
+  \DB::transaction(function () use ($post) {
     if (isset($post->x_tags)) {
       $captions = array();
+
       foreach ($post->x_tags as $tag) {
         $captions[] = $tag->caption;
         try {
@@ -166,14 +260,38 @@ Event::listen('habravel.save.post', function (Post $post) {
         }
       }
 
-      $ids = array();
-      foreach (Tag::whereIn('caption', $captions)->lists('id') as $id) {
-        $records[] = array('post_id' => $post->id, 'tag_id' => $id);
+      $records = array();
+
+      if ($captions) {
+        foreach (Tag::whereIn('caption', $captions)->lists('id') as $id) {
+          $records[] = array('post_id' => $post->id, 'tag_id' => $id);
+        }
       }
 
       \DB::table('post_tag')->where('post_id', '=', $post->id)->delete();
       \DB::table('post_tag')->insert($records);
     }
+  });
+});
+
+Event::listen('habravel.save.post', function (Post $post) {
+  \DB::transaction(function () use ($post) {
+    foreach ($post->x_deletedOptions as $option) { $option->delete(); }
+    foreach ($post->x_deletedPolls as $poll) { $poll->delete(); }
+
+    \DB::table('poll_post')->where('post_id', '=', $post->id)->delete();
+
+    foreach ($post->x_polls as $poll) {
+      $poll->save();
+      $records[] = array('post_id' => $post->id, 'poll_id' => $poll->id);
+
+      foreach ($poll->x_options as $option) {
+        $option->poll = $poll->id;  // new poll might have been created.
+        $option->save();
+      }
+    }
+
+    \DB::table('poll_post')->insert($records);
   });
 });
 
@@ -201,11 +319,9 @@ Event::listen('habravel.save.reply', function (Post $post, Post $parent) {
   $post->save();
 });
 
-Event::listen('habravel.check.vote', function ($up, Post $post) {
-  if (!$post->poll) {
-    App::aobrt(400, 'This post cannot be voted for.');
-  } elseif ($user = Core::user()) {
-    if (!$user->hasFlag('can.vote.'.($up ? 'up' : 'down'))) {
+Event::listen('habravel.check.vote', function (array $votes) {
+  if ($user = Core::user()) {
+    if (!$user->hasFlag('can.vote')) {
       App::abort(403);
     }
   } else {
@@ -213,13 +329,53 @@ Event::listen('habravel.check.vote', function ($up, Post $post) {
   }
 }, VALIDATE);
 
-Event::listen('habravel.save.vote', function ($up, Post $post) {
-  $vote = new PollVote;
-  $vote->poll = $post->poll;
-  $vote->option = $up + 0;
-  $vote->user = Core::user()->id;
-  $vote->ip = Request::getClientIp();
-  $vote->save();
+Event::listen('habravel.check.vote', function (array &$votes) {
+  $multiple = Poll
+    ::whereMultiple(1)
+    ->whereIn('id', array_pluck($votes, 'poll'))
+    ->lists('id', 'id');
+
+  $norm = array();
+
+  foreach ($votes as $vote) {
+    if (!$vote['option']) {   // abstained from vote.
+      unset($multiple[$vote['poll']]);
+      $norm[] = $vote;
+    }
+  }
+
+  // Remove multiple voted options for single-option polls.
+  foreach ($votes as $vote) {
+    if (!isset($multiple[$vote['poll']])) {
+      foreach ($norm as $normVote) {
+        if ($normVote['poll'] === $vote['poll']) {
+          $vote = null;
+          break;
+        }
+      }
+    }
+
+    $vote and $norm[] = $vote;
+  }
+
+  $votes = $norm;
+}, VALIDATE);
+
+Event::listen('habravel.save.vote', function (array $votes) {
+  $records = array();
+  $user = Core::user()->id;
+  $ip = Request::getClientIp();
+
+  PollVote
+    ::whereIn('poll', array_pluck($votes, 'poll'))
+    ->whereUser($user)
+    ->delete();
+
+  foreach ($votes as $vote) {
+    $records[] = array_only($vote, 'poll', 'option') + compact('user', 'ip');
+  }
+
+  \DB::table('poll_votes')->insert($records);
 });
 
 /***
@@ -258,9 +414,9 @@ Event::listen('habravel.check.register', function (User $user, array $input, Mes
 });
 
 Event::listen('habravel.check.register', function (User $user, array $input, MessageBag $errors) {
-  $attrs = array_only($input, 'password') + $user->getAttributes();
-  $validator = \Validator::make($attrs, User::rules($user));
-  $validator->fails() and $errors->merge($validator->messages());
+  $copy = new User;
+  $copy->setRawAttributes(array_only($input, 'password') + $user->getAttributes());
+  $copy->validateAndMerge($errors);
 }, LAST);
 
 Event::listen('habravel.save.register', function (User $user) {
@@ -327,6 +483,37 @@ View::composer('habravel::post', function ($view) {
   }
 });
 
+View::composer('habravel::post', function ($view) {
+  if (!isset($view->x_polls)) {
+    $view->x_polls = $polls = $view->post->polls()->get();
+
+    if (count($polls)) {
+      $options = PollOption::whereIn('poll', $polls->lists('id'))->get();
+
+      // array('optionID' => vote_count).
+      $votes = PollVote
+        ::whereIn('poll', $polls->lists('id'))
+        ->groupBy('option')
+        ->lists(\DB::raw('COUNT(1)'), 'option');
+
+      foreach ($polls as $poll) {
+        $sumVotes = 0;
+        $poll->x_options = array();
+
+        foreach ($options as $option) {
+          if ($option->poll === $poll->id) {
+            $sumVotes += $option->x_voteCount = $votes[$option->id];
+            $poll->x_options[] = $option;
+            $option->id or $option->caption = trans('habravel::g.post.abstain');
+          }
+        }
+
+        $poll->x_voteCount = $sumVotes;
+      }
+    }
+  }
+});
+
 View::composer('habravel::posts', function ($view) {
   if (!isset($view->comments)) {
     $list = array();
@@ -348,8 +535,21 @@ View::composer('habravel::edit', function ($view) {
     $view->textPlaceholder = $list[array_rand($list)];
   }
 
-  isset($view->tags) or $view->tags = Tag::take(14)->lists('caption');
+  isset($view->tagPool) or $view->tagPool = Tag::take(14)->lists('caption');
   isset($view->post->x_tags) or $view->post->x_tags = $view->post->tags()->get();
+
+  if (!isset($view->post->x_polls)) {
+    $view->post->x_polls = $polls = $view->post->polls()->get();
+    count($polls) and $options = PollOption::whereIn('poll', $polls->lists('id'))->get();
+
+    foreach ($polls as $poll) {
+      $poll->x_options = array();
+
+      foreach ($options as $option) {
+        $option['poll'] === $poll->id and $poll->x_options[] = $option;
+      }
+    }
+  }
 });
 
 View::composer('habravel::user', function ($view) {

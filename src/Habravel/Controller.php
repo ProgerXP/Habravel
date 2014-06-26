@@ -71,6 +71,8 @@ class Controller extends BaseController {
     if ($sorted !== $tags) {
       $tags = array_map('urlencode', $sorted);
       return Redirect::to(Core::url().'/tags/'.join('/', $tags), 301);
+    } elseif (!$tags) {
+      return Redirect::to(Core::url());
     } else {
       $query = Post
         ::join('post_tag', 'post_tag.post_id', '=', 'posts.id')
@@ -199,23 +201,69 @@ class Controller extends BaseController {
     }
   }
 
-  function getVoteUpByURL($id = 0) {
-    return $this->outVote(true, Post::find($id));
+  function postVoteUpByPost($id = 0, $down = false) {
+    $post = Post::find($id) or App::abort(404);
+    $post->poll or App::abort(403, 'This post cannot be voted for.');
+    return $this->outVote(array(array('poll' => $post->poll, 'option' => $down + 1)));
   }
 
-  function getVoteDownByURL($id = 0) {
-    return $this->outVote(false, Post::find($id));
+  function postVoteDownByPost($id = 0) {
+    return $this->postVoteUpByPost($id, true);
   }
 
-  protected function outVote($up, Post $post = null) {
+  function postVoteUpByUser($id = 0, $down = false) {
+    $user = User::find($id) or App::abort(404);
+    $user->poll or App::abort(403, 'This user cannot be voted for.');
+    return $this->outVote(array(array('poll' => $user->poll, 'option' => $down + 1)));
+  }
+
+  function postVoteDownByUser($id = 0) {
+    return $this->postVoteUpByUser($id, true);
+  }
+
+  // POST input:
+  // - votes[]=optionID   - adds user's vote for given option.
+  // - votes[]=-pollID    - abstain.
+  function postVote() {
+    $abstain = [];
+    foreach (Core::input('votes') as $id) {
+      $id[0] === '-' and $abstain[] = (int) substr($id, 1);
+    }
+
+    $votes = array();
+
+    if ($input = Core::input('votes')) {
+      $polls = Poll
+        ::join('poll_options', 'poll_options.poll', '=', 'polls.id')
+        ->whereNull('poll_options.deleted_at')
+        ->whereNull('polls.deleted_at')
+        ->whereIn('poll_options.id', $input)
+        ->get(array('polls.*', 'poll_options.id AS optionID'))
+        ->merge( Poll::whereNull('deleted_at')->whereIn('id', $abstain)->get() );
+
+      foreach ($polls as $poll) {
+        $votes[] = array(
+          'poll'            => $poll->id,
+          'option'          => $poll->optionID,
+        );
+      }
+    }
+
+    return $this->outVote($votes);
+  }
+
+  // $votes = array(array('option' => id/null, 'poll' => id), ...).
+  // Warning: IDs are not verified and thus must exist and belong to the polls.
+  protected function outVote(array $votes) {
     static::checkCSRF();
-    $post or App::abort(404);
 
-    if ($resp = Event::until('habravel.check.vote', array(&$up, $post))) {
+    if ($votes and $resp = Event::until('habravel.check.vote', array(&$votes))) {
       return $res;
     } else {
-      Event::fire('habravel.save.vote', array(&$up, $post));
-      return Redirect::to($post->url());
+      $votes and Event::fire('habravel.save.vote', array(&$votes));
+      $url = Core::normReferer(\URL::previous());
+      strrchr($url, '#') or $url .= '#polls';
+      return Redirect::to($url);
     }
   }
 
@@ -274,16 +322,7 @@ class Controller extends BaseController {
     static::checkCSRF();
     \Session::regenerate();   // prevent session fixation.
     $input = Core::input();
-
-    if ($back = &$input['back']) {
-      // Prevent redirection to an external URL.
-      if (strpos($back, $root = Core::url().'/') === 0) {
-        $back = substr($back, strlen($root));
-      } else {
-        // Location: //google.com actually works, as well as \/google.com.
-        $back = $root.ltrim($back, '\\/');
-      }
-    }
+    $back = $input['back'] = Core::normReferer(array_get($input, 'back'));
 
     $auth = array_only($input, array('email', 'password', 'remember'));
     if (!isset($auth['email'])) {

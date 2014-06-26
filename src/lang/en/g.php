@@ -62,6 +62,9 @@ return array(
     'size'                => ':chars characters; :words words',
     'commentCount'        => 'Number of comments',
     'pubTime'             => 'Publication date',
+    'poll'                => 'Poll:',
+    'abstain'             => 'Abstain',
+    'vote'                => 'Vote',
     'comments'            => 'Comments',
   ),
 

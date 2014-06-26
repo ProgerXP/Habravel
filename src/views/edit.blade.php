@@ -1,9 +1,9 @@
 <?php /*
   - $errors           - optional; MessageBag instance
-  - $post             - Post instance with x_tags
+  - $post             - Post instance with x_tags, x_polls
   - $markups          - array of markup names ('githubmarkdown', 'uversewiki', etc.)
   - $textPlaceholder  - default text for textarea
-  - $tags             - array of string
+  - $tagPool          - array of string
 */?>
 
 @extends('habravel::page')
@@ -86,8 +86,8 @@
 
         <p class="hvl-pedit-tags-to">
           @foreach ($post->x_tags as $tag)
-            @if (false !== $index = array_search($tag->caption, $tags))
-              <?php unset($tags[$index])?>
+            @if (false !== $index = array_search($tag->caption, $tagPool))
+              <?php unset($tagPool[$index])?>
               <a target="_blank" href="{{{ $tag->url() }}}">{{{ $tag->caption }}}</a>
             @else
               <a class="hvl-pedit-tags-custom" target="_blank" href="{{{ $tag->url() }}}">{{{ $tag->caption }}}</a>
@@ -98,7 +98,7 @@
         </p>
 
         <p class="hvl-pedit-tags-from">
-          @foreach ($tags as $tag)
+          @foreach ($tagPool as $tag)
             <a target="_blank" href="{{{ Habravel\Core::url().'/tags/'.urlencode($tag) }}}">
               {{{ $tag }}}
             </a>
@@ -114,28 +114,12 @@
           <noscript>{{{ trans('habravel::g.needJS') }}}</noscript>
         </p>
 
-        <p>
-          <input class="hvl-input" name="polls[0][caption]"
-                 placeholder="{{{ trans('habravel::g.edit.poll') }}}">
-        </p>
+        <?php $index = -1?>
+        @foreach ($post->x_polls as $index => $poll)
+          @include('habravel::part.editPoll', compact('index', 'poll'), array())
+        @endforeach
 
-        <p>
-          <label>
-            <input type="radio" name="polls[0][multiple]" value="0">
-            {{{ trans('habravel::g.edit.pollSingle') }}}
-          </label>
-
-          <label>
-            <input type="radio" name="polls[0][multiple]" value="1">
-            {{{ trans('habravel::g.edit.pollMultiple') }}}
-          </label>
-        </p>
-
-        <p class="hvl-pedit-poll-opt">
-          <b class="hvl-pedit-poll-opt-num">1)
-          </b><input class="hvl-input" name="options[0][0][caption]"
-                     placeholder="{{{ trans('habravel::g.edit.option') }}}">
-        </p>
+        @include('habravel::part.editPoll', array('index' => $index + 1, 'poll' => new Habravel\Poll), array())
 
         <p>
           <button type="button" class="hvl-btn hvl-pedit-poll-add">

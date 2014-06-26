@@ -50,6 +50,14 @@ class User extends BaseModel {
     return $list;
   }
 
+  function setEmail($value) {
+    return trim($value);
+  }
+
+  function setName($value) {
+    return trim($value);
+  }
+
   function posts() {
     return Post::whereAuthor($this->id);
   }

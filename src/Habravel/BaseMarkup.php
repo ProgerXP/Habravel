@@ -24,6 +24,12 @@ abstract class BaseMarkup {
     return $self->toHTML();
   }
 
+  function getDates() {
+    $list = parent::getDates();
+    $list[] = 'deleted_at';
+    return $list;
+  }
+
   function toHTML() {
     $this->doToHTML();
     $this->html = trim($this->html);

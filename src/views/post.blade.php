@@ -2,6 +2,7 @@
   - $classes          - optional; string of space-separated CSS classes
   - $post             - Post instance with loaded author, tags
   - $post->x_children - array of Post, root comments for this post
+  - $post->x_polls    - array of Poll with x_voteCount, x_options (with x_voteCount)
 */?>
 
 @extends('habravel::page')
@@ -11,6 +12,47 @@
 
   @include('habravel::part.postTitle', compact('post'), array())
   @include('habravel::part.post', array('captionTag' => 'h1'))
+
+  @if ($post->x_polls)
+    <form action="{{{ Habravel\Core::url() }}}/vote" method="post" id="polls" class="hvl-polls">
+      <input type="hidden" name="_token" value="{{{ csrf_token() }}}">
+
+      @foreach ($post->x_polls as $poll)
+        <div class="hvl-poll" data-hvl-poll="{{{ join(' ', $poll->x_options->pluck('x_voteCount')) }}}">
+          <h2 id="poll-{{{ $poll->id }}}">
+            {{{ trans('habravel::g.post.poll') }}}
+            <span>{{{ $poll->x_caption }}}</span>
+            @if ($poll->x_voteCount) ({{{ $poll->x_voteCount }}}) @endif
+          </h2>
+
+          --------- javascript chart + change type on click
+
+          @foreach ($poll->x_options as $option)
+            <div class="hvl-poll-option">
+              <p>
+                @if ($poll->multiple)
+                  <input type="checkbox" name="votes[]" value="{{{ $option->id }}}">
+                @else
+                  <input type="radio" name="votes[{{{ $poll->id }}}]" value="{{{ $option->id }}}">
+                @endif
+
+                <span>{{{ $option->caption }}}</span>
+                ({{{ $option->x_voteCount }}})
+              </p>
+
+              <hr style="width: {{{ $option->x_voteCount / $poll->x_voteCount * 100 }}}%">
+            </div>
+          @endforeach
+        </div>
+      @endforeach
+
+      <p>
+        <button type="submit" class="hvl-btn">
+          {{{ trans('habravel::g.post.vote') }}}
+        </button>
+      <</p>
+    </form>
+  @endif
 
   <a id="comments"></a>
 

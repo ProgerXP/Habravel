@@ -221,12 +221,10 @@ body p.hvl-pages {
   + * { margin-left: 0.8em; }
   &.hvl-markup-text-opposite { right: 2%; left: auto; }
 
-  h3:first-child {
+  .hvl-h3:first-child {
     margin: -1rem -1rem 0;
     padding: 1em 1em 0.5em;
     cursor: pointer;
-
-    &:hover { background: #eee; }
 
     &:hover ~ pre {
       & {
@@ -358,13 +356,13 @@ body p.hvl-pages {
 body .hvl-pedit-tags-from {
   margin-top: 1em;
   padding-top: 1em;
-  border-top: 1px solid silver;
+  border-top: 1px solid #ddd;
   position: relative;
 }
 
 .hvl-pedit-tags-from:before {
   background: #F5F5F5;
-  color: #A7A7A7;
+  color: silver;
   content: "▲";
   display: block;
   left: 50%;

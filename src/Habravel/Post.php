@@ -70,6 +70,12 @@ class Post extends BaseModel {
     return $list;
   }
 
+  function setUrl($value) { return trim($value); }
+  function setSourceURL($value) { return trim($value); }
+  function setSourceName($value) { return trim($value); }
+  function setCaption($value) { return trim($value); }
+  function setText($value) { return rtrim($value); }
+
   function author() {
     return User::find($this->author);
   }
@@ -92,6 +98,10 @@ class Post extends BaseModel {
 
   function poll() {
     return Poll::find($this->poll);
+  }
+
+  function polls() {
+    return $this->belongsToMany(NS.'Poll');
   }
 
   function tags() {
