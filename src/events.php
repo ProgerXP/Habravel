@@ -378,7 +378,7 @@ Event::listen('habravel.save.vote', function (array $votes) {
     ->delete();
 
   foreach ($votes as $vote) {
-    $records[] = array_only($vote, 'poll', 'option') + compact('user', 'ip');
+    $records[] = array_only($vote, array('poll', 'option')) + compact('user', 'ip');
   }
 
   \DB::table('poll_votes')->insert($records);
@@ -494,13 +494,36 @@ View::composer('habravel::post', function ($view) {
     $x_polls = $view->post->polls()->get();
 
     if (count($x_polls)) {
-      $options = PollOption::whereIn('poll', $x_polls->lists('id'))->get();
+      $options = PollOption::whereIn('poll', $x_polls->lists('id'))->get()->all();
 
       // array('optionID' => vote_count).
       $votes = PollVote
         ::whereIn('poll', $x_polls->lists('id'))
-        ->groupBy('option')
-        ->lists(\DB::raw('COUNT(1)'), 'option');
+        ->groupBy('option', 'poll')
+        ->get(array(\DB::raw('COUNT(1) AS voteCount'), 'poll', 'option'));
+
+      foreach ($x_polls as $poll) {
+        $options[] = $option = new PollOption;
+        $option->id = '-'.$poll->id;
+        $option->poll = $poll->id;
+        $option->caption = trans('habravel::g.post.abstain');
+
+        foreach ($votes as $vote) {
+          if (!$vote->option and $option->poll === $vote->poll) {
+            $option->x_voteCount = $vote->voteCount;
+            break;
+          }
+        }
+      }
+
+      foreach ($votes as $vote) {
+        foreach ($options as $option) {
+          if ($option->id === $vote->option) {
+            $option->x_voteCount = $vote->voteCount;
+            break;
+          }
+        }
+      }
 
       foreach ($x_polls as $poll) {
         $sumVotes = 0;
@@ -508,9 +531,8 @@ View::composer('habravel::post', function ($view) {
 
         foreach ($options as $option) {
           if ($option->poll === $poll->id) {
-            $sumVotes += $option->x_voteCount = $votes[$option->id];
+            $sumVotes += $option->x_voteCount ?: 0;
             $x_options[] = $option;
-            $option->id or $option->caption = trans('habravel::g.post.abstain');
           }
         }
 

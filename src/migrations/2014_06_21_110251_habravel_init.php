@@ -6,7 +6,6 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
       $table->increments('id');
       $table->timestamps();
       $table->softDeletes();
-      $table->string('target', 254);
       $table->text('caption');
       $table->boolean('multiple');
     });

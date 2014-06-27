@@ -246,21 +246,21 @@ $(document.body)
 
 function setupChart(el) {
   var colors = []
-  var allColors = ['#ff0000']
+  var allColors = ['#FF9999', '#99B3FF', '#FFCF99', '#FC99FF', '#99FF9B']
   var types = []
-  var allTypes = ['Pie', 'PolarArea', 'Radar', 'Bar', 'Line']
+  var allTypes = ['Pie', 'Bar', 'PolarArea', 'Doughnut', 'Line', 'Radar']
 
   var votes = el.attr('data-hvl-poll').split(' ')
   var options = el.find('.hvl-poll-option')
   var data = []
   var sumVotes = 0
 
-  $.each(votes, function (i, voteCount) {
-    sumVotes += voteCount = parseInt(voteCount) || 0
+  for (var i = 0; i < votes.length; i++) {
+    sumVotes += votes[i] = parseInt(votes[i]) || 0
     colors.length || (colors = allColors.concat())
-    options.eq(i).find('hr').css('borderColor', colors[0])
-    data.push({value: voteCount, color: colors.shift()})
-  })
+    options.eq(i).find('hr').css('backgroundColor', colors[0])
+    data.push({value: votes[i], color: colors.shift()})
+  }
 
   sumVotes || data.push({value: 1, color: '#ddd'})
   var canvas = el.find('canvas')
@@ -274,15 +274,19 @@ function setupChart(el) {
       var typeData = data
     } else {
       var typeData = {
-        labels: Array(data.length),
-        datasets: [{data: data}],
+        labels: Array(data.length).join().split(','),
+        datasets: [{data: [], fillColor: allColors[0]}],
+      }
+
+      for (var i = 0; i < data.length; i++) {
+        typeData.datasets[0].data.push(data[i].value)
       }
     }
 
     chart[type](typeData, {animationSteps: 1})
   }
 
-  toggle()
+  setTimeout(toggle, 100)   // sometimes renders strangely without it.
   sumVotes && canvas.click(toggle)
 }
 

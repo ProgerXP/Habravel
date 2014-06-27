@@ -99,7 +99,7 @@ class Core extends \Illuminate\Support\ServiceProvider {
       Route::get    ('edit/{habravel_id}',      "$ctl@getEditPost");
       Route::post   ('edit',                    "$ctl@postEditPost");
       Route::get    ('tags/{habravel_any}',     "$ctl@getListByTags");
-      Route::get    ('vote',                    "$ctl@postVote");
+      Route::post   ('vote',                    "$ctl@postVote");
       Route::get    ('up/{habravel_id}',        "$ctl@postVoteUpByPost");
       Route::get    ('down/{habravel_id}',      "$ctl@postVoteDownByPost");
       Route::post   ('reply',                   "$ctl@postReply");

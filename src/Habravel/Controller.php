@@ -238,14 +238,21 @@ class Controller extends BaseController {
         ->whereNull('poll_options.deleted_at')
         ->whereNull('polls.deleted_at')
         ->whereIn('poll_options.id', $input)
-        ->get(array('polls.*', 'poll_options.id AS optionID'))
-        ->merge( Poll::whereNull('deleted_at')->whereIn('id', $abstain)->get() );
+        ->get(array('polls.*', 'poll_options.id AS optionID'));
 
       foreach ($polls as $poll) {
         $votes[] = array(
           'poll'            => $poll->id,
           'option'          => $poll->optionID,
         );
+      }
+
+      if ($abstain) {
+        $abstain = Poll::whereNull('deleted_at')->whereIn('id', $abstain)->lists('id');
+
+        foreach ($abstain as $poll) {
+          $votes[] = array('poll' => $poll, 'option' => null);
+        }
       }
     }
 

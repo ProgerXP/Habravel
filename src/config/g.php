@@ -41,6 +41,6 @@ return array(
   ),
 
   'userPerms'             => array(
-    'can.post', 'can.editSelf', 'can.reply',
+    'can.post', 'can.editSelf', 'can.reply', 'can.vote',
   ),
 );
