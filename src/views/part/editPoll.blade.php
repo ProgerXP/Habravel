@@ -30,14 +30,13 @@
   @if (!empty($poll->x_options))
     @foreach ($poll->x_options as $i => $option)
       <p class="hvl-pedit-poll-opt">
-        <b class="hvl-pedit-poll-opt-num">{{{ $i + 1 }}})
-        </b>
+        <b class="hvl-pedit-poll-opt-num">
+          {{{ $i + 1 }}})
+        </b><input class="hvl-input" name="options[{{{ $index }}}][{{{ $i }}}][caption]"
+                   value="{{{ $option->caption }}}"
+                   placeholder="{{{ trans('habravel::g.edit.option') }}}">
 
         <input type="hidden" name="options[{{{ $index }}}][{{{ $i }}}][id]" value="{{{ $option->id }}}">
-
-        <input class="hvl-input" name="options[{{{ $index }}}][{{{ $i }}}][caption]"
-               value="{{{ $option->caption }}}"
-               placeholder="{{{ trans('habravel::g.edit.option') }}}">
       </p>
     @endforeach
   @endif

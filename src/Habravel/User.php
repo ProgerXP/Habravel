@@ -6,7 +6,7 @@ class User extends BaseModel {
     'email'               => 'required|max:200|email|unique:users,email',
     'name'                => 'required|max:50|regex:~^\w[\w\d]+$~|unique:users,name',
     'info'                => '',
-    'poll'                => 'exists:poll,id',
+    'poll'                => 'exists:polls,id',
     'score'               => '%INT%',
     'rating'              => '%INT%',
     'regIP'               => 'ip',

@@ -11,7 +11,7 @@ class Post extends BaseModel {
     'parent'              => 'exists:posts,id',
     'url'                 => 'max:50|regex:~^[\w\d\\-/#]+$~|unique:posts,url',
     'author'              => 'required|exists:users,id',
-    'poll'                => 'exists:poll,id',
+    'poll'                => 'exists:polls,id',
     'score'               => '%INT%',
     'views'               => '%INT%|min:0',
     'info'                => '',

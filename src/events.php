@@ -162,12 +162,10 @@ Event::listen('habravel.check.post', function (Post $post, array $input, Message
           // Update existing and kept poll.
           $poll->caption = $pollItem['caption'];
           $poll->multiple = $pollItem['multiple'];
-          $x_polls[] = $poll;
-          $poll->validateAndMerge($errors);
           $x_options = array();
 
           // Remove/update its options.
-          foreach ($poll->options->get() as $option) {
+          foreach ($poll->options()->get() as $option) {
             foreach ($options[$pollIndex] as &$optItem) {
               if ($optItem and array_get($optItem, 'id') == $option->id and
                   trim($optItem['caption']) !== '') {
@@ -186,7 +184,7 @@ Event::listen('habravel.check.post', function (Post $post, array $input, Message
 
           // Add new options.
           foreach ($options[$pollIndex] as &$optItem) {
-            if ($optItem) {
+            if ($optItem and trim($optItem['caption']) !== '') {
               $option = new PollOption;
               $option->caption = $optItem['caption'];
               $option->poll = $poll->id;
@@ -195,16 +193,21 @@ Event::listen('habravel.check.post', function (Post $post, array $input, Message
             }
           }
 
-          $poll->x_options = $x_options;
+          // If poll has no options - delete it by keeping non-null after the cycle.
+          if ($x_options) {
+            $poll->x_options = $x_options;
+            $x_polls[] = $poll;
+            $poll->validateAndMerge($errors);
+            $poll = null;
+          }
+
           $pollItem = null;
-          // If poll has no options - delete it.
-          $poll->x_options and $poll = null;
           break;
         }
-
-        // Old poll not found, has empty caption or no options.
-        $poll and $x_deletedPolls[] = $poll;
       }
+
+      // Old poll not found, has empty caption or no options.
+      $poll and $x_deletedPolls[] = $poll;
     }
   }
 
@@ -247,6 +250,12 @@ Event::listen(
 
 Event::listen('habravel.save.post', function (Post $post) {
   \DB::transaction(function () use ($post) {
+    if (!$post->poll) {
+      $poll = new Poll;
+      $poll->save();
+      $post->poll = $poll->id;
+    }
+
     $post->url or $post->url = 'posts/%ID%';
     $post->save();
   });
@@ -286,6 +295,7 @@ Event::listen('habravel.save.post', function (Post $post) {
     foreach ($post->x_deletedPolls as $poll) { $poll->delete(); }
 
     \DB::table('poll_post')->where('post_id', '=', $post->id)->delete();
+    $records = array();
 
     foreach ($post->x_polls as $poll) {
       $poll->save();
@@ -297,7 +307,7 @@ Event::listen('habravel.save.post', function (Post $post) {
       }
     }
 
-    \DB::table('poll_post')->insert($records);
+    $records and \DB::table('poll_post')->insert($records);
   });
 });
 
@@ -426,6 +436,12 @@ Event::listen('habravel.check.register', function (User $user, array $input, Mes
 }, LAST);
 
 Event::listen('habravel.save.register', function (User $user) {
+  if (!$user->poll) {
+    $poll = new Poll;
+    $poll->save();
+    $user->poll = $poll->id;
+  }
+
   $user->save();
 });
 

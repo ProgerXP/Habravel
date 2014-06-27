@@ -119,8 +119,6 @@
           @include('habravel::part.editPoll', compact('index', 'poll'), array())
         @endforeach
 
-        @include('habravel::part.editPoll', array('index' => $index + 1, 'poll' => new Habravel\Poll), array())
-
         <p>
           <button type="button" class="hvl-btn hvl-pedit-poll-add">
             {{{ trans('habravel::g.edit.addPoll') }}}

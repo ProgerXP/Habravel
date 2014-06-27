@@ -204,6 +204,13 @@ $(document.body)
     }
   })
 
+  .on('click', '.hvl-poll-option [name="votes[]"]', function (e) {
+    if (e.target.checked && e.target.value < 0) {
+      $(e.target).parents('.hvl-poll-option:first').prevAll('.hvl-poll-option')
+        .find('[type="checkbox"]').each(function () { this.checked = false })
+    }
+  })
+
   /***
     Splitter
    ***/
@@ -286,7 +293,7 @@ function setupChart(el) {
     chart[type](typeData, {animationSteps: 1})
   }
 
-  setTimeout(toggle, 100)   // sometimes renders strangely without it.
+  setTimeout(toggle, 10)
   sumVotes && canvas.click(toggle)
 }
 
@@ -301,7 +308,7 @@ $(function () {
   setTimeout(function () {
     if (polls.length) {
       setupChart( $(polls.shift()) )
-      setTimeout(arguments.callee, 300)
+      setTimeout(arguments.callee, 200)
     }
-  }, 500)
+  }, 300)
 })

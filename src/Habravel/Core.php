@@ -116,8 +116,8 @@ class Core extends \Illuminate\Support\ServiceProvider {
       Route::get    ('~{habravel_user}',        "$ctl@getUserByName");
       Route::get    ('~{habravel_user}/posts',  "$ctl@getUserByNamePosts");
       Route::get    ('~{habravel_user}/comments', "$ctl@getUserByNameComments");
-      Route::get    ('~{habravel_user}/up',     "$ctl@postVoteUpByUser");
-      Route::get    ('~{habravel_user}/down',   "$ctl@postVoteUpByUser");
+      Route::get    ('~{habravel_user}/up',     "$ctl@postVoteUpByUserName");
+      Route::get    ('~{habravel_user}/down',   "$ctl@postVoteDownByUserName");
       Route::get    ('users/{habravel_id}',     "$ctl@getUser");
       // Fallback.
       Route::get    ('{habravel_any}',          "$ctl@getPostByURL");

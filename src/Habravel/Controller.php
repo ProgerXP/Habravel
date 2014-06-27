@@ -201,38 +201,50 @@ class Controller extends BaseController {
     }
   }
 
-  function postVoteUpByPost($id = 0, $down = false) {
-    $post = Post::find($id) or App::abort(404);
-    $post->poll or App::abort(403, 'This post cannot be voted for.');
-    return $this->outVote(array(array('poll' => $post->poll, 'option' => $down + 1)));
+  function postVoteUpByPost($id = 0) {
+    return $this->outModelVote(Post::find($id), true);
   }
 
   function postVoteDownByPost($id = 0) {
-    return $this->postVoteUpByPost($id, true);
+    return $this->outModelVote(Post::find($id), false);
   }
 
-  function postVoteUpByUser($id = 0, $down = false) {
-    $user = User::find($id) or App::abort(404);
-    $user->poll or App::abort(403, 'This user cannot be voted for.');
-    return $this->outVote(array(array('poll' => $user->poll, 'option' => $down + 1)));
+  function postVoteUpByUserName($name = '') {
+    return $this->outModelVote(User::whereName($name)->first(), true);
   }
 
-  function postVoteDownByUser($id = 0) {
-    return $this->postVoteUpByUser($id, true);
+  function postVoteDownByUserName($name = '') {
+    return $this->outModelVote(User::whereName($name)->first(), false);
+  }
+
+  protected function outModelVote($model, $up) {
+    $model or App::abort(404);
+    $model->poll or App::abort(403, 'This '.class_basename($model).' cannot be voted for.');
+    $res = $this->outVote(array(array('poll' => $model->poll, 'option' => $up + 1)));
+
+    $votes = PollVote
+      ::wherePoll($model->poll)
+      ->whereIn('option', array(1, 2))
+      ->groupBy('option')
+      ->lists(\DB::raw('COUNT(1)'), 'option');
+    $model->score = array_get($votes, 2, 0) - array_get($votes, 1, 0);
+    $model->save();
+
+    return $res;
   }
 
   // POST input:
   // - votes[]=optionID   - adds user's vote for given option.
   // - votes[]=-pollID    - abstain.
   function postVote() {
-    $abstain = [];
-    foreach (Core::input('votes') as $id) {
-      $id[0] === '-' and $abstain[] = (int) substr($id, 1);
-    }
-
     $votes = array();
 
     if ($input = Core::input('votes')) {
+      $abstain = [];
+      foreach ($input as $id) {
+        $id[0] === '-' and $abstain[] = (int) substr($id, 1);
+      }
+
       $polls = Poll
         ::join('poll_options', 'poll_options.poll', '=', 'polls.id')
         ->whereNull('poll_options.deleted_at')

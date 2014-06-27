@@ -60,7 +60,9 @@
            class="hvl-puser-avatar" title="ID: {{{ $user->id }}}">
 
       <h1 class="hvl-h1">
+        <a href="{{{ Habravel\Core::url()."/~".urlencode($user->name)."/up?_token=".urlencode(csrf_token()) }}}"><i class="hvl-i-upg"></i></a>
         {{ $user->nameHTML(array('link' => false)) }}
+        <a href="{{{ Habravel\Core::url()."/~".urlencode($user->name)."/down?_token=".urlencode(csrf_token()) }}}"><i class="hvl-i-downg"></i></a>
       </h1>
 
       <p>

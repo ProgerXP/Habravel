@@ -40,9 +40,9 @@
 
   <footer class="hvl-post-footer">
     <span class="hvl-post-footer-ctl hvl-post-footer-score">
-      <a href="{{{ "$root/up/$post->url?csrf=".urlencode(csrf_token()) }}}"><i class="hvl-i-upg"></i></a>
+      <a href="{{{ "$root/up/$post->id?_token=".urlencode(csrf_token()) }}}"><i class="hvl-i-upg"></i></a>
       <b>{{{ ($post->score > 0 ? '+' : '').((int) $post->score) }}}</b>
-      <a href="{{{ "$root/down/$post->url?csrf=".urlencode(csrf_token()) }}}"><i class="hvl-i-downg"></i></a>
+      <a href="{{{ "$root/down/$post->id?_token=".urlencode(csrf_token()) }}}"><i class="hvl-i-downg"></i></a>
     </span>
 
     <span class="hvl-post-footer-ctl" title="{{{ trans('habravel::g.post.views') }}}">

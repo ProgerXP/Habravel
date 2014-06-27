@@ -54,7 +54,7 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
       $table->integer('user')->unsigned();
       $table->char('ip', 15);
 
-      $table->primary(array('poll', 'user'));
+      $table->unique(array('poll', 'option', 'user'));
 
       $table->foreign('poll')->references('id')->on('polls')
         ->onUpdate('cascade')->onDelete('cascade');
