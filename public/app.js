@@ -22,6 +22,12 @@ $(document.body)
     return false
   })
 
+  .on('keypress', '.hvl-pedit-text', function (e) {
+    if (e.keyCode == 13 && (e.altKey || e.ctrlKey || e.metaKey)) {
+      $(e.target).parents('form:first').find('.hvl-pedit-preview').click()
+    }
+  })
+
   .on('click', '.hvl-pedit-expand', function (e) {
     var form = $(this).parents('form:first')
       .toggleClass('hvl-pedit-expanded')

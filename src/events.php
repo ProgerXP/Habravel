@@ -67,7 +67,7 @@ Event::listen('habravel.out.post', function (Post $post) {
 });
 
 Event::listen(
-  array('habravel.out.edit', 'habravel.save.post'),
+  array('habravel.out.edit', 'habravel.save.post', 'habravel.out.source'),
   function (Post $post) {
     if (!($user = Core::user())) {
       App::abort(401);

@@ -2,7 +2,7 @@
 // Configuration for HyperSafe: https://github.com/ProgerXP/HyperSafe
 $hs = new HyperSafe;
 return array(
-  'lineBreaks'            => "\b",
+  'lineBreaks'            => "\n",
   'keepComments'          => false,
   // Just keeping defaults.
   'tags'                  => $hs->tags,

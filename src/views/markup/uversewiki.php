@@ -15,9 +15,13 @@
 %%(html)&lt;b&gt;&amp;hellip;&lt;/b&gt;%%
 
 ((http://google.com Link text))
+((post/url link)) or ((123 by ID))
+((~user link)) or ((~123 by ID))
+((=tag search)) or ((=tag1/and_tag2))
 {{Image http://google.com/logo.png}}
 {{Image http://google.com/logo.png, align=left}}
 {{Image http://google.com/logo.png, height=100px}}
+{{cut Text for "Read more" link.}} or just {{cut}}
 
 &gt;&gt;Right-aligned text.&gt;&gt;
 &gt;&gt;Centered text.&lt;&lt;

@@ -34,7 +34,7 @@
     @include('habravel::part.tags', array('tags' => $post->x_tags), array())
   </header>
 
-  <article class="hvl-markedup">
+  <article class="hvl-markedup hvl-markedup-{{{ $post->markup }}}">
     {{ $post->html }}
   </article>
 

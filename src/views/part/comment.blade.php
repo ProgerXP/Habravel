@@ -17,7 +17,7 @@
     <img src="{{{ $post->x_author->avatarURL() }}}" alt="{{{ $post->x_author->name }}}">
   </a>
 
-  <article class="hvl-markedup">
+  <article class="hvl-markedup hvl-markedup-{{{ $post->markup }}}">
     {{ $post->html }}
   </article>
 

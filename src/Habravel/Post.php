@@ -110,8 +110,8 @@ class Post extends BaseModel {
     return $this->belongsToMany(NS.'Tag');
   }
 
-  function url() {
-    return Core::url().'/'.$this->url;
+  function url($absolute = true) {
+    return ($absolute ? Core::url().'/' : '').$this->url;
   }
 
   function isEditable(User $user) {

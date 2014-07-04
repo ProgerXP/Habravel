@@ -120,6 +120,8 @@ class Core extends \Illuminate\Support\ServiceProvider {
       // Article.
       Route::get    ('markup/{name}',           "$ctl@getMarkupHelp");
       Route::get    ('compose',                 "$ctl@getEditPost");
+      Route::get    ('posts/{habravel_id}',     "$ctl@getPost");
+      Route::get    ('posts',                   "$ctl@getList");
       Route::get    ('source/{habravel_id}',    "$ctl@getPostSource");
       Route::get    ('edit/{habravel_id}',      "$ctl@getEditPost");
       Route::post   ('edit',                    "$ctl@postEditPost");
@@ -131,7 +133,6 @@ class Core extends \Illuminate\Support\ServiceProvider {
       Route::get    ('best/day',                "$ctl@getBestListDay");
       Route::get    ('best/week',               "$ctl@getBestListWeek");
       Route::get    ('best',                    "$ctl@getBestList");
-      Route::get    ('all',                     "$ctl@getList");
       // User.
       Route::get    ('logout',                  "$ctl@getLogout");
       Route::get    ('login',                   "$ctl@getLogin");
@@ -139,12 +140,12 @@ class Core extends \Illuminate\Support\ServiceProvider {
       Route::get    ('register',                "$ctl@getRegister");
       Route::post   ('register',                "$ctl@postRegister");
       Route::get    ('~',                       "$ctl@getCurrentUser");
+      Route::get    ('~{habravel_id}',          "$ctl@getUser");
       Route::get    ('~{habravel_user}',        "$ctl@getUserByName");
       Route::get    ('~{habravel_user}/posts',  "$ctl@getUserByNamePosts");
       Route::get    ('~{habravel_user}/comments', "$ctl@getUserByNameComments");
       Route::get    ('~{habravel_user}/up',     "$ctl@postVoteUpByUserName");
       Route::get    ('~{habravel_user}/down',   "$ctl@postVoteDownByUserName");
-      Route::get    ('users/{habravel_id}',     "$ctl@getUser");
       // Fallback.
       Route::get    ('{habravel_any}',          "$ctl@getPostByURL");
       Route::get    ('',                        "$ctl@getBestListWeek");

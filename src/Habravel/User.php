@@ -77,8 +77,8 @@ class User extends BaseModel {
     }
   }
 
-  function url() {
-    return Core::url().'/~'.urlencode($this->name);
+  function url($absolute = true) {
+    return ($absolute ? Core::url().'/' : '').'~'.urlencode($this->name);
   }
 
   function avatarURL() {

@@ -14,7 +14,7 @@ class GitHubMarkdown extends BaseMarkup {
     }
 
     if ($this->target) {
-      $parser->fn_id_prefix = $this->target->id.$parser->fn_id_prefix;
+      $parser->fn_id_prefix = $parser->fn_id_prefix.$this->target->id;
     }
 
     $this->html = $parser->transform($this->text);

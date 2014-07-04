@@ -20,6 +20,7 @@
       <div class="hvl-pedit-topbtn">
         <noscript>{{{ trans('habravel::g.needJS') }}}</noscript>
 
+        <span class="hvl-pedit-preview-hotkey">Ctrl/Alt+Enter &rarr;</span>
         <span class="hvl-pedit-preview-blocked">{{{ trans('habravel::g.edit.blocked') }}}</span>
 
         <button class="hvl-btn hvl-pedit-preview" type="submit" name="preview" value="1">
