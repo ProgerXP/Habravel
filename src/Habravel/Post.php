@@ -34,6 +34,8 @@ class Post extends BaseModel {
     'poll'                => null,  // Poll id; for counting score.
     'score'               => 0,     // +/- int.
     'views'               => 0,     // uint.
+    'seen'                => '',    // binary string, each chunk is 4
+                                    // bytes (IP or user ID).
     'info'                => '',    // serialized.
     'sourceURL'           => '',
     'sourceName'          => '',    // translation/other source.

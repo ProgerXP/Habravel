@@ -135,13 +135,11 @@ Event::listen('habravel.check.post', function (Post $post, array $input, Message
 });
 
 Event::listen('habravel.check.post', function (Post $post, array $input, MessageBag $errors) {
-  if (isset($input['tags'])) {
-    $post->x_tags = array_map(function ($caption) {
-      $tag = new Tag;
-      $tag->caption = trim($caption);
-      return $tag;
-    }, (array) $input['tags']);
-  }
+  $post->x_tags = array_map(function ($caption) {
+    $tag = new Tag;
+    $tag->caption = trim($caption);
+    return $tag;
+  }, (array) array_get($input, 'tags'));
 });
 
 Event::listen('habravel.check.post', function (Post $post, array $input, MessageBag $errors) {
@@ -152,9 +150,9 @@ Event::listen('habravel.check.post', function (Post $post, array $input, Message
   // - options[index][optindex][caption]=...
   // - options[index][optindex][id] - if editing existing option
 
-  if ($polls = array_get($input, 'polls') and $options = array_get($input, 'options')) {
-    $x_polls = $x_deletedPolls = $x_deletedOptions = array();
+  $x_polls = $x_deletedPolls = $x_deletedOptions = array();
 
+  if ($polls = array_get($input, 'polls') and $options = array_get($input, 'options')) {
     foreach ($post->polls()->get() as $pollIndex => $poll) {
       foreach ($polls as &$pollItem) {
         if ($pollItem and array_get($pollItem, 'id') == $poll->id and
@@ -209,34 +207,33 @@ Event::listen('habravel.check.post', function (Post $post, array $input, Message
       // Old poll not found, has empty caption or no options.
       $poll and $x_deletedPolls[] = $poll;
     }
+
+    foreach ($polls as $pollIndex => &$pollItem) {
+      if ($pollItem and trim($pollItem['caption']) !== '') {
+        // Found a new poll to be created. Input [id] values must not be used.
+        $poll = new Poll;
+        $poll->caption = $pollItem['caption'];
+        $poll->multiple = $pollItem['multiple'];
+        $poll->validateAndMerge($errors);
+        $x_options = array();
+
+        // Add its options.
+        foreach ($options[$pollIndex] as &$optItem) {
+          if (trim($optItem['caption']) !== '') {
+            $option = new PollOption;
+            $option->caption = $optItem['caption'];
+            $x_options[] = $option;
+            $option->validateAndMerge($errors);
+          }
+        }
+
+        $poll->x_options = $x_options and $x_polls[] = $poll;
+      }
+    }
   }
 
   $post->x_deletedPolls = $x_deletedPolls;
   $post->x_deletedOptions = $x_deletedOptions;
-
-  foreach ($polls as $pollIndex => &$pollItem) {
-    if ($pollItem and trim($pollItem['caption']) !== '') {
-      // Found a new poll to be created. Input [id] values must not be used.
-      $poll = new Poll;
-      $poll->caption = $pollItem['caption'];
-      $poll->multiple = $pollItem['multiple'];
-      $poll->validateAndMerge($errors);
-      $x_options = array();
-
-      // Add its options.
-      foreach ($options[$pollIndex] as &$optItem) {
-        if (trim($optItem['caption']) !== '') {
-          $option = new PollOption;
-          $option->caption = $optItem['caption'];
-          $x_options[] = $option;
-          $option->validateAndMerge($errors);
-        }
-      }
-
-      $poll->x_options = $x_options and $x_polls[] = $poll;
-    }
-  }
-
   $post->x_polls = $x_polls;
 });
 
@@ -263,29 +260,27 @@ Event::listen('habravel.save.post', function (Post $post) {
 
 Event::listen('habravel.save.post', function (Post $post) {
   \DB::transaction(function () use ($post) {
-    if (isset($post->x_tags)) {
-      $captions = array();
+    $captions = array();
 
-      foreach ($post->x_tags as $tag) {
-        $captions[] = $tag->caption;
-        try {
-          $tag->save();
-        } catch (\Illuminate\Database\QueryException $e) {
-          // Ignore duplicate entry error.
-        }
+    foreach ($post->x_tags as $tag) {
+      $captions[] = $tag->caption;
+      try {
+        $tag->save();
+      } catch (\Illuminate\Database\QueryException $e) {
+        // Ignore duplicate entry error.
       }
-
-      $records = array();
-
-      if ($captions) {
-        foreach (Tag::whereIn('caption', $captions)->lists('id') as $id) {
-          $records[] = array('post_id' => $post->id, 'tag_id' => $id);
-        }
-      }
-
-      \DB::table('post_tag')->where('post_id', '=', $post->id)->delete();
-      \DB::table('post_tag')->insert($records);
     }
+
+    $records = array();
+
+    if ($captions) {
+      foreach (Tag::whereIn('caption', $captions)->lists('id') as $id) {
+        $records[] = array('post_id' => $post->id, 'tag_id' => $id);
+      }
+    }
+
+    \DB::table('post_tag')->where('post_id', '=', $post->id)->delete();
+    $records and \DB::table('post_tag')->insert($records);
   });
 });
 
@@ -447,14 +442,14 @@ Event::listen('habravel.save.register', function (User $user) {
 
 /***
   Drafts Support
- *** /
+ ***/
 
 $checkDraft = function ($action, Post $post) {
   if ($post->hasFlag('draft')) {
     $user = Core::user();
     if (!$user) {
       App::abort(401);
-    } elseif ($user->id !== $post->author and !$user->hasFlag("draft.$action")) {
+    } elseif ($user->id !== $post->author and !$user->hasFlag("can.draft.$action")) {
       App::abort(403, "Cannot $action author's draft.");
     }
   }
@@ -468,19 +463,25 @@ Event::listen('habravel.out.edit', function (Post $post) use ($checkDraft) {
   $checkDraft('edit', $post);
 }, VALIDATE);
 
-Event::listen('habravel.out.list', function (Query $query) {
-  $user = Core::user();
-  if (!$user or !$user->hasFlag('read.draft')) {
-    $query->where('posts.flags', 'NOT LIKE', '%[draft]%');
+Event::listen('habravel.save.post', function (Post $post) {
+  foreach ($post->x_tags as $tag) {
+    if ($tag->caption === 'draft') {
+      $post->flags = '[draft]';
+      $post->listTime = null;
+      $post->pubTime = null;
+      return;
+    }
   }
+
+  $post->flags = str_replace('[draft]', '', $post->flags);
 }, CUSTOMIZE);
 
-  + put drafts link to uheader
-  + save to drafts button for compose view
-+ post links support
-+ comments support
-+ polls support
-*/
+Event::listen('habravel.out.list', function (Query $query) {
+  //$user = Core::user();
+  //if (!$user or !$user->hasFlag('read.draft')) {
+  //  $query->where('posts.flags', 'NOT LIKE', '%[draft]%');
+  //}
+}, CUSTOMIZE);
 
 /***
   View Composers
@@ -619,6 +620,12 @@ View::composer('habravel::user', function ($view) {
 
 View::composer('habravel::part.uheader', function ($view) {
   isset($view->pageUser) or $view->pageUser = Core::user();
+
+  if (!isset($view->pageDraftCount)) {
+    $view->pageDraftCount = !$view->pageUser ? 0 : $view->pageUser->posts()
+      ->where('posts.flags', 'LIKE', '%[draft]%')
+      ->count();
+  }
 });
 
 View::composer('habravel::part.markups', function ($view) {
@@ -658,4 +665,6 @@ View::composer('habravel::part.comment', function ($view) {
 
 View::composer('habravel::page', function ($view) {
   isset($view->pageTitle) or $view->pageTitle = trans('habravel::g.pageTitle');
+  isset($view->pageMetaDesc) or $view->pageMetaDesc = '';
+  isset($view->pageMetaKeys) or $view->pageMetaKeys = '';
 });

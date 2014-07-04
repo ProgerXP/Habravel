@@ -11,14 +11,16 @@
 @section('content')
   @include('habravel::part.uheader', array(), array())
 
-  <form action="{{{ Habravel\Core::url() }}}/edit" method="post" class="hvl-pedit-form"
-        data-hvl-post="{{{ $post->toJSON() }}}">
+  <form action="{{{ Habravel\Core::url() }}}/edit" method="post"
+        class="hvl-pedit-form hvl-split" data-hvl-post="{{{ $post->toJSON() }}}">
     <input type="hidden" name="_token" value="{{{ csrf_token() }}}">
     <input type="hidden" name="id" value="{{{ $post->id }}}">
 
     <aside>
       <div class="hvl-pedit-topbtn">
         <noscript>{{{ trans('habravel::g.needJS') }}}</noscript>
+
+        <span class="hvl-pedit-preview-blocked">{{{ trans('habravel::g.edit.blocked') }}}</span>
 
         <button class="hvl-btn hvl-pedit-preview" type="submit" name="preview" value="1">
           <i class="hvl-i-zoomw"></i> {{{ trans('habravel::g.edit.preview') }}}
@@ -136,9 +138,15 @@
     </div>
 
     <div class="hvl-split-right">
-      <textarea class="hvl-input hvl-pedit-text" name="text" data-sqa="wr - w$body{pb}"
+      <textarea class="hvl-input hvl-pedit-text" name="text" data-sqa="wr - w$body{pb} -"
                 rows="20" cols="50" tabindex="2" required="required"
                 placeholder="{{{ $textPlaceholder }}}">{{{ $post->text }}}</textarea>
+
+      <div class="hvl-pedit-ctl">
+        <button class="hvl-btn" type="submit" name="tags[]" value="draft">
+          {{{ trans('habravel::g.edit.save') }}}
+        </button>
+      </div>
     </div>
   </form>
 @stop

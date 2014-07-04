@@ -64,10 +64,12 @@
         {{{ $size >= 1000 ? round($size / 1000).'K' : $size }}}</a>
     </span>
 
-    <time pubdate="pubdate" datetime="{{{ date(DATE_ATOM, $post->pubTime->timestamp) }}}"
-          class="hvl-post-footer-ctl" title="{{{ trans('habravel::g.post.pubTime') }}}">
-      <i class="hvl-i-pencilg"></i>
-      {{{ DateFmt::Format('AGO-AT[s-d]IF>7[d# m__ y##]', $post->pubTime->timestamp, Config::get('application.language')) }}}
-    </time>
+    @if ($time = ($post->pubTime ?: $post->created_at))
+      <time pubdate="pubdate" datetime="{{{ date(DATE_ATOM, $time->timestamp) }}}"
+            class="hvl-post-footer-ctl" title="{{{ trans('habravel::g.post.pubTime') }}}">
+        @if ($post->pubTime) <i class="hvl-i-pencilg"></i> @endif
+        {{{ DateFmt::Format('AGO-AT[s-d]IF>7[d# m__ y##]', $time->timestamp, Config::get('app.locale')) }}}
+      </time>
+    @endif
   </footer>
 </div>

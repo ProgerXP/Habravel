@@ -1,15 +1,22 @@
+<?php /*
+  - $pageTitle        - string
+  - $pageMetaDesc     - string
+  - $pageMetaKeys     - string
+*/?>
+
 <!DOCTYPE html>
-<html data-sqa="wr" style="height: 100%">
+<html data-sqa="wr" style="height: 100%" lang="{{{ Config::get('app.locale') }}}">
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
     <title>{{{ $pageTitle }}}</title>
 
+    <meta name="description" content="{{{ $pageMetaDesc }}}">
+    <meta name="keywords" content="{{{ $pageMetaKeys }}}">
+    <meta name="generator" content="Habravel community blog engine">
+
     <link rel="shortcut icon" href="{{{ asset('favicon.ico') }}}" type="image/x-icon">
 
-    <link type="text/css" rel="stylesheet" media="all"
-          href="{{{ asset('packages/proger/habravel/normalize.css') }}}">
     <link rel="stylesheet/less" type="text/css" media="all"
           href="{{{ asset('packages/proger/habravel/styles.less') }}}">
 

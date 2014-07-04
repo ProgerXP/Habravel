@@ -35,11 +35,13 @@
 
     {{ $post->x_author->nameHTML() }}
 
-    <time pubdate="pubdate" datetime="{{{ date(DATE_ATOM, $post->pubTime->timestamp) }}}">
-      <a href="{{{ $post->url() }}}" title="{{{ trans('habravel::g.comment.anchor') }}}">
-        {{{ DateFmt::Format('AGO-AT[s-d]IF>2[d# m__ y##]AT h#m', $post->pubTime->timestamp, Config::get('application.language')) }}}
-      </a>
-    </time>
+    @if ($post->pubTime)
+      <time pubdate="pubdate" datetime="{{{ date(DATE_ATOM, $post->pubTime->timestamp) }}}">
+        <a href="{{{ $post->url() }}}" title="{{{ trans('habravel::g.comment.anchor') }}}">
+          {{{ DateFmt::Format('AGO-AT[s-d]IF>2[d# m__ y##]AT h#m', $post->pubTime->timestamp, Config::get('app.locale')) }}}
+        </a>
+      </time>
+    @endif
   </footer>
 
   {{-- Must be present because Reply button puts reply form here. --}}

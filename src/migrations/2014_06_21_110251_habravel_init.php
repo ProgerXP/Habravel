@@ -86,8 +86,8 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
       $table->mediumText('html');
       $table->mediumText('introHTML');
       $table->mediumText('flags');
-      $table->timestamp('listTime');
-      $table->timestamp('pubTime');
+      $table->timestamp('listTime')->nullable();
+      $table->timestamp('pubTime')->nullable();
 
       $table->unique('url');
       //$table->index('author');    // implied by foreign key.

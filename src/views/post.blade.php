@@ -13,7 +13,7 @@
   @include('habravel::part.postTitle', compact('post'), array())
   @include('habravel::part.post', array('captionTag' => 'h1'))
 
-  @if ($post->x_polls)
+  @if (count($post->x_polls))
     <form action="{{{ Habravel\Core::url() }}}/vote" method="post" id="polls" class="hvl-polls">
       <input type="hidden" name="_token" value="{{{ csrf_token() }}}">
 

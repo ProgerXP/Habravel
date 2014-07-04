@@ -54,7 +54,7 @@
 @section('content')
   @include('habravel::part.uheader', array(), array())
 
-  <div class="hvl-puser {{{ $user->score < 0 ? 'hvl-puser-below' : '' }}}">
+  <div class="hvl-split hvl-puser {{{ $user->score < 0 ? 'hvl-puser-below' : '' }}}">
     <header class="hvl-puser-header">
       <img src="{{{ $user->avatarURL() }}}" alt="{{{ $user->name }}}"
            class="hvl-puser-avatar" title="ID: {{{ $user->id }}}">

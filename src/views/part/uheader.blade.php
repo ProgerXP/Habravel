@@ -1,5 +1,6 @@
 <?php /*
   - $pageUser         - User instance or null (unauthorized)
+  - $pageDraftCount   - integer
 */?>
 
 <?php $root = Habravel\Core::url()?>
@@ -17,6 +18,11 @@
   </div>
 
   <div class="hvl-uheader-right">
+    <a href="{{{ $root }}}/tags/draft">
+      {{{ trans('habravel::g.uheader.drafts') }}}
+    </a>
+    @if ($pageDraftCount) ({{{ $pageDraftCount }}}) @endif
+
     <a href="{{{ $root }}}/compose">{{{ trans('habravel::g.uheader.compose') }}}</a>
     <a href="{{{ $root }}}/~">{{{ trans('habravel::g.uheader.profile') }}}</a>
   </div>

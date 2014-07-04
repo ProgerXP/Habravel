@@ -5,6 +5,10 @@ use Redirect;
 use Illuminate\Support\MessageBag;
 
 class Controller extends BaseController {
+  function __construct() {
+    setlocale(LC_ALL, trans('habravel::g.locale'));
+  }
+
   /***
     Article Routes
    ***/

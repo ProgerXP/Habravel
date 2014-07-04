@@ -1,5 +1,6 @@
 <?php
 return array(
+  'locale'                => 'en_US.UTF-8',
   'needJS'                => 'JavaScript is required.',
   'pageTitle'             => 'Habravel',
 
@@ -16,6 +17,7 @@ return array(
   'uheader'               => array(
     'logout'              => 'Logout',
     'login'               => 'Who are you?',
+    'drafts'              => 'Drafts',
     'compose'             => 'Compose Article',
     'profile'             => 'Profile',
   ),
@@ -28,6 +30,7 @@ return array(
     'title'               => 'Article Modification',
     'titleNew'            => 'Article Composition',
     'preview'             => 'Preview',
+    'blocked'             => 'Preview popup window blocked :(',
     'expand'              => 'Expand editor',
     'markup'              => 'Markup style:',
     'caption'             => 'Article title',
@@ -44,6 +47,7 @@ return array(
     'option'              => 'Poll option',
     'addPoll'             => 'Add another poll',
     'publish'             => 'Publish',
+    'save'                => 'Save to drafts',
 
     'placeholders'        => array(
       'Here is a good place to put your first mark.',

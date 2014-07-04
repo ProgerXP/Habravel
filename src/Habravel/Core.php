@@ -106,6 +106,7 @@ class Core extends \Illuminate\Support\ServiceProvider {
       Route::get    ('best/day',                "$ctl@getBestListDay");
       Route::get    ('best/week',               "$ctl@getBestListWeek");
       Route::get    ('best',                    "$ctl@getBestList");
+      Route::get    ('all',                     "$ctl@getList");
       // User.
       Route::get    ('logout',                  "$ctl@getLogout");
       Route::get    ('login',                   "$ctl@getLogin");
