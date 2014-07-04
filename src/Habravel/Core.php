@@ -49,6 +49,31 @@ class Core extends \Illuminate\Support\ServiceProvider {
     }
   }
 
+  static function safeHTML($html) {
+    static $hs;
+
+    if (!$hs) {
+      $hs = new \HyperSafe;
+
+      foreach (Config::get('habravel::hypersafe') as $name => $value) {
+        $hs->$name = $value;
+      }
+    }
+
+    $hs->clearWarnings();
+    $clean = $hs->clean($html);
+
+    if ($warnings = $hs->warnings() and
+        Config::get('habravel::hypersafe.hvlLogWarnings')) {
+      $warnings = array_pluck($warnings, 'msg');
+      array_unshift($warnings, $html);
+      \Log::warning(sprintf('Habravel: %d warning%s normalizing HTML.',
+                            count($warnings) - 1, count($warnings) == 2 ? '' : 's'), $warnings);
+    }
+
+    return $clean;
+  }
+
   static function user($login = null) {
     static $user;
 

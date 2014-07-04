@@ -116,10 +116,13 @@
           <noscript>{{{ trans('habravel::g.needJS') }}}</noscript>
         </p>
 
-        <?php $index = -1?>
-        @foreach ($post->x_polls as $index => $poll)
-          @include('habravel::part.editPoll', compact('index', 'poll'), array())
-        @endforeach
+        @if (count($post->x_polls))
+          @foreach ($post->x_polls as $index => $poll)
+            @include('habravel::part.editPoll', compact('index', 'poll'), array())
+          @endforeach
+        @else
+          @include('habravel::part.editPoll', array('index' => 0, 'poll' => new Habravel\Poll), array())
+        @endif
 
         <p>
           <button type="button" class="hvl-btn hvl-pedit-poll-add">

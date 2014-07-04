@@ -1,3 +1,5 @@
+// .less extension makes LESS embed it instead of linking to.
+@import 'normalize.less';
 // Sprites are generated with https://draeton.github.io/stitches/
 @import 'sprites.less';
 
@@ -13,6 +15,7 @@
 @24px:  1.5em;
 @30px:  1.875em;
 @rootPadding: 1.5rem;
+@uheaderPadding: @14px;
 
 .unmargin () {
   > :first-child { margin-top: 0; }
@@ -98,6 +101,8 @@
   margin: 2.5em 0 1.5em;
 }
 
+.hvl-split { .clearfix; }
+
 .hvl-split-left, .hvl-split-right {
   .unmargin;
   width: 49.5%;
@@ -160,13 +165,13 @@ body p.hvl-pages {
 
 .hvl-uheader {
   background: #E6E6E6;
-  padding: @10px;
+  padding: @uheaderPadding;
   margin: -@rootPadding -@rootPadding (@rootPadding * 1.5);
   font-size: @18px;
   overflow: auto;
 
   .hvl-i-laravel24 { vertical-align: bottom; }
-  * + a, * + u { margin-left: 1em; }
+  * + a, * + u { margin-left: @uheaderPadding; }
   .hvl-uheader-icon + * { margin-left: 0.2em; }
   .hvl-uheader-left { float: left; }
   .hvl-uheader-right { float: right; }
@@ -299,10 +304,17 @@ body p.hvl-pages {
   float: right;
 }
 
+.hvl-pedit-preview-blocked {
+  display: none;
+  color: #800000;
+  margin-right: 0.5em;
+}
+
 .hvl-pedit-form {
   clear: both;
 
   .hvl-split-left [type=submit] { float: left; }
+  .hvl-split-right { text-align: right; }
 
   &.hvl-pedit-expanded > textarea {
     margin-top: -1em;

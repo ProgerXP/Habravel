@@ -130,10 +130,16 @@ class Post extends BaseModel {
     return count($matches[0]);
   }
 
-  function format() {
+  function format($safe = true) {
     $fmt = Core::markup($this->markup)->format($this->text, $this);
     $this->html = $fmt->html;
     $this->introHTML = $fmt->introHTML;
+
+    if ($safe) {
+      $this->html = Core::safeHTML($this->html);
+      $this->introHTML = Core::safeHTML($this->introHTML);
+    }
+
     return $this;
   }
 

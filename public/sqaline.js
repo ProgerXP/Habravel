@@ -10,7 +10,7 @@
   Sqaline expressions are regular JavaScript with certain convenient shortcuts.
   You can also create resize callbacks by listening to Sqaline events.
 
-  Sqaline reuqires jQuery or Zepto included before it. Here's how:
+  Sqaline requires jQuery or Zepto included before it. Here's how:
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script>
@@ -225,6 +225,11 @@ window.Sqaline = new (function ($, opt) {
     // 'trigger' will cause events bubbling throughout the entire DOM which
     // is useful but might cause lags. Can also be set to false to disable
     // event triggering completely. See other options below.
+    //
+    // An easy way to set up a 100% custom resizing process is setting
+    // data-sqa to an anchor-only string (no props, e.g. data-sqa="wr,wr2")
+    // - Sqaline will still fire events for such an element and you can
+    // listen to them with $(el).on('sqalined').
     trigger:          'triggerHandler',
 
     // Only used if trigger is set. Arbitrary name of event being fired.
