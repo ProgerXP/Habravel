@@ -13,8 +13,8 @@ class PollOption extends BaseModel {
     'caption'             => '',
   );
 
-  function setCaption($value) {
-    return trim($value);
+  function setCaptionAttribute($value) {
+    $this->attributes['caption'] = trim($value);
   }
 
   function poll() {

@@ -17,8 +17,8 @@ return array(
   'headingMode'           => 'shifted',
   'showComments'          => false,
   'linkExt'               => '',
-  // If false anchors won't be prefixed (risk of collisions).
-  'anchorPrefix'          => 'uw-',
+  // If false anchors won't be prefixed (risk of collisions). # stands for post ID.
+  'anchorPrefix'          => 'uw#-',
   'baseURL'               => Habravel\Core::url(false),
   'mediaURL'              => $mediaURL = asset('packages/proger/habravel/uwiki/'),
   'smileyURL'             => $mediaURL,

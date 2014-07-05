@@ -13,7 +13,7 @@
 
   @foreach ($posts as $index => $post)
     @include('habravel::part.postTitle', compact('post'), array('level' => 2, 'link' => true))
-    @include('habravel::part.post', compact('post'))
+    @include('habravel::part.post', compact('post'), array('readMore' => true))
 
     @if (!empty($comments[$index]))
       <div class="hvl-comments">

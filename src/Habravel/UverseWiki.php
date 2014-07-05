@@ -70,7 +70,7 @@ class UverseWiki extends BaseMarkup {
         break;
       case 'anchorPrefix':
         if ($value !== false and $this->target) {
-          $doc->settings->$key = $value.$this->target->id;
+          $doc->settings->$key = str_replace('#', $this->target->id, $value);
         }
         break;
       case 'baseURL':

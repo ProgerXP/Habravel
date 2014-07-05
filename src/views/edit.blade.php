@@ -11,7 +11,7 @@
 @section('content')
   @include('habravel::part.uheader', array(), array())
 
-  <form action="{{{ Habravel\Core::url() }}}/edit" method="post"
+  <form action="{{{ Habravel\Core::url() }}}/edit" method="post" data-sqa="form"
         class="hvl-pedit-form hvl-split" data-hvl-post="{{{ $post->toJSON() }}}">
     <input type="hidden" name="_token" value="{{{ csrf_token() }}}">
     <input type="hidden" name="id" value="{{{ $post->id }}}">
@@ -142,7 +142,8 @@
     </div>
 
     <div class="hvl-split-right">
-      <textarea class="hvl-input hvl-pedit-text" name="text" data-sqa="wr - w$body{pb} -"
+      <textarea class="hvl-input hvl-pedit-text" name="text"
+                data-sqa="!wr - w$body{pb} - form$~*{ho} - $~.hvl-pedit-ctl{ho}"
                 rows="20" cols="50" tabindex="2" required="required"
                 placeholder="{{{ $textPlaceholder }}}">{{{ $post->text }}}</textarea>
 

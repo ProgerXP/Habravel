@@ -36,8 +36,8 @@ return array(
   },
 
   'markups'               => array(
-    'githubmarkdown'      => 'Habravel\\GitHubMarkdown',
     'uversewiki'          => 'Habravel\\UverseWiki',
+    'githubmarkdown'      => 'Habravel\\GitHubMarkdown',
   ),
 
   'userPerms'             => array(

@@ -8,6 +8,7 @@ $(document.body)
     var options = 'left=0,top=0,menubar=no,toolbar=no,location=no,personalbar=no,status=no'
     var win = window.open('about:blank', 'habravel_preview', options)
     $(this).siblings('.hvl-pedit-preview-blocked').toggle(!win)
+    $(this).siblings('.hvl-pedit-preview-hotkey').show()
 
     var form = $(this).parents('form:first')
     var hidden = $('<input type="hidden" name="preview" value="1">')
@@ -22,9 +23,12 @@ $(document.body)
     return false
   })
 
-  .on('keypress', '.hvl-pedit-text', function (e) {
+  .on('keypress', function (e) {
     if (e.keyCode == 13 && (e.altKey || e.ctrlKey || e.metaKey)) {
-      $(e.target).parents('form:first').find('.hvl-pedit-preview').click()
+      if ($(e.target).parents('.hvl-pedit-form').length) {
+        $(e.target).parents('form:first').find('.hvl-pedit-preview').click()
+        return false
+      }
     }
   })
 

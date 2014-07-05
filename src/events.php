@@ -254,7 +254,14 @@ Event::listen('habravel.save.post', function (Post $post) {
     }
 
     $post->url or $post->url = 'posts/%ID%';
+    $exists = $post->exists;
     $post->save();
+
+    if (!$exists) {
+      // Anchors are prefixed with post ID which we didn't know before saving.
+      $post->format();
+      $post->save();
+    }
   });
 });
 
@@ -651,6 +658,12 @@ View::composer('habravel::part.post', function ($view) {
   $post->score < 0 and $view->classes .= ' hvl-post-below';
 
   isset($view->canEdit) or $view->canEdit = ($user = Core::user() and $post->isEditable($user));
+
+  if (!isset($view->readMore)) {
+    $view->readMore = false;
+  } elseif ($view->readMore === true) {
+    $view->readMore = array_get($post->info, 'cut', trans('habravel::g.post.more'));
+  }
 });
 
 View::composer('habravel::part.comment', function ($view) {

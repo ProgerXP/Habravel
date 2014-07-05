@@ -50,12 +50,11 @@ class User extends BaseModel {
     return $list;
   }
 
-  function setEmail($value) {
-    return trim($value);
+  function setEmailAttribute($value) {
+    $this->attributes['email'] = trim($value);
   }
-
-  function setName($value) {
-    return trim($value);
+  function setNameAttribute($value) {
+    $this->attributes['name'] = trim($value);
   }
 
   function posts() {

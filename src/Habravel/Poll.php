@@ -14,8 +14,8 @@ class Poll extends BaseModel {
     'multiple'            => 0,   // 1 = multichoice.
   );
 
-  function setCaption($value) {
-    return trim($value);
+  function setCaptionAttribute($value) {
+    $this->attributes['caption'] = trim($value);
   }
 
   function options() {

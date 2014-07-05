@@ -2,6 +2,7 @@
   - $classes          - optional; string of space-separated CSS classes
   - $post             - Post instance with loaded x_author, x_tags
   - $canEdit          - boolean
+  - $readMore         - false or string (link text)
 */?>
 
 <?php $root = url(Habravel\Core::url())?>
@@ -35,10 +36,16 @@
   </header>
 
   <article class="hvl-markedup hvl-markedup-{{{ $post->markup }}}">
-    {{ $post->html }}
+    {{ $readMore === false ? $post->html : $post->introHTML }}
   </article>
 
   <footer class="hvl-post-footer">
+    @if ($readMore !== false)
+      <span class="hvl-post-footer-ctl hvl-post-footer-more">
+        <a href="{{{ $post->url() }}}">{{{ $readMore }}}</a> &rarr;
+      </span>
+    @endif
+
     <span class="hvl-post-footer-ctl hvl-post-footer-score">
       <a href="{{{ "$root/up/$post->id?_token=".urlencode(csrf_token()) }}}"><i class="hvl-i-upg"></i></a>
       <b>{{{ ($post->score > 0 ? '+' : '').((int) $post->score) }}}</b>

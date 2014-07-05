@@ -3,6 +3,11 @@
 abstract class BaseMarkup {
   static $extension = 'txt';
 
+  static $defaultMeta = array(
+    // Used to replace "Read more" link text.
+    'cut'                 => '',
+  );
+
   // Marked up source text.
   public $text;
 
@@ -31,11 +36,7 @@ abstract class BaseMarkup {
   }
 
   function toHTML() {
-    $this->meta = array(
-      // Used to replace "Read more" link text.
-      'cut'               => '',
-    );
-
+    $this->meta = array();
     $this->doToHTML();
     $this->html = trim($this->html);
     $this->fillMissing();
@@ -45,8 +46,24 @@ abstract class BaseMarkup {
   protected abstract function doToHTML();
 
   protected function fillMissing() {
-    if (!$this->introHTML) {
-      $this->introHTML = trim(strtok($this->html, "\r\n"));
+    $this->meta += static::$defaultMeta;
+
+    $regexp = '/<\w+\b[^>]*(id|name)=[\'"]cut[\'"]/u';
+    if (!$this->introHTML and preg_match($regexp, $this->html, $match, PREG_OFFSET_CAPTURE)) {
+      $this->introHTML = trim(substr($this->html, 0, $match[0][1]));
     }
+
+    if (!$this->introHTML) {
+      $html = strip_tags(substr($this->html, 0, 1000));
+      $this->introHTML = trim(\Str::words($html));
+    }
+
+    if ($this->introHTML and $this->target and method_exists($this->target, 'url')) {
+      $this->introHTML = $this->rebaseLinks($this->introHTML, $this->target->url());
+    }
+  }
+
+  protected function rebaseLinks($html, $baseURL) {
+    return preg_replace('~(<a\b[^>]+href=.)(#)~ui', '\1'.$baseURL.'\2', $html);
   }
 }

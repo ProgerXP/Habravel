@@ -18,17 +18,21 @@ class Core extends \Illuminate\Support\ServiceProvider {
     return $absolute ? url($url) : $url;
   }
 
+  //? normReferer('')     //=> http://mydomain/habravel-home/
+  //? normReferer('foo')  //=> http://mydomain/habravel-home/
+  //? normReferer('http://foo')             //=> http://mydomain/habravel-home/
+  //? normReferer('http://mydomain/habravel-home/path/')   //=> as is
+  //? normReferer('http://mydomain/foo')    //=> as is
+  //? normReferer('https://mydomain/foo')   //=> as is
+  //? normReferer('http://www.mydomain/foo')    //=> as is
+  //? normReferer('https://www.mydomain/foo')   //=> as is
   static function normReferer($url) {
-    $root = static::url();
+    $host = parse_url(static::url(), PHP_URL_HOST);
 
-    if (!$url) {
-      return $root;
-    } else if (strpos($url, $root.'/') === 0) {
-      // Prevent redirection to an external URL.
-      return substr($url, strlen($root));
+    if ($url and preg_match('~^https?://(www\.)?'.$host.'/~i', $url)) {
+      return $url;
     } else {
-      // Location: //google.com actually works as well as \/google.com.
-      return $root.ltrim($url, '\\/');
+      return Core::url();
     }
   }
 

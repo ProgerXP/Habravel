@@ -14,9 +14,45 @@ class GitHubMarkdown extends BaseMarkup {
     }
 
     if ($this->target) {
-      $parser->fn_id_prefix = $parser->fn_id_prefix.$this->target->id;
+      $parser->fn_id_prefix = str_replace('#', $this->target->id, $parser->fn_id_prefix);
     }
 
-    $this->html = $parser->transform($this->text);
+    $html = $parser->transform($this->text);
+    $html = $this->makeCut($html);
+    $this->html = $html;
+  }
+
+  function makeCut($html) {
+    $p = '(</?p\b[^>]*>)?';
+    $regexp = "~$p\s*<cut(?:\s+text=['\"]([^>]*)['\"])?>\s*$p()~u";
+
+    return preg_replace_callback($regexp, function ($match) {
+      list(, $headTag, $text, $tailTag) = $match;
+
+      if (isset($text)) {
+        $this->meta['cut'] = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'utf-8');
+      }
+
+      // <p><cut> -> swap   <cut><p> -> keep   </p><cut> -> keep   <cut></p> -> swap
+      // <p><cut></p> -> unwrap   </p><cut><p> -> keep
+      if ($headTag or $tailTag) {
+        $headOpens = $headTag ? $headTag[1] !== '/' : null;
+        $tailOpens = $tailTag ? $tailTag[1] !== '/' : null;
+
+        if ($headOpens and $tailOpens === false) {
+          $headTag = $tailTag = '';
+        } elseif ($headOpens !== null and $tailOpens !== null) {
+          // Keep as is.
+        } elseif ($headOpens) {
+          $tailTag = $headTag;
+          $headTag = '';
+        } elseif ($tailOpens === false) {
+          $headTag = $tailTag;
+          $tailTag = '';
+        }
+      }
+
+      return $headTag.'<a href="#cut" name="cut"></a>'.$tailTag;
+    }, $html);
   }
 }

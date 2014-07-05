@@ -72,11 +72,24 @@ class Post extends BaseModel {
     return $list;
   }
 
-  function setUrl($value) { return trim($value); }
-  function setSourceURL($value) { return trim($value); }
-  function setSourceName($value) { return trim($value); }
-  function setCaption($value) { return trim($value); }
-  function setText($value) { return rtrim($value); }
+  function setUrlAttribute($value) {
+    $this->attributes['url'] = trim($value);
+  }
+  function setSourceUrlAttribute($value) {
+    $this->attributes['sourceURL'] = trim($value);
+  }
+  function setSourceNameAttribute($value) {
+    $this->attributes['sourceName'] = trim($value);
+  }
+  function setCaptionAttribute($value) {
+    $this->attributes['caption'] = trim($value);
+  }
+  function setTextAttribute($value) {
+    $this->attributes['text'] = rtrim($value);
+  }
+  function getInfoAttribute($value) {
+    return (array) ($value ? unserialize($value) : null);
+  }
 
   function author() {
     return User::find($this->author);
@@ -135,6 +148,14 @@ class Post extends BaseModel {
     $this->html = $fmt->html;
     $this->introHTML = $fmt->introHTML;
 
+    $info = $this->info;
+    if ('' === $cut = trim($fmt->meta['cut'])) {
+      unset($info['cut']);
+    } else {
+      $info['cut'] = $cut;
+    }
+    $this->info = $info;
+
     if ($safe) {
       $this->html = Core::safeHTML($this->html);
       $this->introHTML = Core::safeHTML($this->introHTML);
@@ -166,6 +187,12 @@ class Post extends BaseModel {
 
     $this->seen .= $id;
     return true;
+  }
+
+  function save(array $options = array()) {
+    $info = &$this->attributes['info'];
+    is_scalar($info) or $info = $info ? serialize($info) : '';
+    return parent::save($options);
   }
 
   protected function finishSave(array $options) {

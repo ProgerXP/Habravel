@@ -14,6 +14,7 @@
 _Italic_  __Bold__  `Code`
 [Link text](http://google.com)
 ![Image alt](http://google.com/logo.png)
+&lt;cut text="Text for Read more link."&gt; or just &lt;cut&gt;
 
 * Unordered list
 * Second item

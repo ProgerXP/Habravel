@@ -280,7 +280,11 @@ body p.hvl-pages {
 }
 
 .hvl-markedup-uversewiki {
-  .missing-page { border: 1px dashed red; background: #fcc; padding: 0 0.1em;  }
+  .missing-page, .missing-anchor {
+    border: 1px dashed red;
+    background: #fcc;
+    padding: 0 0.1em;
+  }
 }
 
 /***
@@ -315,6 +319,7 @@ body p.hvl-pages {
 }
 
 .hvl-pedit-preview-hotkey {
+  display: none;
   color: gray;
 }
 
@@ -453,6 +458,10 @@ body .hvl-pedit-tags-from {
   margin: 0 1.5em 0 0;
 
   > i:first-child { margin-right: 0.2em; }
+}
+
+.hvl-post-footer-more {
+  a { color: #d00; }
 }
 
 .hvl-post-footer-score {

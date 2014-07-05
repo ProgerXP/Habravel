@@ -59,6 +59,7 @@ return array(
   ),
 
   'post'                  => array(
+    'more'                => 'Read more',
     'edit'                => 'Edit',
     'source'              => 'Original source',
     'author'              => 'Post author',
