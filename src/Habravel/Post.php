@@ -88,7 +88,7 @@ class Post extends BaseModel {
     $this->attributes['text'] = rtrim($value);
   }
   function getInfoAttribute($value) {
-    return (array) ($value ? unserialize($value) : null);
+    return (array) (is_scalar($value) ? unserialize($value) : $value);
   }
 
   function author() {

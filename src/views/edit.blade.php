@@ -9,8 +9,6 @@
 @extends('habravel::page')
 
 @section('content')
-  @include('habravel::part.uheader', array(), array())
-
   <form action="{{{ Habravel\Core::url() }}}/edit" method="post" data-sqa="form"
         class="hvl-pedit-form hvl-split" data-hvl-post="{{{ $post->toJSON() }}}">
     <input type="hidden" name="_token" value="{{{ csrf_token() }}}">

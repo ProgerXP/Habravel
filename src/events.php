@@ -680,4 +680,6 @@ View::composer('habravel::page', function ($view) {
   isset($view->pageTitle) or $view->pageTitle = trans('habravel::g.pageTitle');
   isset($view->pageMetaDesc) or $view->pageMetaDesc = '';
   isset($view->pageMetaKeys) or $view->pageMetaKeys = '';
+  $view->pageHeader .= View::make('habravel::part.uheader');
+  isset($view->pageSidebar) or $view->pageSidebar = array();
 });

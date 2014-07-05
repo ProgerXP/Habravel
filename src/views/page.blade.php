@@ -2,6 +2,8 @@
   - $pageTitle        - string
   - $pageMetaDesc     - string
   - $pageMetaKeys     - string
+  - $pageHeader       - string
+  - $pageSidebar     - array of string
 */?>
 
 <!DOCTYPE html>
@@ -25,8 +27,14 @@
     </script>
     <script src="https://raw.githubusercontent.com/less/less.js/master/dist/less-1.7.2.min.js"></script>
   </head>
-  <body class="hvl-root">
-    @yield('content')
+  <body class="hvl-root {{ $pageSidebar ? 'hvl-with-sidebar' : '' }}">
+    {{ $pageHeader }}
+
+    <div class="hvl-content">
+      @yield('content')
+    </div>
+
+    @include('habravel::part.sidebar', compact('pageSidebar'), array())
 
     <script src="{{{ asset('packages/proger/habravel/underscore.js') }}}"></script>
     <script src="{{{ asset('packages/proger/habravel/jquery.js') }}}"></script>

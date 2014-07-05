@@ -16,6 +16,7 @@
 @30px:  1.875em;
 @rootPadding: 1.5rem;
 @uheaderPadding: @14px;
+@sidebarWidth: 35%;
 
 .unmargin () {
   > :first-child { margin-top: 0; }
@@ -175,6 +176,30 @@ body p.hvl-pages {
   .hvl-uheader-icon + * { margin-left: 0.2em; }
   .hvl-uheader-left { float: left; }
   .hvl-uheader-right { float: right; }
+}
+
+.hvl-with-sidebar .hvl-content {
+  float: left;
+  width: 100%;
+  padding-right: @sidebarWidth;
+}
+
+.hvl-sidebar {
+  width: @sidebarWidth;
+  margin-left: -@sidebarWidth;
+  float: left;
+  padding-left: 2em;
+}
+
+.hvl-sidebar-title {
+  font-size: @24px;
+  font-family: @Gothic;
+  margin: 0 0 0.8em;
+  font-weight: normal;
+}
+
+.hvl-sidebar-box {
+  + * { margin-top: 4em; }
 }
 
 .hvl-form-list {

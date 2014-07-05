@@ -7,8 +7,6 @@
 @extends('habravel::page')
 
 @section('content')
-  @include('habravel::part.uheader', array(), array())
-
   <h1 class="hvl-h1">{{{ $title }}}</h1>
 
   @foreach ($posts as $index => $post)

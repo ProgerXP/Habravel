@@ -8,8 +8,6 @@
 @extends('habravel::page')
 
 @section('content')
-  @include('habravel::part.uheader', array(), array())
-
   @include('habravel::part.postTitle', compact('post'), array())
   @include('habravel::part.post', array('captionTag' => 'h1'))
 

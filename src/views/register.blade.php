@@ -6,8 +6,6 @@
 @extends('habravel::page')
 
 @section('content')
-  @include('habravel::part.uheader', array(), array())
-
   <h1 class="hvl-h1">{{{ trans('habravel::g.register.title') }}}</h1>
 
   @if (isset($errors))

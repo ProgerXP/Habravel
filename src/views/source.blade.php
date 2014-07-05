@@ -5,8 +5,6 @@
 @extends('habravel::page')
 
 @section('content')
-  @include('habravel::part.uheader', array(), array())
-
   @include('habravel::part.postTitle', compact('post'), array())
 
   <header class="hvl-psource-header">
