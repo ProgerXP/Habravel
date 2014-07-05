@@ -11,16 +11,18 @@
   <header class="hvl-post-header">
     <p class="hvl-post-author">
       @if ($post->sourceURL)
-        <a href="{{{ $post->sourceURL }}}" title="{{{ trans('habravel::g.post.source') }}}">
+        <a href="{{{ $post->sourceURL }}}" title="{{{ trans('habravel::g.post.source') }}}" target="_blank">
           {{{ $post->sourceName }}}
         </a>
         <span class="hvl-post-author-separ">&larr;</span>
       @endif
 
       <span title="{{{ trans('habravel::g.post.author') }}}">
-        <a href="{{{ $post->x_author->url() }}}" class="hvl-post-author-avatar">
-          <img src="{{{ $post->x_author->avatarURL() }}}" alt="{{{ $post->x_author->name }}}">
-        </a>
+        @if ($post->x_author->avatar)
+          <a href="{{{ $post->x_author->url() }}}" class="hvl-post-author-avatar">
+            <img src="{{{ $post->x_author->avatarURL() }}}" alt="{{{ $post->x_author->name }}}">
+          </a>
+        @endif
 
         {{ $post->x_author->nameHTML() }}
       </span>

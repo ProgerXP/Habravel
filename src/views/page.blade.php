@@ -7,7 +7,7 @@
 */?>
 
 <!DOCTYPE html>
-<html data-sqa="wr" style="height: 100%" lang="{{{ Config::get('app.locale') }}}">
+<html data-sqa="r" style="height: 100%" lang="{{{ Config::get('app.locale') }}}">
   <head>
     <meta charset="utf-8">
 
@@ -30,7 +30,7 @@
   <body class="hvl-root {{ $pageSidebar ? 'hvl-with-sidebar' : '' }}">
     {{ $pageHeader }}
 
-    <div class="hvl-content">
+    <div class="hvl-content" data-sqa="wr">
       @yield('content')
     </div>
 

@@ -63,11 +63,12 @@ Event::listen('habravel.out.post', function (Post $post) {
 });
 
 Event::listen('habravel.out.post', function (Post $post) {
+  $post->needHTML();
   return View::make('habravel::post', compact('post'));
 });
 
 Event::listen(
-  array('habravel.out.edit', 'habravel.save.post', 'habravel.out.source'),
+  array('habravel.out.edit', 'habravel.save.post'),
   function (Post $post) {
     if (!($user = Core::user())) {
       App::abort(401);
@@ -100,6 +101,7 @@ Event::listen('habravel.out.list', function (Query $query, array &$vars) {
 
 Event::listen('habravel.out.list', function (Query $query, array &$vars) {
   $posts = $query->get();
+  foreach ($posts as $post) { $post->needHTML(); }
   $vars['morePages'] = $vars['perPage'] <= count($posts);
   return View::make('habravel::posts', compact('posts') + $vars);
 });
@@ -249,6 +251,7 @@ Event::listen('habravel.save.post', function (Post $post) {
   \DB::transaction(function () use ($post) {
     if (!$post->poll) {
       $poll = new Poll;
+      $poll->caption = '"'.$post->caption.'"';
       $poll->save();
       $post->poll = $poll->id;
     }
@@ -440,6 +443,8 @@ Event::listen('habravel.check.register', function (User $user, array $input, Mes
 Event::listen('habravel.save.register', function (User $user) {
   if (!$user->poll) {
     $poll = new Poll;
+    // System poll captions don't matter, just for pretty database output.
+    $poll->caption = '@'.$user->name;
     $poll->save();
     $user->poll = $poll->id;
   }
@@ -462,9 +467,13 @@ $checkDraft = function ($action, Post $post) {
   }
 };
 
-Event::listen('habravel.out.post', function (Post $post) use ($checkDraft) {
-  $checkDraft('read', $post);
-}, VALIDATE);
+Event::listen(
+  array('habravel.out.post', 'habravel.out.source'),
+  function (Post $post) use ($checkDraft) {
+    $checkDraft('read', $post);
+  },
+  VALIDATE
+);
 
 Event::listen('habravel.out.edit', function (Post $post) use ($checkDraft) {
   $checkDraft('edit', $post);

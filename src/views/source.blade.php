@@ -34,6 +34,6 @@
     </p>
   </header>
 
-  <textarea cols="100" rows="30" class="hvl-psource-source" data-sqa="wr - w$body{pb} -"
-            onfocus="this.select(); this.onfocus = null" autofocus="autofocus">{{{ $post->text }}}</textarea>
+  <textarea cols="100" rows="30" class="hvl-psource-source" readonly="readonly"
+            data-sqa="r - w$body{pb} - wr$~*{ho} -">{{{ $post->text }}}</textarea>
 @stop

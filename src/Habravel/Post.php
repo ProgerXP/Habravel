@@ -164,6 +164,15 @@ class Post extends BaseModel {
     return $this;
   }
 
+  function needHTML() {
+    if ((!$this->html or !$this->introHTML) and $this->text) {
+      // Post not rendered yet.
+      $this->format();
+      $this->save();
+    }
+    return $this;
+  }
+
   // Returns true if $client hasn't yet seen this post and also adds it
   // to $this->seen. $this->views isn't incremented.
   //

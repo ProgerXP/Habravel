@@ -22,6 +22,7 @@
 {{Image http://google.com/logo.png, align=left}}
 {{Image http://google.com/logo.png, height=100px}}
 {{cut Text for "Read more" link.}} or just {{cut}}
+{{TOC}}
 
 &gt;&gt;Right-aligned text.&gt;&gt;
 &gt;&gt;Centered text.&lt;&lt;

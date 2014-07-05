@@ -64,12 +64,14 @@
       </h1>
 
       <p>
-        <b>{{{ trans('habravel::g.user.regTime') }}}</b>{{{ $user->created_at->formatLocalized('%d %B %Y') }}}
+        <b>{{{ trans('habravel::g.user.regTime') }}}</b>
+        {{{ DateFmt::Format('AGO-AT[s-d]IF>7[d# m__ y##]', $user->created_at->timestamp, Config::get('app.locale')) }}}
       </p>
 
       @if ($user->loginTime)
         <p>
-          <b>{{{ trans('habravel::g.user.loginTime') }}}</b>{{{ $user->loginTime->formatLocalized('%d %B %Y') }}}
+          <b>{{{ trans('habravel::g.user.loginTime') }}}</b>
+          {{{ DateFmt::Format('AGO-AT[s-d]IF>7[d# m__ y##]', $user->loginTime->timestamp, Config::get('app.locale')) }}}
         </p>
       @endif
     </header>
