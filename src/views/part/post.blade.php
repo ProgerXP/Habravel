@@ -80,5 +80,11 @@
         {{{ DateFmt::Format('AGO-AT[s-d]IF>7[d# m__ y##]', $time->timestamp, Config::get('app.locale')) }}}
       </time>
     @endif
+
+    @if ($readMore === false)
+      <span class="hvl-post-footer-ctl">
+        <a class="hvl-credit" href="http://laravel.ru/habravel" target="_blank">{{{ trans('habravel::g.credit') }}}</a>
+      </span>
+    @endif
   </footer>
 </div>

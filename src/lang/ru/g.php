@@ -3,6 +3,7 @@ return array(
   'locale'                => 'ru_RU.UTF-8',
   'needJS'                => 'Нужен JavaScript.',
   'pageTitle'             => 'Habravel',
+  'credit'                => 'Движется на Habravel',
 
   'markups'               => array(
     'githubmarkdown'      => 'Markdown',

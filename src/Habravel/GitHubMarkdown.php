@@ -1,12 +1,16 @@
 <?php namespace Habravel;
 
 // Uses https://github.com/michelf/php-markdown
-use \Michelf\MarkdownExtra as Markdown;
+use Michelf\MarkdownExtra as Markdown;
 
 class GitHubMarkdown extends BaseMarkup {
   static $extension = 'md';
 
   protected function doToHTML() {
+    if (!class_exists('Michelf\MarkdownExtra')) {
+      throw new \Exception('Markdown dependency must be installed (see Composer suggestions).');
+    }
+
     $parser = new Markdown;
 
     foreach (\Config::get('habravel::markdown') as $key => $value) {

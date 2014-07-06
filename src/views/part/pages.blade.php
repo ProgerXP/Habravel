@@ -23,4 +23,6 @@
   {{{ trans('habravel::g.pages.next') }}}@if ($morePages)</a>@endif
 
   &rarr;
+
+  <a class="hvl-credit" href="http://laravel.ru/habravel" target="_blank">{{{ trans('habravel::g.credit') }}}</a>
 </p>

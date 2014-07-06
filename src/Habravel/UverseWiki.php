@@ -9,7 +9,9 @@ class UverseWiki extends BaseMarkup {
     $file = rtrim(\Config::get('habravel::uversewiki.path'), '\\/').'/uversewiki.php';
 
     if (!is_file($file)) {
-      throw new \Exception('Habravel cannot load UverseWiki on the configured path.');
+      throw new \Exception('Habravel cannot load UverseWiki. Download it from'.
+                           ' http://uverse.i-forge.net/wiki and extract to the'.
+                           ' configured habravel::uversewiki.path ('.$file.' not found).');
     }
 
     require_once $file;

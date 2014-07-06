@@ -13,7 +13,9 @@
     "illuminate/support": "4.2.*",
     "proger/datefmt": "@dev",
     "proger/hypersafe": "@dev",
-    "michelf/php-markdown": "1.*"
+  },
+  "suggest": {
+    "michelf/php-markdown": "Required for Markdown-formatted posts"
   },
   "autoload": {
     "classmap": [
