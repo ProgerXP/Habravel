@@ -33,8 +33,9 @@
       <h1 class="hvl-h1">
         @if ($post->id)
           {{{ $post->caption }}}
+          <?php $pageTitle = trans('habravel::g.edit.title')?>
         @else
-          {{{ trans('habravel::g.edit.titleNew') }}}
+          {{{ $pageTitle = trans('habravel::g.edit.titleNew') }}}
         @endif
       </h1>
     </aside>

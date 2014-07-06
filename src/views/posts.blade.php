@@ -5,6 +5,7 @@
 */?>
 
 @extends('habravel::page')
+<?php $pageTitle = $title?>
 
 @section('content')
   <h1 class="hvl-h1">{{{ $title }}}</h1>

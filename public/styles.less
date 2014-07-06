@@ -81,6 +81,10 @@
   &:focus { outline: 2px solid orange; outline-offset: -2px; }
 }
 
+body .hvl-h1, body .hvl-h2 {
+  a, u { color: #b00; }
+}
+
 .hvl-h1 {
   font-size: @30px;
   font-family: @Gothic;
@@ -376,6 +380,7 @@ body a.hvl-credit {
 .hvl-pedit-ctl {
   margin-top: 1.7em;
 
+  .hvl-markups-none + & { margin-top: 0; }
   * + p { margin-top: 0.7em; }
   > p > input { width: 100%; }
 }

@@ -3,7 +3,7 @@
   - $pageMetaDesc     - string
   - $pageMetaKeys     - string
   - $pageHeader       - string
-  - $pageSidebar     - array of string
+  - $pageSidebar      - array of string
 */?>
 
 <!DOCTYPE html>

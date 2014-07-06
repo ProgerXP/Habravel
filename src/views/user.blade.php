@@ -7,6 +7,7 @@
 */?>
 
 @extends('habravel::page')
+<?php $pageTitle = '~'.$user->name?>
 
 @section('posts')
   <h2 class="hvl-h2">

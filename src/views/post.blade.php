@@ -6,6 +6,7 @@
 */?>
 
 @extends('habravel::page')
+<?php $pageTitle = $post->caption?>
 
 @section('content')
   @include('habravel::part.postTitle', compact('post'), array())
