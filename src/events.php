@@ -624,12 +624,14 @@ View::composer('habravel::user', function ($view) {
   if (!isset($view->posts)) {
     $query = $user->posts()->whereTop(null)->orderBy('pubTime', 'desc');
     $view->posts = $query->take(10)->get();
+    foreach ($view->posts as $post) { $post->needHTML(); }
     $view->postCount = $query->count();
   }
 
   if (!isset($view->comments)) {
     $query = $user->posts()->whereNotNull('top')->orderBy('pubTime', 'desc');
     $view->comments = $query->take(20)->get();
+    foreach ($view->comments as $post) { $post->needHTML(); }
     $view->commentCount = $query->count();
   }
 });
