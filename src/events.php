@@ -675,6 +675,16 @@ View::composer('habravel::part.post', function ($view) {
   } elseif ($view->readMore === true) {
     $view->readMore = array_get($post->info, 'cut', trans('habravel::g.post.more'));
   }
+
+  if (!isset($view->html)) {
+    $view->html = $view->readMore === false ? $post->html : $post->introHTML;
+  }
+
+  if ($minH = $view->downshift) {
+    $view->html = preg_replace_callback('~(</?h)(\d)\b~ui', function ($match) use ($minH) {
+      return $match[1].min($match[2] + $minH - 1, 6);
+    }, $view->html);
+  }
 });
 
 View::composer('habravel::part.comment', function ($view) {

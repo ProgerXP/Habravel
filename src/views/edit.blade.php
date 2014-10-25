@@ -60,7 +60,7 @@
         <p>
           <input class="hvl-input" name="caption" value="{{{ $post->caption }}}"
                  placeholder="{{{ trans("habravel::g.edit.caption") }}}"
-                 required="required" autofocus="autofocus">
+                 required="required" @if (!$post->id) autofocus="autofocus" @endif>
         </p>
       </div>
 
@@ -145,6 +145,7 @@
       <textarea class="hvl-input hvl-pedit-text" name="text"
                 data-sqa="r - w$body{pb} - wr$~*{ho} - $~.hvl-pedit-ctl{ho}"
                 rows="20" cols="50" tabindex="2" required="required"
+                @if ($post->id) autofocus="autofocus" @endif
                 placeholder="{{{ $textPlaceholder }}}">{{{ $post->text }}}</textarea>
 
       <div class="hvl-pedit-ctl">

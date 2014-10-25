@@ -17,7 +17,7 @@
 
   @foreach ($posts as $post)
     @include('habravel::part.postTitle', compact('post'), array('level' => 3, 'link' => true))
-    @include('habravel::part.post', compact('post'), array())
+    @include('habravel::part.post', compact('post'), array('readMore' => true, 'downshift' => 4))
   @endforeach
 
   @if ($postCount > count($posts))

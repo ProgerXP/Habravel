@@ -132,7 +132,7 @@ class Ucut_Root extends \UWikiBaseElement {
   function Parse() {
     if ($format = &$this->settings->format) {
       $params = $format->current['params'];
-      $format->origDoc->meta['cut'] = key($params);
+      $format->topmostDoc->meta['cut'] = key($params);
     }
   }
 }

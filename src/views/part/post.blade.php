@@ -3,6 +3,8 @@
   - $post             - Post instance with loaded x_author, x_tags
   - $canEdit          - boolean
   - $readMore         - false or string (link text)
+  - $html             - string, actual post body to be output
+  - $downshift        - integer, minimum <hN> tag to generate
 */?>
 
 <?php $root = url(Habravel\Core::url())?>
@@ -38,7 +40,7 @@
   </header>
 
   <article class="hvl-markedup hvl-markedup-{{{ $post->markup }}}">
-    {{ $readMore === false ? $post->html : $post->introHTML }}
+    {{ $html }}
   </article>
 
   <footer class="hvl-post-footer">

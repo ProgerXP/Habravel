@@ -54,8 +54,7 @@ abstract class BaseMarkup {
     }
 
     if (!$this->introHTML) {
-      $html = strip_tags(substr($this->html, 0, 1000));
-      $this->introHTML = trim(\Str::words($html));
+      $this->introHTML = trim(\Str::words($this->html));
     }
 
     if ($this->introHTML and $this->target and method_exists($this->target, 'url')) {

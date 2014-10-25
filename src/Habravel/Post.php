@@ -158,7 +158,7 @@ class Post extends BaseModel {
 
     if ($safe) {
       $this->html = Core::safeHTML($this->html);
-      $this->introHTML = Core::safeHTML($this->introHTML);
+      $this->introHTML = Core::safeHTML($this->introHTML, true);
     }
 
     return $this;

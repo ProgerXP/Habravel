@@ -14,8 +14,8 @@ define('LAST', -10);
 class Core extends \Illuminate\Support\ServiceProvider {
   // Without trailing '/'.
   static function url($absolute = true) {
-    $url = Config::get('habravel::g.rootURL');
-    return $absolute ? url($url) : $url;
+    $url = url(Config::get('habravel::g.rootURL'));
+    return $absolute ? $url : parse_url($url, PHP_URL_PATH);
   }
 
   //? normReferer('')     //=> http://mydomain/habravel-home/
@@ -53,7 +53,7 @@ class Core extends \Illuminate\Support\ServiceProvider {
     }
   }
 
-  static function safeHTML($html) {
+  static function safeHTML($html, $autoClose = false) {
     static $hs;
 
     if (!$hs) {
@@ -65,6 +65,7 @@ class Core extends \Illuminate\Support\ServiceProvider {
     }
 
     $hs->clearWarnings();
+    $hs->autoClose = $autoClose ? 'eof' : false;
     $clean = $hs->clean($html);
 
     if ($warnings = $hs->warnings() and
@@ -115,7 +116,7 @@ class Core extends \Illuminate\Support\ServiceProvider {
   }
 
   function routes() {
-    Route::group(array('prefix' => Core::url(false)), function () {
+    Route::group(array('prefix' => Config::get('habravel::g.rootURL')), function () {
       Route::pattern('habravel_any', '.+');
       Route::pattern('habravel_user', '[\w\d]+');
       Route::pattern('habravel_id', '\d+');

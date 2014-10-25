@@ -104,5 +104,14 @@ class UverseWiki extends BaseMarkup {
     $doc->Parse();
     $this->html = $doc->ToHTML5();
     $this->meta = &$doc->meta;
+    $this->finalizeUWiki();
+  }
+
+  protected function finalizeUWiki() {
+    if (!array_key_exists('cut', $this->meta)) {
+      $toc = '<fieldset class="toc">';
+      $cut = '<a href="#cut" name="cut" class="hvl-cut"></a>';
+      $this->html = str_replace($toc, $cut.$toc, $this->html);
+    }
   }
 }
