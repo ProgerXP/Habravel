@@ -19,7 +19,7 @@ return array(
   'linkExt'               => '',
   // If false anchors won't be prefixed (risk of collisions). # stands for post ID.
   'anchorPrefix'          => 'uw#-',
-  'baseURL'               => Habravel\Core::url(false),
+  'baseURL'               => parse_url(Habravel\url(), PHP_URL_PATH),
   'mediaURL'              => $mediaURL = asset('packages/proger/habravel/uwiki/'),
   'smileyURL'             => $mediaURL,
 );

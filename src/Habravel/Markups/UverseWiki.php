@@ -1,4 +1,4 @@
-<?php namespace Habravel;
+<?php namespace Habravel\Markups;
 
 use UWikiDocument;
 
@@ -15,7 +15,7 @@ class UverseWiki extends BaseMarkup {
     }
 
     require_once $file;
-    \UWikiDocument::$loadedHandlers['wacko']['link'][] = array(__CLASS__, 'correctLink');
+    UWikiDocument::$loadedHandlers['wacko']['link'][] = array(__CLASS__, 'correctLink');
   }
 
   static function correctLink(&$caption, $linkObj) {

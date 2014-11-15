@@ -1,4 +1,4 @@
-<?php namespace Habravel;
+<?php namespace Habravel\Models;
 
 class Post extends BaseModel {
   protected $with = array('tags');
@@ -51,7 +51,7 @@ class Post extends BaseModel {
 
   static function rules(Post $model = null) {
     $rules = parent::rules();
-    $rules['markup'] .= '|in:'.join(',', Core::markups());
+    $rules['markup'] .= '|in:'.join(',', array_keys(\Config::get('habravel::g.markups')));
 
     if ($model) {
       $rules['url'] .= ','.$model->id;
@@ -62,7 +62,7 @@ class Post extends BaseModel {
 
   function __construct(array $attributes = array()) {
     parent::__construct($attributes);
-    $this->markup or $this->markup = head(Core::markups());
+    $this->markup or $this->markup = head(array_keys(\Config::get('habravel::g.markups')));
   }
 
   function getDates() {
@@ -116,15 +116,15 @@ class Post extends BaseModel {
   }
 
   function polls() {
-    return $this->belongsToMany(NS.'Poll');
+    return $this->belongsToMany(NS.'Models\\Poll');
   }
 
   function tags() {
-    return $this->belongsToMany(NS.'Tag');
+    return $this->belongsToMany(NS.'Models\\Tag');
   }
 
   function url($absolute = true) {
-    return ($absolute ? Core::url().'/' : '').$this->url;
+    return ($absolute ? \Habravel\url().'/' : '').$this->url;
   }
 
   function isEditable(User $user) {
@@ -144,7 +144,7 @@ class Post extends BaseModel {
   }
 
   function format($safe = true) {
-    $fmt = Core::markup($this->markup)->format($this->text, $this);
+    $fmt = Markups\Factory::make($this->markup)->format($this->text, $this);
     $this->html = $fmt->html;
     $this->introHTML = $fmt->introHTML;
 
@@ -157,8 +157,8 @@ class Post extends BaseModel {
     $this->info = $info;
 
     if ($safe) {
-      $this->html = Core::safeHTML($this->html);
-      $this->introHTML = Core::safeHTML($this->introHTML, true);
+      $this->html = HyperSafe::transform($this->html);
+      $this->introHTML = HyperSafe::transform($this->introHTML, true);
     }
 
     return $this;

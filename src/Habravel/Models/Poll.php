@@ -1,4 +1,4 @@
-<?php namespace Habravel;
+<?php namespace Habravel\Models;
 
 class Poll extends BaseModel {
   use \Illuminate\Database\Eloquent\SoftDeletingTrait;

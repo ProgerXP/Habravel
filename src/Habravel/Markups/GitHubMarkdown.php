@@ -1,4 +1,4 @@
-<?php namespace Habravel;
+<?php namespace Habravel\Markups;
 
 // Uses https://github.com/michelf/php-markdown
 use Michelf\MarkdownExtra as Markdown;

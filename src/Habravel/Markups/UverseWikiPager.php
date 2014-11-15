@@ -1,4 +1,4 @@
-<?php namespace Habravel;
+<?php namespace Habravel\Markups;
 
 class UverseWikiPager extends \UWikiPager {
   protected $target;  //= null or Model.
@@ -56,7 +56,7 @@ class UverseWikiPager extends \UWikiPager {
   protected function accessibleText(Post $model = null) {
     try {
       if ($model) {
-        $resp = Event::until('habravel.out.source', array($model, true));
+        $resp = Route::call(NS.'Controllers\\Post@showShourceOn', array($model, true));
         if (method_exists($resp, 'getStatusCode') and $resp->getStatusCode() == 200) {
           return $resp->getContent();
         }

@@ -3,7 +3,7 @@
   - $pageDraftCount   - integer
 */?>
 
-<?php $root = Habravel\Core::url()?>
+<?php $root = Habravel\url()?>
 
 <header class="hvl-uheader">
   <div class="hvl-uheader-left">

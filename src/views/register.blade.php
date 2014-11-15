@@ -12,7 +12,7 @@
     {{ HTML::ul($errors->all(), array('class' => 'hvl-errors')) }}
   @endif
 
-  <form action="{{{ Habravel\Core::url() }}}/register" method="post" class="hvl-form-list">
+  <form action="{{{ Habravel\url() }}}/register" method="post" class="hvl-form-list">
     <input type="hidden" name="_token" value="{{{ csrf_token() }}}">
 
     <p class="hvl-form-list-label">
@@ -49,7 +49,7 @@
 
     <p class="hvl-form-list-label">
       {{{ trans('habravel::g.register.login1') }}}
-      <a href="{{{ Habravel\Core::url() }}}/login">{{{ trans('habravel::g.register.login2') }}}</a> &rarr;
+      <a href="{{{ Habravel\url() }}}/login">{{{ trans('habravel::g.register.login2') }}}</a> &rarr;
     </p>
   </form>
 @stop

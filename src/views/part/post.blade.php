@@ -7,7 +7,7 @@
   - $downshift        - integer, minimum <hN> tag to generate
 */?>
 
-<?php $root = url(Habravel\Core::url())?>
+<?php $root = url(Habravel\url())?>
 
 <div class="hvl-post {{{ $classes }}}">
   <header class="hvl-post-header">

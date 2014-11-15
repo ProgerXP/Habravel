@@ -1,4 +1,4 @@
-<?php namespace Habravel;
+<?php namespace Habravel\Models;
 
 class User extends BaseModel {
   protected static $rules = array(
@@ -77,7 +77,7 @@ class User extends BaseModel {
   }
 
   function url($absolute = true) {
-    return ($absolute ? Core::url().'/' : '').'~'.urlencode($this->name);
+    return ($absolute ? \Habravel\url().'/' : '').'~'.urlencode($this->name);
   }
 
   function avatarURL() {

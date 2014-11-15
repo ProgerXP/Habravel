@@ -1,4 +1,4 @@
-<?php namespace Habravel;
+<?php namespace Habravel\Models;
 
 class Tag extends BaseModel {
   protected $attributes = array(
@@ -18,10 +18,10 @@ class Tag extends BaseModel {
   }
 
   function posts() {
-    return $this->belongsToMany(NS.'Post');
+    return $this->belongsToMany(NS.'Models\\Post');
   }
 
   function url() {
-    return Core::url().'/tags/'.urlencode($this->caption);
+    return \Habravel\url().'/tags/'.urlencode($this->caption);
   }
 }

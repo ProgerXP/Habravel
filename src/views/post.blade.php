@@ -13,7 +13,7 @@
   @include('habravel::part.post', array('captionTag' => 'h1'))
 
   @if (count($post->x_polls))
-    <form action="{{{ Habravel\Core::url() }}}/vote" method="post" id="polls" class="hvl-polls">
+    <form action="{{{ Habravel\url() }}}/vote" method="post" id="polls" class="hvl-polls">
       <input type="hidden" name="_token" value="{{{ csrf_token() }}}">
 
       @foreach ($post->x_polls as $poll)
@@ -67,7 +67,7 @@
     </div>
   @endif
 
-  <form action="{{{ Habravel\Core::url() }}}/reply" method="post" class="hvl-ncomment">
+  <form action="{{{ Habravel\url() }}}/reply" method="post" class="hvl-ncomment">
     <?php $tag = $post->x_children ? 'h3' : 'h2'?>
     <{{ $tag }} class="hvl-{{ $tag }}">{{{ trans('habravel::g.ncomment.title') }}}</{{ $tag }}>
 

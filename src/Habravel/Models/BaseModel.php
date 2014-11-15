@@ -1,4 +1,4 @@
-<?php namespace Habravel;
+<?php namespace Habravel\Models;
 
 class BaseModel extends \Eloquent {
   protected static $rules = array();

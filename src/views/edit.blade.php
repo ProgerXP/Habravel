@@ -9,7 +9,7 @@
 @extends('habravel::page')
 
 @section('content')
-  <form action="{{{ Habravel\Core::url() }}}/edit" method="post"
+  <form action="{{{ Habravel\url() }}}/edit" method="post"
         class="hvl-pedit-form hvl-split" data-hvl-post="{{{ $post->toJSON() }}}">
     <input type="hidden" name="_token" value="{{{ csrf_token() }}}">
     <input type="hidden" name="id" value="{{{ $post->id }}}">
@@ -102,7 +102,7 @@
 
         <p class="hvl-pedit-tags-from">
           @foreach ($tagPool as $tag)
-            <a target="_blank" href="{{{ Habravel\Core::url().'/tags/'.urlencode($tag) }}}">
+            <a target="_blank" href="{{{ Habravel\url().'/tags/'.urlencode($tag) }}}">
               {{{ $tag }}}
             </a>
           @endforeach

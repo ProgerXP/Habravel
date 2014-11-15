@@ -16,13 +16,13 @@
 
     <p>
       <b>{{{ trans('habravel::g.source.markup') }}}</b>
-      <a class="hvl-markup-help" href="{{{ Habravel\Core::url()."/markup/$post->markup" }}}">
+      <a class="hvl-markup-help" href="{{{ Habravel\url()."/markup/$post->markup" }}}">
         {{{ trans('habravel::g.markups.'.$post->markup) }}}
       </a>
     </p>
 
     <p>
-      <a href="{{{ Habravel\Core::url() }}}/source/{{{ $post->id }}}?dl=1">
+      <a href="{{{ Habravel\url() }}}/source/{{{ $post->id }}}?dl=1">
         {{{ trans('habravel::g.source.dl', array('size' => round(strlen($post->text) / 1024))) }}}
       </a>
       &darr;

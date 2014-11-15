@@ -1,4 +1,4 @@
-<?php namespace Habravel;
+<?php namespace Habravel\Models;
 
 class PollVote extends BaseModel {
   protected $attributes = array(

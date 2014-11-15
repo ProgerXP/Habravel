@@ -1,4 +1,4 @@
-<?php namespace Habravel;
+<?php namespace Habravel\Markups;
 
 abstract class BaseMarkup {
   static $extension = 'txt';

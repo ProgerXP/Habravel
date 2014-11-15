@@ -14,7 +14,7 @@
     </ul>
   @endif
 
-  <form action="{{{ Habravel\Core::url() }}}/login" method="post" class="hvl-form-list">
+  <form action="{{{ Habravel\url() }}}/login" method="post" class="hvl-form-list">
     <input type="hidden" name="_token" value="{{{ csrf_token() }}}">
     <input type="hidden" name="back" value="{{{ $backURL }}}">
 
@@ -43,7 +43,7 @@
     </p>
 
     <p class="hvl-form-list-label">
-      <a href="{{{ Habravel\Core::url() }}}/register">{{{ trans('habravel::g.login.register') }}}</a> &rarr;
+      <a href="{{{ Habravel\url() }}}/register">{{{ trans('habravel::g.login.register') }}}</a> &rarr;
     </p>
   </form>
 @stop
