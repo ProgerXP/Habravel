@@ -1,5 +1,5 @@
 <?php /*
-  - $post             - Post instance with loaded author, tags
+  - $post             - Models\Post instance with loaded author, tags
 */?>
 
 @extends('habravel::page')

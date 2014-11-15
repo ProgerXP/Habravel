@@ -5,12 +5,12 @@ use Habravel\Models\User as UserModel;
 
 class Posts extends BaseController {
   function showByUserName($name = '') {
-    return static::showUserListCustom($user, function ($query) {
+    return static::showUserListCustom($name, function ($query) {
       $query->whereTop(null);
     });
   }
 
-  static function showUserListCustom($user, $customizer) {
+  static function showUserListCustom($name, $customizer) {
     $user = UserModel::whereName($name)->first();
     $user or App::abort(404);
     $query = PostModel::whereAuthor($user->id)->orderBy('listTime', 'desc');

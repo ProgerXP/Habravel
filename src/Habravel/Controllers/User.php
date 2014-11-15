@@ -103,7 +103,7 @@ class User extends BaseController {
   function register() {
     \Session::regenerate();   // prevent session fixation.
 
-    $user = new User;
+    $user = new UserModel;
     $input = Input::get();
     $errors = new MessageBag;
 
@@ -112,7 +112,7 @@ class User extends BaseController {
     $user->password = \Hash::make(array_get($input, 'password'));
     $user->regIP = Request::getClientIp();
 
-    $copy = new User;
+    $copy = new UserModel;
     $copy->setRawAttributes(array_only($input, 'password') + $user->getAttributes());
     $copy->validateAndMerge($errors);
 
@@ -120,7 +120,7 @@ class User extends BaseController {
       return View::make('habravel::register', compact($input, $errors));
     } else {
       if (!$user->poll) {
-        $poll = new Poll;
+        $poll = new PollModel;
         // System poll captions don't matter, just for pretty database output.
         $poll->caption = '@'.$user->name;
         $poll->save();

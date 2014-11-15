@@ -35,8 +35,8 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider {
   function register() { }
 
   function alias() {
-    class_alias('Illuminate\\Database\\Eloquent\\Builder', NS.'Query');
-    class_alias('Illuminate\\Support\\MessageBag', NS.'MessageBag');
+    class_alias('Illuminate\\Database\\Eloquent\\Builder', NS.'Controllers\\Query');
+    class_alias('Illuminate\\Support\\MessageBag', NS.'Controllers\\MessageBag');
 
     class_alias('App',          NS.'Controllers\\App');
     class_alias('Config',       NS.'Controllers\\Config');

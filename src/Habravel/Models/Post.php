@@ -116,11 +116,11 @@ class Post extends BaseModel {
   }
 
   function polls() {
-    return $this->belongsToMany(NS.'Models\\Poll');
+    return $this->belongsToMany(__NAMESPACE__.'\\Poll');
   }
 
   function tags() {
-    return $this->belongsToMany(NS.'Models\\Tag');
+    return $this->belongsToMany(__NAMESPACE__.'\\Tag');
   }
 
   function url($absolute = true) {
@@ -144,7 +144,7 @@ class Post extends BaseModel {
   }
 
   function format($safe = true) {
-    $fmt = Markups\Factory::make($this->markup)->format($this->text, $this);
+    $fmt = \Habravel\Markups\Factory::make($this->markup)->format($this->text, $this);
     $this->html = $fmt->html;
     $this->introHTML = $fmt->introHTML;
 
@@ -157,8 +157,8 @@ class Post extends BaseModel {
     $this->info = $info;
 
     if ($safe) {
-      $this->html = HyperSafe::transform($this->html);
-      $this->introHTML = HyperSafe::transform($this->introHTML, true);
+      $this->html = \Habravel\HyperSafe::transform($this->html);
+      $this->introHTML = \Habravel\HyperSafe::transform($this->introHTML, true);
     }
 
     return $this;

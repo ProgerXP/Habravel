@@ -1,5 +1,5 @@
 <?php /*
-  - $post             - Post instance
+  - $post             - Models\Post instance
   - $level            - integer; defaults to 1
   - $link             - optional; true or false
 */?>

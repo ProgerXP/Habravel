@@ -1,5 +1,8 @@
 <?php namespace Habravel\Markups;
 
+use Habravel\Models\Post as PostModel;
+use Habravel\Models\User as UserModel;
+
 class UverseWikiPager extends \UWikiPager {
   protected $target;  //= null or Model.
 
@@ -29,7 +32,7 @@ class UverseWikiPager extends \UWikiPager {
     } elseif ($url[0] === '~') {
       // ~User.
       $url = substr($url, 1);
-      $model = static::isID($url) ? User::find($url) : User::whereName($url)->first();
+      $model = static::isID($url) ? UserModel::find($url) : UserModel::whereName($url)->first();
       return $model ? $model->name : null;
     } elseif ($model = $this->postModelBy($url)) {
       return $model->caption;
@@ -41,9 +44,9 @@ class UverseWikiPager extends \UWikiPager {
     $page = ltrim($page, '\\/');
 
     if (static::isID($page)) {
-      $model = Post::find($page);
+      $model = PostModel::find($page);
     } else {
-      $model = Post::where('url', '=', $page)->first();
+      $model = PostModel::where('url', '=', $page)->first();
     }
 
     if (false !== $text = $this->accessibleText($model)) {
@@ -53,7 +56,7 @@ class UverseWikiPager extends \UWikiPager {
   }
 
   // Returns false if current user isn't allowed to access given $model.
-  protected function accessibleText(Post $model = null) {
+  protected function accessibleText(PostModel $model = null) {
     try {
       if ($model) {
         $resp = Route::call(NS.'Controllers\\Post@showShourceOn', array($model, true));
@@ -82,7 +85,7 @@ class UverseWikiPager extends \UWikiPager {
 
   protected function ReadCluster($cluster) {
     $cluster = static::clusterURL($cluster);
-    $rows = Post::where('url', 'LIKE', "$cluster%");
+    $rows = PostModel::where('url', 'LIKE', "$cluster%");
     $result = array();
 
     foreach ($rows as $page) {
@@ -137,4 +140,4 @@ class Ucut_Root extends \UWikiBaseElement {
   }
 }
 
-class_alias(NS.'Ucut_Root', 'Ucut_Root');
+class_alias(__NAMESPACE__.'\\Ucut_Root', 'Ucut_Root');

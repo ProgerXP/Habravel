@@ -1,10 +1,10 @@
 <?php namespace Habravel\Controllers;
 
-use Habravel\Models\PollModel as PollModelModel;
-use Habravel\Models\PollVoteModel as PollVoteModelModel;
+use Habravel\Models\Poll as PollModel;
+use Habravel\Models\PollVote as PollVoteModel;
 
 class Poll extends BaseController {
-  static function voteOn(Models\BaseModel $model, $up) {
+  static function voteOn(\Habravel\Models\BaseModel $model, $up) {
     $model or App::abort(404);
     $model->poll or App::abort(403, 'This '.class_basename($model).' cannot be voted for.');
     $response = static::saveVotes(array(array('poll' => $model->poll, 'option' => $up + 1)));

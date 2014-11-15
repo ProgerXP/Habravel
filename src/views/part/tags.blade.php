@@ -1,5 +1,5 @@
 <?php /*
-  - $tags             - array of Tag
+  - $tags             - array of Models\Tag
 */?>
 
 <p class="hvl-tags">

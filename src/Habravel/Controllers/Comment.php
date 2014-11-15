@@ -39,7 +39,7 @@ class Comment extends BaseController {
     } else {
       if (!user()) {
         App::abort(401);
-      } elseif (!$user->hasFlag('can.reply')) {
+      } elseif (!user()->hasFlag('can.reply')) {
         App::abort(403);
       }
 

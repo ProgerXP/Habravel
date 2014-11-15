@@ -1,6 +1,6 @@
 <?php /*
-  - $post             - Post instance, the comment itself, with x_author
-  - $post->-children  - array of Post instances, replies to this comment
+  - $post             - Models\Post instance, the comment itself, with x_author
+  - $post->-children  - array of Models\Post instances, replies to this comment
   - $hasTop           - optional; true to display original post title; needs x_top
   - $hasReply         - optional; true to display Reply button
   - $canEdit          - boolean

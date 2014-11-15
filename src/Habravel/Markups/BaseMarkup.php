@@ -11,7 +11,7 @@ abstract class BaseMarkup {
   // Marked up source text.
   public $text;
 
-  // If set - is an object for which the text is being formatted - like Post.
+  // If set - is an object for which the text is being formatted - like Models\Post.
   public $target;
 
   // doToHTML() must populate these fields.

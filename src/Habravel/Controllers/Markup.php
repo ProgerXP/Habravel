@@ -3,7 +3,7 @@
 class Markup extends BaseController {
   function showHelp($markup = '') {
     try {
-      $markup = Habravel\Markups\Factory::make($markup);
+      $markup = \Habravel\Markups\Factory::make($markup);
     } catch (\Exception $e) { }
 
     if (isset($markup)) {

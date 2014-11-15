@@ -1,6 +1,6 @@
 <?php /*
   - $classes          - optional; string of space-separated CSS classes
-  - $post             - Post instance with loaded x_author, x_tags
+  - $post             - Models\Post instance with loaded x_author, x_tags
   - $canEdit          - boolean
   - $readMore         - false or string (link text)
   - $html             - string, actual post body to be output

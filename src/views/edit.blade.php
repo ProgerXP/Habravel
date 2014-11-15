@@ -1,6 +1,6 @@
 <?php /*
   - $errors           - optional; MessageBag instance
-  - $post             - Post instance with x_tags, x_polls
+  - $post             - Models\Post instance with x_tags, x_polls
   - $markups          - array of markup names ('githubmarkdown', 'uversewiki', etc.)
   - $textPlaceholder  - default text for textarea
   - $tagPool          - array of string
@@ -122,7 +122,7 @@
             @include('habravel::part.editPoll', compact('index', 'poll'), array())
           @endforeach
         @else
-          @include('habravel::part.editPoll', array('index' => 0, 'poll' => new Habravel\Poll), array())
+          @include('habravel::part.editPoll', array('index' => 0, 'poll' => new Habravel\Models\Poll), array())
         @endif
 
         <p>

@@ -55,7 +55,7 @@ class BaseModel extends \Eloquent {
     try {
       $res = parent::save($options);
       $this->attributes += $attrs;
-      return $res or App::abort(500, 'Cannot save '.get_class().'.');
+      return $res or \App::abort(500, 'Cannot save '.get_class().'.');
     } catch (\Exception $e) {
       $this->attributes += $attrs;
       throw $e;

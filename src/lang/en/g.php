@@ -35,7 +35,7 @@ return array(
     'expand'              => 'Expand editor',
     'markup'              => 'Markup style:',
     'caption'             => 'Article title',
-    'source'              => 'Source link (e.g. if a translation):',
+    'source'              => 'Origin link or translation source:',
     'sourceName'          => 'Source name (author)',
     'sourceURL'           => 'Source URL',
     'tags'                => 'Tags:',

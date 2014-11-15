@@ -1,8 +1,8 @@
 <?php /*
-  - $user             - User instance
-  - $posts            - array of Post
+  - $user             - Models\User instance
+  - $posts            - array of Models\Post
   - $postCount        - integer
-  - $comments         - array of Post
+  - $comments         - array of Models\Post
   - $commentCount     - integer
 */?>
 

@@ -1,8 +1,8 @@
 <?php /*
   - $classes          - optional; string of space-separated CSS classes
-  - $post             - Post instance with loaded author, tags
-  - $post->x_children - array of Post, root comments for this post
-  - $post->x_polls    - array of Poll with x_voteCount, x_options (with x_voteCount)
+  - $post             - Models\Post instance with loaded author, tags
+  - $post->x_children - array of Models\Post, root comments for this post
+  - $post->x_polls    - array of Models\Poll with x_voteCount, x_options (with x_voteCount)
 */?>
 
 @extends('habravel::page')

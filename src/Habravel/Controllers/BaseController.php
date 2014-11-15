@@ -1,5 +1,6 @@
 <?php namespace Habravel\Controllers;
 
+// Alias this function because it's used a lot in the controllers' code.
 function user() {
   return call_user_func_array(NS.'user', func_get_args());
 }

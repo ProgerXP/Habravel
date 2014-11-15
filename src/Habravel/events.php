@@ -2,8 +2,10 @@
 
 use App;
 use Event;
+use Illuminate\Support\MessageBag;
+use Habravel\Models\Post as PostModel;
 
-Event::listen('habravel.save.post', function (Post $post) {
+Event::listen('habravel.save.post', function (PostModel $post) {
   if (!($user = user())) {
     App::abort(401);
   } elseif ( $post->id ? $post->isEditable($user) : $user->hasFlag('can.post') ) {
@@ -13,7 +15,7 @@ Event::listen('habravel.save.post', function (Post $post) {
   }
 }, -10);
 
-Event::listen('habravel.check.post', function (Post $post, array $input, MessageBag $errors) {
+Event::listen('habravel.check.post', function (PostModel $post, array $input, MessageBag $errors) {
   $user = user();
 
   if ($user and $user->hasFlag('post.setURL') and isset($input['url'])) {
@@ -43,15 +45,15 @@ Event::listen('habravel.check.post', function (Post $post, array $input, Message
   }
 });
 
-Event::listen('habravel.check.post', function (Post $post, array $input, MessageBag $errors) {
+Event::listen('habravel.check.post', function (PostModel $post, array $input, MessageBag $errors) {
   $post->x_tags = array_map(function ($caption) {
-    $tag = new Tag;
+    $tag = new Models\Tag;
     $tag->caption = trim($caption);
     return $tag;
   }, (array) array_get($input, 'tags'));
 });
 
-Event::listen('habravel.check.post', function (Post $post, array $input, MessageBag $errors) {
+Event::listen('habravel.check.post', function (PostModel $post, array $input, MessageBag $errors) {
   // Input:
   // - polls[index][caption]=...
   // - polls[index][multiple]=0/1
@@ -92,7 +94,7 @@ Event::listen('habravel.check.post', function (Post $post, array $input, Message
           // Add new options.
           foreach ($options[$pollIndex] as &$optItem) {
             if ($optItem and trim($optItem['caption']) !== '') {
-              $option = new PollOption;
+              $option = new Models\PollOption;
               $option->caption = $optItem['caption'];
               $option->poll = $poll->id;
               $x_options[] = $option;
@@ -120,7 +122,7 @@ Event::listen('habravel.check.post', function (Post $post, array $input, Message
     foreach ($polls as $pollIndex => &$pollItem) {
       if ($pollItem and trim($pollItem['caption']) !== '') {
         // Found a new poll to be created. Input [id] values must not be used.
-        $poll = new Poll;
+        $poll = new Models\Poll;
         $poll->caption = $pollItem['caption'];
         $poll->multiple = $pollItem['multiple'];
         $poll->validateAndMerge($errors);
@@ -129,7 +131,7 @@ Event::listen('habravel.check.post', function (Post $post, array $input, Message
         // Add its options.
         foreach ($options[$pollIndex] as &$optItem) {
           if (trim($optItem['caption']) !== '') {
-            $option = new PollOption;
+            $option = new Models\PollOption;
             $option->caption = $optItem['caption'];
             $x_options[] = $option;
             $option->validateAndMerge($errors);
@@ -146,14 +148,14 @@ Event::listen('habravel.check.post', function (Post $post, array $input, Message
   $post->x_polls = $x_polls;
 });
 
-Event::listen('habravel.check.post', function (Post $post, array $input, MessageBag $errors) {
+Event::listen('habravel.check.post', function (PostModel $post, array $input, MessageBag $errors) {
   $post->validateAndMerge($errors);
 }, -10);
 
-Event::listen('habravel.save.post', function (Post $post) {
+Event::listen('habravel.save.post', function (PostModel $post) {
   \DB::transaction(function () use ($post) {
     if (!$post->poll) {
-      $poll = new Poll;
+      $poll = new Models\Poll;
       $poll->caption = '"'.$post->caption.'"';
       $poll->save();
       $post->poll = $poll->id;
@@ -171,7 +173,7 @@ Event::listen('habravel.save.post', function (Post $post) {
   });
 });
 
-Event::listen('habravel.save.post', function (Post $post) {
+Event::listen('habravel.save.post', function (PostModel $post) {
   \DB::transaction(function () use ($post) {
     $captions = array();
 
@@ -197,7 +199,7 @@ Event::listen('habravel.save.post', function (Post $post) {
   });
 });
 
-Event::listen('habravel.save.post', function (Post $post) {
+Event::listen('habravel.save.post', function (PostModel $post) {
   \DB::transaction(function () use ($post) {
     foreach ($post->x_deletedOptions as $option) { $option->delete(); }
     foreach ($post->x_deletedPolls as $poll) { $poll->delete(); }
@@ -219,7 +221,7 @@ Event::listen('habravel.save.post', function (Post $post) {
   });
 });
 
-Event::listen('habravel.save.post', function (Post $post) {
+Event::listen('habravel.save.post', function (PostModel $post) {
   foreach ($post->x_tags as $tag) {
     if ($tag->caption === 'draft') {
       $post->flags = '[draft]';

@@ -1,5 +1,5 @@
 <?php /*
-  - $poll             - Poll with x_options
+  - $poll             - Models\Poll with x_options
   - $index            - integer
 */?>
 

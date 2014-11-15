@@ -1,5 +1,5 @@
 <?php /*
-  - $pageUser         - User instance or null (unauthorized)
+  - $pageUser         - Models\User instance or null (unauthorized)
   - $pageDraftCount   - integer
 */?>
 

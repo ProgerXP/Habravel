@@ -28,10 +28,6 @@ class Post extends BaseController {
     $this->beforeFilter('csrf', array('only' => array('voteUp', 'voteDown')));
   }
 
-  function showCreate() {
-    return $this->show();
-  }
-
   function show($idOrModel = 0) {
     $post = PostModel::find($idOrModel);
     $post or App::abort(404);
@@ -67,8 +63,8 @@ class Post extends BaseController {
     }
   }
 
-  protected function downloadSource(Post $post) {
-    $class = get_class(Habravel\Markups\Factory::make($post->markup));
+  protected function downloadSource(PostModel $post) {
+    $class = get_class(\Habravel\Markups\Factory::make($post->markup));
     $name = preg_replace('~[\0-\x1F"]+~u', '', $post->caption).
             '.'.$class::$extension;
 
@@ -82,8 +78,12 @@ class Post extends BaseController {
     ));
   }
 
+  function showCreate() {
+    return $this->showEdit();
+  }
+
   function showEdit($idOrModel = 0) {
-    if ($id) {
+    if ($idOrModel) {
       $post = PostModel::find($idOrModel);
       $post or App::abort(404);
     } else {

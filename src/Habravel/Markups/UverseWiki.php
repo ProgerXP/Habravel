@@ -36,8 +36,8 @@ class UverseWiki extends BaseMarkup {
           return true;
         }
       } elseif ($model = $linkObj->pager->postModelBy($path)) {
-        // User by ((~name)) and ID: ((~123)).
-        // Post by ID: ((123)) or URL: ((docs/security)).
+        // Models\User by ((~name)) and ID: ((~123)).
+        // Models\Post by ID: ((123)) or URL: ((docs/security)).
         "$caption" === '' and $caption = $model->caption;
         $linkObj->LocalPath('/'.$model->url(false));
         return true;

@@ -1,5 +1,5 @@
 <?php /*
-  - $user             - User instance
+  - $user             - Models\User instance
   - $link             - true/false
 */?>
 

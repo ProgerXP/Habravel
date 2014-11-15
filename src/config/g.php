@@ -24,10 +24,10 @@ return array(
     // Download UverseWiki archive from http://uverse.i-forge.net/wiki and extract
     // it to the configured path (habravel::uversewiki.path, by default into
     // vendor/proger/habravel/uwiki/ directory).
-    'uversewiki'          => 'Habravel\\UverseWiki',
+    //'uversewiki'          => 'Habravel\\Markups\\UverseWiki',
 
     // Markdown dependency must be installed (see Composer suggestions).
-    //'githubmarkdown'      => 'Habravel\\GitHubMarkdown',
+    //'githubmarkdown'      => 'Habravel\\Markups\\GitHubMarkdown',
   ),
 
   'userPerms'             => array(

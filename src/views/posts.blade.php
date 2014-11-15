@@ -1,7 +1,7 @@
 <?php /*
   - $title            - string
-  - $posts            - array of Post instances
-  - $comments         - array of Post, replies to given $posts[index]
+  - $posts            - array of Models\Post instances
+  - $comments         - array of Models\Post, replies to given $posts[index]
 */?>
 
 @extends('habravel::page')
