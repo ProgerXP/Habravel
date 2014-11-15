@@ -18,7 +18,7 @@
       @if (!empty($comments[$index]))
         <div class="hvl-comments">
           @foreach ($comments[$index] as $comment)
-            @include('habravel::part.comment', array('post' => $comment), array())
+            @include('habravel::part.comment', array('post' => $comment, 'canEdit' => false), array())
           @endforeach
         </div>
       @endif

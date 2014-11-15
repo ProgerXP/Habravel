@@ -29,8 +29,7 @@
 
     @if (!empty($canEdit))
       <u class="hvl-comment-edit-btn">
-        {{{ trans('habravel::g.post.edit') }}}
-      </u>
+        {{{ trans('habravel::g.post.edit') }}}</u>
     @endif
 
     {{ $post->x_author->nameHTML() }}

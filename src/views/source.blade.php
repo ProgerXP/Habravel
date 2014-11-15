@@ -22,8 +22,9 @@
     </p>
 
     <p>
+      <?php $size = strlen($post->text)?>
       <a href="{{{ Habravel\url() }}}/source/{{{ $post->id }}}?dl=1">
-        {{{ trans('habravel::g.source.dl', array('size' => round(strlen($post->text) / 1024))) }}}
+        {{{ trans('habravel::g.source.dl', array('size' => $size >= 1024 ? round($size / 1024).' KiB' : "$size B")) }}}
       </a>
       &darr;
       &nbsp;

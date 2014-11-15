@@ -57,7 +57,7 @@ class Post extends BaseController {
     static::draftAccess($post, 'read');
 
     if ($download) {
-      $this->downloadSource($post);
+      return $this->downloadSource($post);
     } else {
       return View::make('habravel::source', compact('post'));
     }
@@ -65,7 +65,7 @@ class Post extends BaseController {
 
   protected function downloadSource(PostModel $post) {
     $class = get_class(\Habravel\Markups\Factory::make($post->markup));
-    $name = preg_replace('~[\0-\x1F"]+~u', '', $post->caption).
+    $name = preg_replace('~[\0-\x1F"]+~u', '', $post->caption ?: $post->id).
             '.'.$class::$extension;
 
     // Cannot use Response::download() because it expects a local file.

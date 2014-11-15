@@ -48,7 +48,7 @@ class User extends BaseController {
     } else {
       $vars = array(
         'backURL'         => Input::get('back'),
-        'badLogin'        => !Input::get('bad'),
+        'badLogin'        => Input::get('bad'),
       );
 
       return View::make('habravel::login', $vars);

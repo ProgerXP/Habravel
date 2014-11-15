@@ -18,7 +18,7 @@ class Tag extends BaseModel {
   }
 
   function posts() {
-    return $this->belongsToMany(NS.'Models\\Post');
+    return $this->belongsToMany(__NAMESPACE__.'\\Post');
   }
 
   function url() {
