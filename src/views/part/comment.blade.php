@@ -1,7 +1,9 @@
 <?php /*
-  - $post             - Models\Post instance, the comment itself, with x_author
-  - $post->-children  - array of Models\Post instances, replies to this comment
-  - $hasTop           - optional; true to display original post title; needs x_top
+  - $post             - Models\Post instance, the comment itself
+  - $author           - Models\User
+  - $post->x_children - array of Models\Post instances, replies to this comment
+  - $hasTop           - optional; true to display original post title; needs $top
+  - $topPost          - optional unless $hasTop is false; Models\Post
   - $hasReply         - optional; true to display Reply button
   - $canEdit          - boolean
 */?>
@@ -9,12 +11,12 @@
 <div class="hvl-comment" id="cmt-{{{ $post->id }}}" data-hvl-post-id="{{{ $post->id }}}">
   @if (!empty($hasTop))
     <div class="hvl-comment-top">
-      <a href="{{{ $post->x_top->url() }}}">{{{ $post->x_top->caption }}}</a>
+      <a href="{{{ $topPost->url() }}}">{{{ $topPost->caption }}}</a>
     </div>
   @endif
 
-  <a href="{{{ $post->x_author->url() }}}" class="hvl-comment-avatar" title="{{{ $post->x_author->name }}}">
-    <img src="{{{ $post->x_author->avatarURL() }}}" alt="{{{ $post->x_author->name }}}"></a>
+  <a href="{{{ $author->url() }}}" class="hvl-comment-avatar" title="{{{ $author->name }}}">
+    <img src="{{{ $author->avatarURL() }}}" alt="{{{ $author->name }}}"></a>
 
   <article class="hvl-markedup hvl-markedup-{{{ $post->markup }}}">
     {{ $post->html }}
@@ -31,7 +33,7 @@
         {{{ trans('habravel::g.post.edit') }}}</u>
     @endif
 
-    {{ $post->x_author->nameHTML() }}
+    {{ $author->nameHTML() }}
 
     @if ($post->pubTime)
       <time pubdate="pubdate" datetime="{{{ date(DATE_ATOM, $post->pubTime->timestamp) }}}">

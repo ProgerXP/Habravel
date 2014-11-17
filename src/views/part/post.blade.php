@@ -1,6 +1,9 @@
 <?php /*
   - $classes          - optional; string of space-separated CSS classes
-  - $post             - Models\Post instance with loaded x_author, x_tags
+  - $post             - Models\Post instance
+  - $parentPost       - Models\Post or null
+  - $author           - Models\User
+  - $tags             - array of Models\Tag
   - $canEdit          - boolean
   - $readMore         - false or string (link text)
   - $html             - string, actual post body to be output
@@ -19,13 +22,13 @@
       @endif
 
       <span title="{{{ trans('habravel::g.post.author') }}}">
-        @if ($post->x_author->avatar)
-          <a href="{{{ $post->x_author->url() }}}" class="hvl-post-author-avatar">
-            <img src="{{{ $post->x_author->avatarURL() }}}" alt="{{{ $post->x_author->name }}}">
+        @if ($author->avatar)
+          <a href="{{{ $author->url() }}}" class="hvl-post-author-avatar">
+            <img src="{{{ $author->avatarURL() }}}" alt="{{{ $author->name }}}">
           </a>
         @endif
 
-        {{ $post->x_author->nameHTML() }}
+        {{ $author->nameHTML() }}
       </span>
 
       @if (!empty($canEdit))
@@ -34,7 +37,7 @@
       @endif
     </p>
 
-    @include('habravel::part.tags', array('tags' => $post->x_tags), array())
+    @include('habravel::part.tags', compact('tags'), array())
   </header>
 
   <article class="hvl-markedup hvl-markedup-{{{ $post->markup }}}">

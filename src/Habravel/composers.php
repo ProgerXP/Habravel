@@ -22,58 +22,50 @@ View::composer('habravel::post', function ($view) {
 });
 
 View::composer('habravel::post', function ($view) {
-  if (!isset($view->post->x_polls)) {
-    $x_polls = $view->post->polls()->get();
+  if (!isset($view->polls)) {
+    $view->polls = $view->post->polls()->get();
+  }
+});
 
-    if (count($x_polls)) {
-      $options = Models\PollOption::whereIn('poll', $x_polls->lists('id'))->get()->all();
+View::composer('habravel::post.poll', function ($view) {
+  if (isset($view->options)) { return; }
 
-      // array('optionID' => vote_count).
-      $votes = Models\PollVote
-        ::whereIn('poll', $x_polls->lists('id'))
-        ->groupBy('option', 'poll')
-        ->get(array(\DB::raw('COUNT(1) AS voteCount'), 'poll', 'option'));
+  $poll = $view->poll;
+  $options = $view->options = Models\PollOption::wherePoll($poll->id)->get()->all();
 
-      foreach ($x_polls as $poll) {
-        $options[] = $option = new Models\PollOption;
-        $option->id = '-'.$poll->id;
-        $option->poll = $poll->id;
-        $option->caption = trans('habravel::g.post.abstain');
+  // array('optionID' => vote_count).
+  $votes = Models\PollVote
+    ::wherePoll($poll->id)
+    ->groupBy('option', 'poll')
+    ->get(array(\DB::raw('COUNT(1) AS voteCount'), 'poll', 'option'));
 
-        foreach ($votes as $vote) {
-          if (!$vote->option and $option->poll === $vote->poll) {
-            $option->x_voteCount = $vote->voteCount;
-            break;
-          }
-        }
-      }
+  $options[] = $abstainOption = new Models\PollOption;
+  $abstainOption->id = '-'.$poll->id;
+  $abstainOption->poll = $poll->id;
+  $abstainOption->caption = trans('habravel::g.post.abstain');
 
-      foreach ($votes as $vote) {
-        foreach ($options as $option) {
-          if ($option->id === $vote->option) {
-            $option->x_voteCount = $vote->voteCount;
-            break;
-          }
-        }
-      }
+  // Add vote count for "abstain from voting".
+  foreach ($votes as $vote) {
+    if (!$vote->option) {
+      $abstainOption->x_voteCount = $vote->voteCount;
+      break;
+    }
+  }
 
-      foreach ($x_polls as $poll) {
-        $sumVotes = 0;
-        $x_options = array();
-
-        foreach ($options as $option) {
-          if ($option->poll === $poll->id) {
-            $sumVotes += $option->x_voteCount ?: 0;
-            $x_options[] = $option;
-          }
-        }
-
-        $poll->x_options = $x_options;
-        $poll->x_voteCount = $sumVotes;
+  // Add vote counts for other (real) options.
+  foreach ($votes as $vote) {
+    foreach ($options as $option) {
+      if ($option->id === $vote->option) {
+        $option->x_voteCount = $vote->voteCount;
+        break;
       }
     }
+  }
 
-    $view->post->x_polls = $x_polls;
+  $view->voteCount = 0;
+
+  foreach ($options as $option) {
+    $view->voteCount += $option->x_voteCount ?: 0;
   }
 });
 
@@ -99,22 +91,15 @@ View::composer('habravel::edit', function ($view) {
   }
 
   isset($view->tagPool) or $view->tagPool = Models\Tag::where('flags', 'LIKE', '%[pool.edit]%')->get();
-  isset($view->post->x_tags) or $view->post->x_tags = $view->post->tags()->get();
+  isset($view->tags) or $view->tags = $view->post->tags()->get();
 
-  if (!isset($view->post->x_polls)) {
-    $view->post->x_polls = $polls = $view->post->polls()->get();
-    count($polls) and $options = Models\PollOption::whereIn('poll', $polls->lists('id'))->get();
-
-    foreach ($polls as $poll) {
-      $x_options = array();
-
-      foreach ($options as $option) {
-        $option['poll'] === $poll->id and $x_options[] = $option;
-      }
-
-      $poll->x_options = $x_options;
-    }
+  if (!isset($view->polls)) {
+    $view->polls = $polls = $view->post->polls()->get();
   }
+});
+
+View::composer('habravel::edit.poll', function ($view) {
+  isset($view->options) or $view->options = Models\PollOption::wherePoll($view->poll->id)->get();
 });
 
 View::composer('habravel::user', function ($view) {
@@ -156,9 +141,9 @@ View::composer('habravel::part.markups', function ($view) {
 View::composer('habravel::part.post', function ($view) {
   $post = $view->post;
 
-  isset($post->x_parent) or $post->x_parent = $post->parentPost()->first();
-  isset($post->x_author) or $post->x_author = $post->author()->first();
-  isset($post->x_tags) or $post->x_tags = $post->tags()->get();
+  isset($view->parentPost) or $view->parentPost = $post->parentPost()->first();
+  isset($view->author) or $view->author = $post->author()->first();
+  isset($view->tags) or $view->tags = $post->tags()->get();
 
   isset($view->classes) or $view->classes = '';
   $post->sourceURL and $view->classes .= ' hvl-post-sourced';
@@ -187,10 +172,9 @@ View::composer('habravel::part.post', function ($view) {
 View::composer('habravel::part.comment', function ($view) {
   $post = $view->post;
 
-  isset($post->x_top) or $post->x_top = $post->top()->first();
-  isset($post->x_author) or $post->x_author = $post->author()->first();
+  isset($view->topPost) or $view->topPost = $post->top()->first();
+  isset($view->author) or $view->author = $post->author()->first();
   isset($post->x_children) or $post->x_children = array();
-
   isset($view->canEdit) or $view->canEdit = ($user = user() and $post->isEditable($user));
 });
 
