@@ -84,7 +84,7 @@
     @endif
 
     @if ($readMore === false)
-      <span class="hvl-post-footer-ctl">
+      <span class="hvl-post-footer-ctl hvl-credit-ctl">
         <a class="hvl-credit" href="http://laravel.ru/habravel" target="_blank">{{{ trans('habravel::g.credit') }}}</a>
       </span>
     @endif

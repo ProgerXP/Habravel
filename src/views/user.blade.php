@@ -38,7 +38,7 @@
 
   <?php $prevTop = null?>
   @foreach ($comments as $post)
-    @include('habravel::part.comment', compact('post'), array('hasTop' => $prevTop !== $post->top))
+    @include('habravel::part.comment', compact('post'), array('hasTop' => $prevTop !== $post->top, 'canEdit' => false))
     <?php $prevTop = $post->top?>
   @endforeach
 
