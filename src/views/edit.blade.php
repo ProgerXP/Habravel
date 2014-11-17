@@ -3,7 +3,7 @@
   - $post             - Models\Post instance
   - $tags             - array of Models\Tag
   - $tagPool          - array of Models\Tag
-  - $polls            - array of Models\Poll 
+  - $polls            - array of Models\Poll
   - $markups          - array of markup names ('githubmarkdown', 'uversewiki', etc.)
   - $textPlaceholder  - default text for textarea
 */?>
@@ -61,7 +61,7 @@
       <div class="hvl-pedit-ctl">
         <p>
           <input class="hvl-input" name="caption" value="{{{ $post->caption }}}"
-                 placeholder="{{{ trans("habravel::g.edit.caption") }}}"
+                 placeholder="{{{ trans('habravel::g.edit.caption') }}}"
                  required="required" @if (!$post->id) autofocus="autofocus" @endif>
         </p>
       </div>
@@ -73,7 +73,7 @@
 
         <p>
           <input class="hvl-input" name="sourceName" value="{{{ $post->sourceName }}}"
-                 placeholder="{{{ trans("habravel::g.edit.sourceName") }}}">
+                 placeholder="{{{ trans('habravel::g.edit.sourceName') }}}">
         </p>
 
         <p>

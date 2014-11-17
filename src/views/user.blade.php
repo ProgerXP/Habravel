@@ -9,47 +9,6 @@
 @extends('habravel::page')
 <?php $pageTitle = '~'.$user->name?>
 
-@section('posts')
-  <h2 class="hvl-h2">
-    <a href="{{{ $user->url() }}}/posts">{{{ trans('habravel::g.user.posts') }}}</a>
-    ({{{ $postCount }}})
-  </h2>
-
-  @foreach ($posts as $post)
-    @include('habravel::part.postTitle', compact('post'), array('level' => 3, 'link' => true))
-    @include('habravel::part.post', compact('post'), array('readMore' => true, 'downshift' => 4))
-  @endforeach
-
-  @if ($postCount > count($posts))
-    <p>
-      <a href="{{{ $user->url() }}}/posts">
-        {{{ trans('habravel::g.user.allPosts') }}}</a>
-      &rarr;
-    </p>
-  @endif
-@stop
-
-@section('comments')
-  <h2 class="hvl-h2">
-    <a href="{{{ $user->url() }}}/comments">{{{ trans('habravel::g.user.comments') }}}</a>
-    ({{{ $commentCount }}})
-  </h2>
-
-  <?php $prevTop = null?>
-  @foreach ($comments as $post)
-    @include('habravel::part.comment', compact('post'), array('hasTop' => $prevTop !== $post->top, 'canEdit' => false))
-    <?php $prevTop = $post->top?>
-  @endforeach
-
-  @if ($commentCount > count($comments))
-    <p>
-      <a href="{{{ $user->url() }}}/comments">
-        {{{ trans('habravel::g.user.allComments') }}}</a>
-      &rarr;
-    </p>
-  @endif
-@stop
-
 @section('content')
   <div class="hvl-split hvl-puser {{{ $user->score < 0 ? 'hvl-puser-below' : '' }}}">
     <header class="hvl-puser-header">
@@ -77,16 +36,16 @@
 
     @if (count($posts) and count($comments))
       <div class="hvl-split-left">
-        @yield('posts')
+        @include('habravel::user.posts')
       </div>
 
       <div class="hvl-split-right">
-        @yield('comments')
+        @include('habravel::user.comments')
       </div>
     @elseif (count($posts))
-      @yield('posts')
+      @include('habravel::user.posts')
     @elseif (count($comments))
-      @yield('comments')
+      @include('habravel::user.comments')
     @endif
   </div>
 @stop
