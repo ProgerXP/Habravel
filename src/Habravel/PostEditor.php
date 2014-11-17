@@ -17,7 +17,7 @@ class PostEditor {
   protected $deletedPollOptions = array();    // array of Models\PollOptions.
 
   static function make(PostModel $post) {
-    return new static($Post, $input);
+    return new static($post);
   }
 
   function __construct(PostModel $post) {
@@ -53,6 +53,7 @@ class PostEditor {
     $this->applyPolls();
 
     $this->post->validateAndMerge($this->errors);
+    return $this;
   }
 
   // Copies basic Post properties (source, text, etc.) from the user's input.
@@ -193,15 +194,15 @@ class PostEditor {
       \App::abort(500, __CLASS__.'->save() must be called after applyInput().');
     }
 
-    \DB::transaction(array($this, 'saveTransaction'));
-    return $this->post;
-  }
+    $self = $this;
+    \DB::transaction(function () use ($self) {
+      $self->updateTimeAndFlags();
+      $self->saveBasic();
+      $self->saveTags();
+      $self->savePolls();
+    });
 
-  protected function saveTransaction() {
-    $this->updateTimeAndFlags();
-    $this->saveBasic();
-    $this->saveTags();
-    $this->savePolls();
+    return $this;
   }
 
   protected function updateTimeAndFlags() {
