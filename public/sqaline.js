@@ -238,6 +238,26 @@ window.Sqaline = new (function ($, opt) {
     // The same but fired after the element has finished resizing.
     afterEvent:       'sqalined',
 
+    // If set referenced anchors will be resized before resizing the element
+    // which expression relied on them:
+    //
+    //    <form data-sqa="wr $textarea{h}">
+    //      <textarea data-sqa="wr win{h} - win$body{pt + pb}">
+    //
+    // The <form> above will receive the same height as its <textarea> which
+    // height will be calculated as window's height without <body>'s vertical
+    // padding. Without this option set <form> will receive current <textarea>
+    // height, which will be different once resizing cycle reaches the latter.
+    //
+    // For indirect relation where you don't reference a child but do rely on
+    // its calculation you can simply use "+ $.child{0}" or similar stub.
+    // Here <article> is vertically centered after resizing its <div> child
+    // (removing $>div{0} will use current, old <article>'s height):
+    //
+    //    <article data-sqa="wr top: - $>div{0}">
+    //      <div data-sqa="wr win{h / 2}">
+    resizeReferenced: true,
+
     // HTML attribute scanned for Sqaline rules. Recommended to start with
     // 'data-' to be W3C-compliant.
     // If changed on runtime clearCache() must be called.
@@ -463,7 +483,9 @@ window.Sqaline = new (function ($, opt) {
 
   // Without arguments calls resizeAll(). With one argument resizes that
   // specific element taking current cache into account. With two arguments
-  // resizes the element parsing given options every time.
+  // resizes the element parsing given options every time. If called multiple
+  // times on the same element during one resize cycle (controlled by resizeAll())
+  // such calls are ignored.
   //
   // If node matches multiple elements takes the first one. node can be also
   // a selector, a DOM node or a jQuery object.
@@ -495,18 +517,23 @@ window.Sqaline = new (function ($, opt) {
         opt = self.parse(node, opt)
       }
 
-      var event = opt.trigger && self.opt.beforeEvent
-      event && opt.node[opt.trigger](event, [opt])
+      if (opt.anchors) {
+        var event = opt.trigger && self.opt.beforeEvent
+        event && opt.node[opt.trigger](event, [opt])
 
-      if (opt.props.length) {
-        var key = node.data('sqak')
-        key || node.data('sqak', key = ++self._keySeq)
-        self._resized[key] = true
-        self._resize($.extend({}, opt))
+        if (opt.props.length) {
+          var key = node.data('sqak')
+          key || node.data('sqak', key = ++self._keySeq)
+          if (!(key in self._resized)) {
+            self._resized[key] = true
+            self._resize($.extend({}, opt))
+          }
+        }
+
+        var event = opt.trigger && self.opt.afterEvent
+        event && opt.node[opt.trigger](event, [opt])
       }
 
-      var event = opt.trigger && self.opt.afterEvent
-      event && opt.node[opt.trigger](event, [opt])
       return node
     }
   }
@@ -556,6 +583,7 @@ window.Sqaline = new (function ($, opt) {
 
     if (!self._resizing) {
       self._resizing = true
+      self._resized = {}
 
       nodes.each(function () {
         try {
@@ -597,12 +625,16 @@ window.Sqaline = new (function ($, opt) {
   // down into some flags and rules (see parseAttribute()). Rules are then
   // parsed into more flags and their code is compiled.
   //
+  // For a non-Sqalinable node (e.g. without data-sqa) rules and props will be []
+  // (which is also true for data-sqa="anchors,only") but anchors will be absent.
+  //
   // Returns entirely parsed opt which has this format:
   // opt = {
   //   node: $, trigger: 'trigger' | 'triggerHandler' | false,
   //   cacheSeq: this._cacheSeq,
   //   expr: 'na,me ^{eval} ... | ...',
-  //   verbose: false, name: 'na', anchors: ['na', 'me'], rules: ['^{eval} ...', '...'],
+  //   verbose: false, resizeReferenced: true,
+  //   name: 'na', anchors: ['na', 'me'], rules: ['^{eval} ...', '...'],
   //   props: [{  - props may duplicate (evaluated sequentially)
   //     prop:    'width',
   //     source:  '^{eval} ...',
@@ -613,7 +645,11 @@ window.Sqaline = new (function ($, opt) {
   // }
   self.parse = function (node, opt) {
     node = $(node).eq(0)
-    opt = $.extend({trigger: self.opt.trigger}, opt, {node: node})
+
+    opt = $.extend({
+      trigger:            self.opt.trigger,
+      resizeReferenced:   self.opt.resizeReferenced,
+    }, opt, {node: node})
 
     if (!opt.props && !opt.expr) {
       opt.expr = $.trim(opt.node.attr(self.opt.attribute))
@@ -623,7 +659,7 @@ window.Sqaline = new (function ($, opt) {
       console.dir([opt])
     }
 
-    opt.expr && $.extend(opt, self.parseAttribute(opt.expr))
+    $.extend(opt, opt.expr ? self.parseAttribute(opt.expr) : {rules: [], props: []})
 
     if (opt.rules) {
       opt.props = []
@@ -773,6 +809,7 @@ window.Sqaline = new (function ($, opt) {
 
       all.each(function () {
         cx.el = $(this)
+        opt.resizeReferenced && self.resize(cx.el)
         var value = (code instanceof Function) ? code(cx) : eval(code)
         sum = typeof value == 'number' ? sum + value : value
         opt.verbose && console.dir([ {code: code._sqaCode || code, el: cx.el, res: value} ])
