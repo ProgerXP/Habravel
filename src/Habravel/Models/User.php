@@ -53,16 +53,17 @@ class User extends BaseModel {
   function setEmailAttribute($value) {
     $this->attributes['email'] = trim($value);
   }
+
   function setNameAttribute($value) {
     $this->attributes['name'] = trim($value);
   }
 
   function posts() {
-    return Post::whereAuthor($this->id);
+    return $this->hasMany(__NAMESPACE__.'\\Post', 'author');
   }
 
   function votes() {
-    return PollVote::whereUser($this->id);
+    return $this->hasMany(__NAMESPACE__.'\\PollVote', 'user');
   }
 
   function flags() {

@@ -10,11 +10,11 @@ class Tag extends BaseModel {
   );
 
   function children() {
-    return static::whereParent($this->id);
+    return $this->hasMany(__CLASS__, 'parent');
   }
 
   function parentTag() {
-    return static::find($this->parent);
+    return $this->belongsTo(__CLASS__, 'parent');
   }
 
   function posts() {

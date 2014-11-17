@@ -18,10 +18,10 @@ class PollOption extends BaseModel {
   }
 
   function poll() {
-    return Poll::find($this->id);
+    return $this->belongsTo(__NAMESPACE__.'\\Poll', 'poll');
   }
 
   function votes() {
-    return PollVote::whereOption($this->id);
+    return $this->hasMany(__NAMESPACE__.'\\PollVote', 'option');
   }
 }

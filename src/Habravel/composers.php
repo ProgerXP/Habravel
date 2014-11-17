@@ -158,8 +158,8 @@ View::composer('habravel::part.markups', function ($view) {
 View::composer('habravel::part.post', function ($view) {
   $post = $view->post;
 
-  isset($post->x_parent) or $post->x_parent = $post->parentPost();
-  isset($post->x_author) or $post->x_author = $post->author();
+  isset($post->x_parent) or $post->x_parent = $post->parentPost()->first();
+  isset($post->x_author) or $post->x_author = $post->author()->first();
   isset($post->x_tags) or $post->x_tags = $post->tags()->get();
 
   isset($view->classes) or $view->classes = '';
@@ -189,8 +189,8 @@ View::composer('habravel::part.post', function ($view) {
 View::composer('habravel::part.comment', function ($view) {
   $post = $view->post;
 
-  isset($post->x_top) or $post->x_top = $post->top();
-  isset($post->x_author) or $post->x_author = $post->author();
+  isset($post->x_top) or $post->x_top = $post->top()->first();
+  isset($post->x_author) or $post->x_author = $post->author()->first();
   isset($post->x_children) or $post->x_children = array();
 
   isset($view->canEdit) or $view->canEdit = ($user = user() and $post->isEditable($user));

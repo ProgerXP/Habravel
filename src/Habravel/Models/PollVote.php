@@ -9,14 +9,14 @@ class PollVote extends BaseModel {
   );
 
   function poll() {
-    return Poll::find($this->poll);
+    return $this->belongsTo(__NAMESPACE__.'\\Poll', 'poll');
   }
 
   function option() {
-    return PollOption::find($this->option);
+    return $this->belongsTo(__NAMESPACE__.'\\PollOption', 'option');
   }
 
   function user() {
-    return User::find($this->user);
+    return $this->belongsTo(__NAMESPACE__.'\\User', 'user');
   }
 }

@@ -75,28 +75,33 @@ class Post extends BaseModel {
   function setUrlAttribute($value) {
     $this->attributes['url'] = trim($value);
   }
+
   function setSourceUrlAttribute($value) {
     $this->attributes['sourceURL'] = trim($value);
   }
+
   function setSourceNameAttribute($value) {
     $this->attributes['sourceName'] = trim($value);
   }
+
   function setCaptionAttribute($value) {
     $this->attributes['caption'] = trim($value);
   }
+
   function setTextAttribute($value) {
     $this->attributes['text'] = rtrim($value);
   }
+
   function getInfoAttribute($value) {
     return (array) (is_scalar($value) ? unserialize($value) : $value);
   }
 
   function author() {
-    return User::find($this->author);
+    return $this->belongsTo(__NAMESPACE__.'\\User', 'author');
   }
 
   function children() {
-    return static::whereParent($this->id);
+    return $this->hasMany(__CLASS__, 'parent');
   }
 
   function childCount() {
@@ -104,15 +109,15 @@ class Post extends BaseModel {
   }
 
   function top() {
-    return static::find($this->top);
+    return $this->belongsTo(__CLASS__, 'top');
   }
 
   function parentPost() {
-    return static::find($this->parent);
+    return $this->belongsTo(__CLASS__, 'parent');
   }
 
   function poll() {
-    return Poll::find($this->poll);
+    return $this->belongsTo(__NAMESPACE__.'\\Poll', 'poll');
   }
 
   function polls() {
