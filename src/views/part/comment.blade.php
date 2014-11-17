@@ -14,8 +14,7 @@
   @endif
 
   <a href="{{{ $post->x_author->url() }}}" class="hvl-comment-avatar" title="{{{ $post->x_author->name }}}">
-    <img src="{{{ $post->x_author->avatarURL() }}}" alt="{{{ $post->x_author->name }}}">
-  </a>
+    <img src="{{{ $post->x_author->avatarURL() }}}" alt="{{{ $post->x_author->name }}}"></a>
 
   <article class="hvl-markedup hvl-markedup-{{{ $post->markup }}}">
     {{ $post->html }}
@@ -37,8 +36,7 @@
     @if ($post->pubTime)
       <time pubdate="pubdate" datetime="{{{ date(DATE_ATOM, $post->pubTime->timestamp) }}}">
         <a href="{{{ $post->url() }}}" title="{{{ trans('habravel::g.comment.anchor') }}}">
-          {{{ DateFmt::Format('AGO-AT[s-d]IF>2[d# m__ y##]AT h#m', $post->pubTime->timestamp, Config::get('app.locale')) }}}
-        </a>
+          {{{ DateFmt::Format('AGO-AT[s-d]IF>2[d# m__ y##]AT h#m', $post->pubTime->timestamp, Config::get('app.locale')) }}}</a>
       </time>
     @endif
   </footer>

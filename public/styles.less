@@ -412,10 +412,9 @@ body a.hvl-credit {
   &:first-child { display: block; }
 }
 
-.hvl-pedit-tags-new { white-space: nowrap; }
-
-.hvl-pedit-tags-new, .hvl-pedit-tags-custom {
-  &:not(:hover) { color: gray; }
+u.hvl-pedit-tags-new {
+  white-space: nowrap;
+  color: gray;
 }
 
 body .hvl-pedit-tags-from {
@@ -491,6 +490,9 @@ body .hvl-pedit-tags-from {
 
   + * { margin-left: 0.5em; }
   body &, body &:hover { color: white; }
+
+  &.hvl-tag-draft { background: #999; }
+  &.hvl-tag-tl { background: olive; }
 }
 
 .hvl-post-footer {

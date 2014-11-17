@@ -18,9 +18,9 @@
   </div>
 
   <div class="hvl-uheader-right">
-    <a href="{{{ $root }}}/tags/draft">
-      {{{ trans('habravel::g.uheader.drafts') }}}
-    </a>
+    <a href="{{{ $root }}}/drafts">
+      {{{ trans('habravel::g.uheader.drafts') }}}</a>
+
     @if ($pageDraftCount) ({{{ $pageDraftCount }}}) @endif
 
     <a href="{{{ $root }}}/compose">{{{ trans('habravel::g.uheader.compose') }}}</a>

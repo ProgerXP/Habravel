@@ -23,8 +23,7 @@
   @if ($postCount > count($posts))
     <p>
       <a href="{{{ $user->url() }}}/posts">
-        {{{ trans('habravel::g.user.allPosts') }}}
-      </a>
+        {{{ trans('habravel::g.user.allPosts') }}}</a>
       &rarr;
     </p>
   @endif
@@ -45,8 +44,7 @@
   @if ($commentCount > count($comments))
     <p>
       <a href="{{{ $user->url() }}}/comments">
-        {{{ trans('habravel::g.user.allComments') }}}
-      </a>
+        {{{ trans('habravel::g.user.allComments') }}}</a>
       &rarr;
     </p>
   @endif

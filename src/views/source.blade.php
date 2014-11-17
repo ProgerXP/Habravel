@@ -17,21 +17,18 @@
     <p>
       <b>{{{ trans('habravel::g.source.markup') }}}</b>
       <a class="hvl-markup-help" href="{{{ Habravel\url()."/markup/$post->markup" }}}">
-        {{{ trans('habravel::g.markups.'.$post->markup) }}}
-      </a>
+        {{{ trans('habravel::g.markups.'.$post->markup) }}}</a>
     </p>
 
     <p>
       <?php $size = strlen($post->text)?>
       <a href="{{{ Habravel\url() }}}/source/{{{ $post->id }}}?dl=1">
-        {{{ trans('habravel::g.source.dl', array('size' => $size >= 1024 ? round($size / 1024).' KiB' : "$size B")) }}}
-      </a>
+        {{{ trans('habravel::g.source.dl', array('size' => $size >= 1024 ? round($size / 1024).' KiB' : "$size B")) }}}</a>
       &darr;
       &nbsp;
       &nbsp;
       <a href="{{{ $post->url() }}}">
-        {{{ trans('habravel::g.source.see') }}}
-      </a>
+        {{{ trans('habravel::g.source.see') }}}</a>
       &rarr;
     </p>
   </header>
