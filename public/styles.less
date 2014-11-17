@@ -210,6 +210,8 @@ body a.hvl-credit {
   margin-top: 0.25em;
 }
 
+.hvl-post-footer-ctl.hvl-credit-ctl { white-space: normal; }
+
 .hvl-form-list {
   .hvl-form-list-value + .hvl-form-list-label {
     margin-top: 1.5em;
@@ -454,7 +456,11 @@ body .hvl-pedit-tags-from {
   Post View Page
  ***/
 
-.hvl-pposts .hvl-h2 a { color: #d00; }
+.hvl-pposts .hvl-h2 a, .hvl-puser .hvl-h3 a, .hvl-puser .hvl-comment-top a {
+  color: #000;
+}
+
+.hvl-pposts .hvl-comments { font-size: 83%; color: gray; }
 
 .hvl-h2 + .hvl-post { margin-top: -1.4em; }
 
@@ -500,6 +506,7 @@ body .hvl-pedit-tags-from {
 
 .hvl-post-footer-ctl {
   margin: 0 1.5em 0 0;
+  white-space: nowrap;
 
   > i:first-child { margin-right: 0.2em; }
 }
@@ -555,7 +562,7 @@ body .hvl-pedit-tags-from {
 
 .hvl-comment-avatar {
   left: 0;
-  margin-top: 6px;
+  margin-top: 3px;
   position: absolute;
 
   img { width: 50px; }
