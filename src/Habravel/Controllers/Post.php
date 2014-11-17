@@ -4,7 +4,7 @@ use Habravel\Models\Post as PostModel;
 
 class Post extends BaseController {
   static function draftAccess(PostModel $post, $action) {
-    if (!$post->hasFlag('draft')) {
+    if ($post->listTime !== null) {
       return;
     } elseif (!user()) {
       App::abort(401);
@@ -130,8 +130,10 @@ class Post extends BaseController {
 
     static::writeAccess($post);
 
-    $errors = new MessageBag;
-    Event::until('habravel.check.post', array($post, &$input, $errors));
+    $editor = \Habravel\PostEditor::make($post)
+      ->applyInput($input);
+
+    $errors = $editor->errors();
 
     if (!empty($input['preview'])) {
       count($errors) or $errors = null;
@@ -141,7 +143,7 @@ class Post extends BaseController {
       foreach ($input as $key => $value) { $post->$key = $value; }
       return $this->showEditOn($post, $errors);
     } else {
-      Event::fire('habravel.save.post', array($post));
+      $editor->save();
       return Redirect::to($post->url());
     }
   }

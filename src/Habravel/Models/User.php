@@ -58,6 +58,37 @@ class User extends BaseModel {
     $this->attributes['name'] = trim($value);
   }
 
+  // Published = all but drafts.
+  function publishedArticles() {
+    return $this->articles()->whereNotNull('listTime');
+  }
+
+  function drafts() {
+    return $this->posts()->whereNull('listTime');
+  }
+
+  function articles() {
+    return $this->posts()->whereTop(null);
+  }
+
+  function comments() {
+    return $this->posts()->whereNotNull('top');
+  }
+
+  // Queries all posts that this user can see - everyone's published articles,
+  // comments or his drafts.
+  function allVisiblePosts() {
+    $self = $this;
+
+    return Post::where(function ($query) use ($self) {
+      $query
+        ->whereNotNull('listTime')
+        ->orWhere('author', '=', $self->id);
+    });
+  }
+
+  // This returns just all existing Post rows for this User including drafts and
+  // comments (which are also posts).
   function posts() {
     return $this->hasMany(__NAMESPACE__.'\\Post', 'author');
   }

@@ -44,7 +44,7 @@ class Post extends BaseModel {
     'text'                => '',
     'html'                => '',
     'introHTML'           => '',
-    'flags'               => '',    // '[draft][aa.bb]'.
+    'flags'               => '',    // custom info about this post: '[flag.1][aa.bb]...'.
     'listTime'            => null,
     'pubTime'             => null,
   );

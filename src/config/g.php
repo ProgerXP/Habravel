@@ -33,4 +33,11 @@ return array(
   'userPerms'             => array(
     'can.post', 'can.editSelf', 'can.reply', 'can.vote',
   ),
+
+  // Special tags that have extra functionality. Since their IDs can be arbitrary
+  // they are matched by exact name (caption).
+  'tags'                  => array(
+    'draft'               => 'draft',
+    'tl'                  => 'tl',
+  ),
 );

@@ -5,11 +5,6 @@ use Route;
 
 define('NS', __NAMESPACE__.'\\');
 
-// Priorities for Event::listen().
-define('VALIDATE', 10);
-define('CUSTOMIZE', 5);
-define('LAST', -10);
-
 class ServiceProvider extends \Illuminate\Support\ServiceProvider {
   static function shutdown() {
     \Session::put('time', time());
@@ -40,7 +35,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider {
 
     class_alias('App',          NS.'Controllers\\App');
     class_alias('Config',       NS.'Controllers\\Config');
-    class_alias('Event',        NS.'Controllers\\Event');
     class_alias('Input',        NS.'Controllers\\Input');
     class_alias('Redirect',     NS.'Controllers\\Redirect');
     class_alias('Request',      NS.'Controllers\\Request');
@@ -68,6 +62,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider {
       Route::get    ('up/{habravel_id}',          "$ns\\Post@voteUp");
       Route::get    ('down/{habravel_id}',        "$ns\\Post@voteDown");
       Route::post   ('reply',                     "$ns\\Comment@reply");
+      Route::get    ('drafts',                    "$ns\\Posts@showDrafts");
       Route::get    ('best/day',                  "$ns\\Posts@showBestDay");
       Route::get    ('best/week',                 "$ns\\Posts@showBestWeek");
       Route::get    ('best',                      "$ns\\Posts@showBestAllTime");
@@ -91,7 +86,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider {
   }
 
   function events() {
-    require_once __DIR__.'/events.php';
     require_once __DIR__.'/composers.php';
 
     App::error(function ($e) {

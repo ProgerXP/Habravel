@@ -3,7 +3,7 @@
   - $post             - Models\Post instance with x_tags, x_polls
   - $markups          - array of markup names ('githubmarkdown', 'uversewiki', etc.)
   - $textPlaceholder  - default text for textarea
-  - $tagPool          - array of string
+  - $tagPool          - array of Models\Tag
 */?>
 
 @extends('habravel::page')
@@ -76,7 +76,8 @@
 
         <p>
           <input class="hvl-input" name="sourceURL" value="{{{ $post->sourceURL }}}"
-                 placeholder="{{{ trans("habravel::g.edit.sourceURL") }}}">
+                 placeholder="{{{ trans("habravel::g.edit.sourceURL") }}}"
+                 data-prompt="{{{ trans("habravel::g.edit.isTranslation") }}}">
         </p>
       </div>
 
@@ -88,13 +89,10 @@
 
         <p class="hvl-pedit-tags-to">
           @foreach ($post->x_tags as $tag)
-            @if (false !== $index = array_search($tag->caption, $tagPool))
-              <?php unset($tagPool[$index])?>
-              <a target="_blank" href="{{{ $tag->url() }}}">{{{ $tag->caption }}}</a>
-            @else
-              <a class="hvl-pedit-tags-custom" target="_blank" href="{{{ $tag->url() }}}">{{{ $tag->caption }}}</a>
+            @if ($tag->type !== 'draft')
+              {{ Habravel\tagLink($tag, true, '') }}
+              <input type="hidden" name="tags[]" value="{{{ $tag->caption }}}">
             @endif
-            <input type="hidden" name="tags[]" value="{{{ $tag->caption }}}">
           @endforeach
 
           <span class="hvl-pedit-tags-none">{{{ trans('habravel::g.edit.tagHelp') }}}</span>
@@ -102,9 +100,17 @@
 
         <p class="hvl-pedit-tags-from">
           @foreach ($tagPool as $tag)
-            <a target="_blank" href="{{{ Habravel\url().'/tags/'.urlencode($tag) }}}">
-              {{{ $tag }}}
-            </a>
+            <?php
+              $postTagged = false;
+              foreach ($post->x_tags as $postTag) {
+                if ($tag->caption === $postTag->caption) {
+                  $postTagged = true;
+                  break;
+                }
+              }
+
+              $postTagged or print Habravel\tagLink($tag, true, '');
+            ?>
           @endforeach
 
           <u class="hvl-pedit-tags-new">{{{ trans('habravel::g.edit.newTag') }}}</u>
@@ -149,7 +155,7 @@
                 placeholder="{{{ $textPlaceholder }}}">{{{ $post->text }}}</textarea>
 
       <div class="hvl-pedit-ctl">
-        <button class="hvl-btn" type="submit" name="tags[]" value="draft">
+        <button class="hvl-btn" type="submit" name="tags[]" value="{{{ Config::get('habravel::g.tags.draft') }}}">
           {{{ trans('habravel::g.edit.save') }}}
         </button>
       </div>

@@ -34,3 +34,18 @@ function user($login = null) {
 
   return $user;
 }
+
+function tagLink(Models\Tag $tag, $newTab = false, $class = 'hvl-tag') {
+  $key = "habravel::tags.$tag->type";
+
+  if ($tag->type and $trans = trans($key) and $trans !== $key) {
+    $caption = $trans;
+  } else {
+    $caption = $tag->caption;
+  }
+
+  empty($newTab) or $target = '_blank';
+  $tag->type and $class .= " hvl-tag-$tag->type";
+
+  return \HTML::link($tag->url(), $caption, compact('target', 'class'));
+}

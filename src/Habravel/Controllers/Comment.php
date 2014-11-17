@@ -4,7 +4,7 @@ use Habravel\Models\Post as PostModel;
 
 class Comment extends BaseController {
   function showByUserName($name = '') {
-    return Posts::showUserListCustom($user, function ($query) {
+    return Posts::showUserListCustom($name, $name, function ($query) {
       $query->whereNotNull('top');
     });
   }
@@ -15,6 +15,12 @@ class Comment extends BaseController {
   // - markup=uversewiki  - required
   // - text=...           - required
   function reply() {
+    if (!user()) {
+      App::abort(401);
+    } elseif (!user()->hasFlag('can.reply')) {
+      App::abort(403);
+    }
+
     $input = Input::get();
     $parent = PostModel::find($input['parent']);
     $parent or App::abort(404, 'Parent post not found.');
@@ -37,12 +43,6 @@ class Comment extends BaseController {
     } elseif (!empty($input['preview'])) {
       return $post->html;
     } else {
-      if (!user()) {
-        App::abort(401);
-      } elseif (!user()->hasFlag('can.reply')) {
-        App::abort(403);
-      }
-
       $post->url = strtok($parent->url, '#').'#cmt-%ID%';
       $post->save();
 

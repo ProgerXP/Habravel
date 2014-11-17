@@ -98,7 +98,7 @@ View::composer('habravel::edit', function ($view) {
     $view->textPlaceholder = $list[array_rand($list)];
   }
 
-  isset($view->tagPool) or $view->tagPool = Models\Tag::take(14)->lists('caption');
+  isset($view->tagPool) or $view->tagPool = Models\Tag::where('flags', 'LIKE', '%[pool.edit]%')->get();
   isset($view->post->x_tags) or $view->post->x_tags = $view->post->tags()->get();
 
   if (!isset($view->post->x_polls)) {
@@ -121,14 +121,14 @@ View::composer('habravel::user', function ($view) {
   $user = $view->user;
 
   if (!isset($view->posts)) {
-    $query = $user->posts()->whereTop(null)->orderBy('pubTime', 'desc');
+    $query = $user->publishedArticles()->orderBy('listTime', 'desc');
     $view->posts = $query->take(10)->get();
     foreach ($view->posts as $post) { $post->needHTML(); }
     $view->postCount = $query->count();
   }
 
   if (!isset($view->comments)) {
-    $query = $user->posts()->whereNotNull('top')->orderBy('pubTime', 'desc');
+    $query = $user->comments()->orderBy('listTime', 'desc');
     $view->comments = $query->take(20)->get();
     foreach ($view->comments as $post) { $post->needHTML(); }
     $view->commentCount = $query->count();
@@ -139,9 +139,7 @@ View::composer('habravel::part.uheader', function ($view) {
   isset($view->pageUser) or $view->pageUser = user();
 
   if (!isset($view->pageDraftCount)) {
-    $view->pageDraftCount = !$view->pageUser ? 0 : $view->pageUser->posts()
-      ->where('posts.flags', 'LIKE', '%[draft]%')
-      ->count();
+    $view->pageDraftCount = !$view->pageUser ? 0 : $view->pageUser->drafts()->count();
   }
 });
 

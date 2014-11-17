@@ -5,30 +5,35 @@ use Habravel\Models\User as UserModel;
 
 class Posts extends BaseController {
   function showByUserName($name = '') {
-    return static::showUserListCustom($name, function ($query) {
+    return static::showUserListCustom($name, $name, function ($query) {
       $query->whereTop(null);
     });
   }
 
-  static function showUserListCustom($name, $customizer) {
+  static function showUserListCustom($name, $title, $customizer) {
     $user = UserModel::whereName($name)->first();
     $user or App::abort(404);
-    $query = PostModel::whereAuthor($user->id)->orderBy('listTime', 'desc');
+    $query = $user->posts()->whereNotNull('listTime')->orderBy('listTime', 'desc');
     call_user_func($customizer, $query, $user);
-    return with(new static)->showOn($query);
+    return with(new static)->showOn($query, $title);
+  }
+
+  function showDrafts() {
+    $user = user() or App::abort(401);
+    $query = $user->drafts()->orderBy('listTime', 'desc');
+    return $this->showOn($query, trans('habravel::g.posts.drafts'));
   }
 
   function showAll() {
-    return $this->showOn();
+    $query = PostModel::whereNull('top')->whereNotNull('listTime')->orderBy('listTime', 'desc');
+    return $this->showOn($query);
   }
 
   // GET input:
   // - sort=score         - optional
   // - desc=0/1           - optional; reverse sorting; defaults to 0
   // - tags[]             - optional; array of tag captions
-  protected function showOn($query = null, $title = '') {
-    $query or $query = PostModel::whereNull('top')->orderBy('listTime', 'desc');
-
+  protected function showOn($query, $title = '') {
     if ($sort = Input::get('sort') and in_array($sort, PostModel::$sortable)) {
       $query->orders = array();
       $query->orderBy($sort, Input::get('desc') ? 'desc' : 'asc');
@@ -56,16 +61,18 @@ class Posts extends BaseController {
     return View::make('habravel::posts', $vars);
   }
 
-  function showBest($interval = 0, $title = '') {
-    $query = PostModel::whereNull('top')->orderBy('score', 'desc');
+  function showBest($interval = 0, $title) {
+    $query = PostModel::whereNull('top')->whereNotNull('listTime')->orderBy('score', 'desc');
 
     if ($interval > 0) {
-      $query->where('listTime', '>=', \Carbon\Carbon::now()
+      $time = \Carbon\Carbon::now()
         ->subDays($interval)
-        ->subHours(2));
+        ->subHours(2);    // give it a bit relaxed time frame.
+
+      $query->where('listTime', '>=', $time);
     }
 
-    return $this->showOn($query, $title ?: trans('habravel::g.posts.bestEver'));
+    return $this->showOn($query, $title);
   }
 
   function showBestDay() {
@@ -77,7 +84,7 @@ class Posts extends BaseController {
   }
 
   function showBestAllTime() {
-    return $this->showBest();
+    return $this->showBest(0, trans('habravel::g.posts.bestEver'));
   }
 
   function showByTags($tags = '') {
@@ -90,8 +97,16 @@ class Posts extends BaseController {
     } elseif (!$tags) {
       return Redirect::to(\Habravel\url());
     } else {
-      $query = PostModel
-        ::join('post_tag', 'post_tag.post_id', '=', 'posts.id')
+      // Optimization - guests will never see any drafts so remove extra
+      // constraints on the query.
+      if (user()) {
+        $query = user()->allVisiblePosts();
+      } else {
+        $query = PostModel::whereNotNull('posts.listTime');
+      }
+
+      $query
+        ->join('post_tag', 'post_tag.post_id', '=', 'posts.id')
         ->join('tags', 'post_tag.tag_id', '=', 'tags.id')
         ->whereIn('tags.caption', $tags)
         ->groupBy('post_tag.post_id')
@@ -99,7 +114,7 @@ class Posts extends BaseController {
         ->havingRaw('COUNT(post_tag.post_id) = ?', array(count($tags)))
         ->select('posts.*');
 
-      return $this->showOn($query);
+      return $this->showOn($query, join(' | ', $tags));
     }
   }
 }
