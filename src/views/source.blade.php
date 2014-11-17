@@ -11,7 +11,7 @@
   <header class="hvl-psource-header">
     <p>
       <b>{{{ trans('habravel::g.source.size') }}}</b>
-      {{ trans('habravel::g.post.size', array('chars' => $post->size(), 'words' => $post->wordCount())) }}
+      {{ trans('habravel::g.post.size', array('chars' => Habravel\number($post->size()), 'words' => Habravel\number($post->wordCount()))) }}
     </p>
 
     <p>
@@ -23,7 +23,7 @@
     <p>
       <?php $size = strlen($post->text)?>
       <a href="{{{ Habravel\url() }}}/source/{{{ $post->id }}}?dl=1">
-        {{{ trans('habravel::g.source.dl', array('size' => $size >= 1024 ? round($size / 1024).' KiB' : "$size B")) }}}</a>
+        {{{ trans('habravel::g.source.dl', array('size' => $size >= 1024 ? Habravel\number(round($size / 1024)).' KiB' : "$size B")) }}}</a>
       &darr;
       &nbsp;
       &nbsp;

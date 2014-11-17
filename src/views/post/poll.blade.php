@@ -9,7 +9,7 @@
   <h2 id="poll-{{{ $poll->id }}}" class="hvl-h2">
     {{{ trans('habravel::g.post.poll') }}}
     <span>{{{ $poll->caption }}}</span>
-    @if ($voteCount) ({{{ (int) $voteCount }}}) @endif
+    @if ($voteCount) ({{ Habravel\number($voteCount) }}) @endif
   </h2>
 
   <canvas data-sqa="poll - | [height: h | [width: h"></canvas>
@@ -25,7 +25,7 @@
           @endif
           {{{ $option->caption }}}
         </label>
-        ({{{ (int) $option->x_voteCount }}})
+        ({{ Habravel\number($option->x_voteCount) }})
       </p>
 
       <hr style="width: {{{ $voteCount ? $option->x_voteCount / $voteCount * 100 : 0 }}}%">

@@ -6,7 +6,7 @@
 
 <h2 class="hvl-h2">
   <a href="{{{ $user->url() }}}/comments">{{{ trans('habravel::g.user.comments') }}}</a>
-  ({{{ $commentCount }}})
+  ({{ Habravel\number($commentCount) }})
 </h2>
 
 <?php $prevTop = null?>

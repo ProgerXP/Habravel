@@ -6,7 +6,7 @@
 
 <h2 class="hvl-h2">
   <a href="{{{ $user->url() }}}/posts">{{{ trans('habravel::g.user.posts') }}}</a>
-  ({{{ $postCount }}})
+  ({{ Habravel\number($postCount) }})
 </h2>
 
 @foreach ($posts as $post)

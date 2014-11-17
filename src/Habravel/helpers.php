@@ -49,3 +49,9 @@ function tagLink(Models\Tag $tag, $newTab = false, $class = 'hvl-tag') {
 
   return \HTML::link($tag->url(), $caption, compact('target', 'class'));
 }
+
+function number($num, $decimals = 0) {
+  static $locale;
+  $locale or $locale = trans('habravel::g.number');
+  return number_format($num, $decimals, $locale[0], $locale[1]);
+}

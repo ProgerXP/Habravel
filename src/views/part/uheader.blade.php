@@ -21,7 +21,7 @@
     <a href="{{{ $root }}}/drafts">
       {{{ trans('habravel::g.uheader.drafts') }}}</a>
 
-    @if ($pageDraftCount) ({{{ $pageDraftCount }}}) @endif
+    @if ($pageDraftCount) ({{ Habravel\number($pageDraftCount) }}) @endif
 
     <a href="{{{ $root }}}/compose">{{{ trans('habravel::g.uheader.compose') }}}</a>
     <a href="{{{ $root }}}/~">{{{ trans('habravel::g.uheader.profile') }}}</a>

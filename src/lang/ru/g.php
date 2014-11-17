@@ -1,6 +1,7 @@
 <?php
 return array(
   'locale'                => 'ru_RU.UTF-8',
+  'number'                => array(',', ' ' /*nbsp*/),
   'needJS'                => 'Нужен JavaScript.',
   'pageTitle'             => 'Habravel',
   'credit'                => 'Движется на Habravel',

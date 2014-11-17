@@ -3,6 +3,7 @@
   - $polls            - array of Models\Poll
   - $post             - Models\Post instance with loaded author, tags
   - $post->x_children - array of Models\Post, root comments for this post
+  - $commentCount     - integer; total replies to this post including nested comments
 */?>
 
 @extends('habravel::page')
@@ -32,7 +33,10 @@
 
   @if ($post->x_children)
     <div class="hvl-comments">
-      <h2 class="hvl-h2">{{{ trans('habravel::g.post.comments') }}}</h2>
+      <h2 class="hvl-h2">
+        {{{ trans('habravel::g.post.comments') }}}
+        ({{ Habravel\number($commentCount) }})
+      </h2>
 
       @foreach ($post->x_children as $comment)
         @include('habravel::part.comment', array('post' => $comment, 'hasReply' => true), array())

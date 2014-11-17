@@ -20,7 +20,7 @@
 
   <span class="hvl-post-footer-ctl" title="{{{ trans('habravel::g.post.views') }}}">
     <i class="hvl-i-reloadg"></i>
-    {{{ $post->views }}}
+    {{ Habravel\number($post->views) }}
   </span>
 
   @if ($count = $post->childCount())
@@ -34,7 +34,7 @@
   <span class="hvl-post-footer-ctl" title="{{{ trans('habravel::g.post.size', array('chars' => $size, 'words' => $post->wordCount())) }}}">
     <i class="hvl-i-file"></i>
     <a href="{{{ "$root/source/$post->id" }}}">
-      {{{ $size >= 1000 ? round($size / 1000).'K' : $size }}}</a>
+      {{ $size >= 1000 ? Habravel\number(round($size / 1000)).'K' : $size }}</a>
   </span>
 
   @if ($time = ($post->pubTime ?: $post->created_at))

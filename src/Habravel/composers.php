@@ -5,8 +5,14 @@ use View;
 View::composer('habravel::post', function ($view) {
   $post = $view->post;
 
+  if (!isset($view->polls)) {
+    $view->polls = $post->polls()->get();
+  }
+
+  // Add root comments.
   if (!isset($post->x_children)) {
     $all = Models\Post::whereTop($post->id)->orderBy('listTime')->get()->all();
+    $view->commentCount = count($all);
     array_unshift($all, $post);
     $byID = $tree = array();
 
@@ -18,12 +24,6 @@ View::composer('habravel::post', function ($view) {
     foreach ($all as $post) {
       $post->x_children = (array) array_get($tree, $post->id);
     }
-  }
-});
-
-View::composer('habravel::post', function ($view) {
-  if (!isset($view->polls)) {
-    $view->polls = $view->post->polls()->get();
   }
 });
 
@@ -71,16 +71,25 @@ View::composer('habravel::post.poll', function ($view) {
 
 View::composer('habravel::posts', function ($view) {
   if (!isset($view->comments)) {
-    $list = array();
+    $parents = array();
 
-    foreach ($view->posts as $post) {
-      $list[] = $post->children()
-        ->orderBy('listTime', 'desc')
-        ->take(1)
-        ->get();
+    foreach ($view->posts as $index => $post) {
+      $parents[$index] = $post->id;
     }
 
-    $view->comments = $list;
+    $rows = Models\Post
+      ::whereIn('parent', $parents)
+      ->groupBy('parent')
+      ->orderBy('listTime', 'desc')
+      ->get();
+
+    $comments = array();
+
+    foreach ($rows as $comment) {
+      $comments[ array_search($comment->parent, $parents) ] = array($comment);
+    }
+
+    $view->comments = $comments;
   }
 });
 

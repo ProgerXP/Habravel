@@ -1,6 +1,7 @@
 <?php
 return array(
   'locale'                => 'en_US.UTF-8',
+  'number'                => array('.', ','),
   'needJS'                => 'JavaScript is required.',
   'pageTitle'             => 'Habravel',
   'credit'                => 'Powered by Habravel',
