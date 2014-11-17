@@ -17,7 +17,7 @@
 
     <p class="hvl-form-list-label">
       <b>{{{ trans('habravel::g.register.name') }}}</b>
-      {{{ trans('habravel::g.register.nameHint') }}}
+      {{ trans('habravel::g.register.nameHint', array('chars' => '<kbd>A-Z _ 0-9</kbd>')) }}
     </p>
     <p class="hvl-form-list-value">
       <input class="hvl-input" name="name" required="required" autofocus="autofocus"
@@ -34,7 +34,7 @@
 
     <p class="hvl-form-list-label">
       <b>{{{ trans('habravel::g.register.password') }}}</b>
-      {{{ trans('habravel::g.register.passwordHint') }}}
+      {{{ trans('habravel::g.register.passwordHint', array('min' => Config::get('habravel::g.minPassword'))) }}}
     </p>
     <p class="hvl-form-list-value">
       <input class="hvl-input" name="password" type="password" required="required"

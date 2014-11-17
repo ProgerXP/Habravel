@@ -34,6 +34,8 @@ return array(
     'can.post', 'can.editSelf', 'can.reply', 'can.vote',
   ),
 
+  'minPassword'           => 8,
+
   // Special tags that have extra functionality. Since their IDs can be arbitrary
   // they are matched by exact name (caption).
   'tags'                  => array(

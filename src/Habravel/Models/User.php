@@ -2,7 +2,7 @@
 
 class User extends BaseModel {
   protected static $rules = array(
-    'password'            => 'required|min:6',
+    'password'            => 'required|min:',
     'email'               => 'required|max:200|email|unique:users,email',
     'name'                => 'required|max:50|regex:~^\w[\w\d]+$~|unique:users,name',
     'info'                => '',
@@ -35,6 +35,7 @@ class User extends BaseModel {
 
   static function rules(User $model = null) {
     $rules = parent::rules();
+    $rules['password'] .= \Config::get('habravel::g.minPassword');
 
     if ($model) {
       $rules['email'] .= ','.$model->id;
