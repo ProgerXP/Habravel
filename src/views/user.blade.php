@@ -7,7 +7,7 @@
 */?>
 
 @extends('habravel::page')
-<?php $pageTitle = '~'.$user->name?>
+<?php $pageTitle = $user->name?>
 
 @section('content')
   <div class="hvl-split hvl-puser {{{ $user->score < 0 ? 'hvl-puser-below' : '' }}}">

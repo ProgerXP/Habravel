@@ -4,7 +4,8 @@ use Habravel\Models\Post as PostModel;
 
 class Comment extends BaseController {
   function showByUserName($name = '') {
-    return Posts::showUserListCustom($name, $name, function ($query) {
+   $title = trans('habravel::g.posts.userComments', compact('name'));
+   return Posts::showUserListCustom($name, $title, function ($query) {
       $query->whereNotNull('top');
     });
   }

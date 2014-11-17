@@ -26,7 +26,6 @@
         {{{ trans('habravel::g.source.dl', array('size' => $size >= 1024 ? Habravel\number(round($size / 1024)).' KiB' : "$size B")) }}}</a>
       &darr;
       &nbsp;
-      &nbsp;
       <a href="{{{ $post->url() }}}">
         {{{ trans('habravel::g.source.see') }}}</a>
       &rarr;

@@ -5,7 +5,8 @@ use Habravel\Models\User as UserModel;
 
 class Posts extends BaseController {
   function showByUserName($name = '') {
-    return static::showUserListCustom($name, $name, function ($query) {
+    $title = trans('habravel::g.posts.userPosts', compact('name'));
+    return static::showUserListCustom($name, $title, function ($query) {
       $query->whereTop(null);
     });
   }
@@ -87,8 +88,15 @@ class Posts extends BaseController {
     return $this->showBest(0, trans('habravel::g.posts.bestEver'));
   }
 
-  function showByTags($tags = '') {
-    $sorted = $tags = array_filter(array_map('urldecode', explode('/', $tags)));
+  function showByTags($inputTags = '') {
+    $sorted = $tags = array();
+
+    foreach (explode('/', $inputTags) as $inputTag) {
+      if ($inputTag = trim(urldecode($inputTag))) {
+        $sorted[] = $tags[] = $inputTag;
+      }
+    }
+
     sort($sorted, SORT_LOCALE_STRING);
 
     if ($sorted !== $tags) {
@@ -114,7 +122,10 @@ class Posts extends BaseController {
         ->havingRaw('COUNT(post_tag.post_id) = ?', array(count($tags)))
         ->select('posts.*');
 
-      return $this->showOn($query, join(' | ', $tags));
+      $title = join(' | ', $tags);
+      $title = mb_strtoupper(mb_substr($title, 0, 1)).mb_substr($title, 1);
+
+      return $this->showOn($query, $title);
     }
   }
 }

@@ -102,6 +102,9 @@ return array(
     'bestDay'             => 'Best of the day',
     'bestWeek'            => 'Best of the week',
     'bestEver'            => 'Best articles, ever',
+    'userPosts'           => 'Articles by :name',
+    'userComments'        => 'Comments by :name',
+    'drafts'              => 'Drafts',
     'none'                => 'End of the road. No posts here.',
   ),
 
@@ -124,10 +127,10 @@ return array(
     'login1'              => 'Already registered?',
     'login2'              => 'Login here',
     'name'                => 'How to call you on public?',
-    'nameHint'            => '(start with a letter, use only A-Z _ 0-9)',
+    'nameHint'            => '(start with a letter, use only :chars)',
     'email'               => 'What’s your e-mail?',
     'password'            => 'Choose your very secret password',
-    'passwordHint'        => '(6 symbols or longer):',
+    'passwordHint'        => '(:min symbols or longer):',
     'submit'              => 'Register',
   ),
 

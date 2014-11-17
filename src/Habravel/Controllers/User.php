@@ -93,7 +93,7 @@ class User extends BaseController {
 
   function showRegister() {
     user(false);
-    return View::make('habravel::register');
+    return View::make('habravel::register', array('input' => array()));
   }
 
   // POST input:
@@ -117,7 +117,7 @@ class User extends BaseController {
     $copy->validateAndMerge($errors);
 
     if (count($errors)) {
-      return View::make('habravel::register', compact($input, $errors));
+      return View::make('habravel::register', compact('input', 'errors'));
     } else {
       if (!$user->poll) {
         $poll = new PollModel;

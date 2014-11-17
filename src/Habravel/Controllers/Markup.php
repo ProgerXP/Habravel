@@ -3,14 +3,10 @@
 class Markup extends BaseController {
   function showHelp($markup = '') {
     try {
-      $markup = \Habravel\Markups\Factory::make($markup);
-    } catch (\Exception $e) { }
-
-    if (isset($markup)) {
-      return Response::make($markup->help(), 200, array(
-        'Expires'             => gmdate('D, d M Y H:i:s', time() + 3600 * 6).' GMT',
-      ));
-    } else {
+      return \Habravel\Markups\Factory::make($markup)
+        ->help();
+    } catch (\Exception $e) {
+      // Unknown markup name given.
       App::abort(404);
     }
   }

@@ -14,7 +14,7 @@
 
   @if ($user->score)
     <sup>
-      {{{ ($user->score > 0 ? '+' : '').Habravel\number($user->score) }}}
+      {{ ($user->score > 0 ? '+' : '').Habravel\number($user->score) }}
     </sup>
   @endif
 
