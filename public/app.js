@@ -1,4 +1,6 @@
 ;(function () {
+  var markupHelpCache = {}
+
   $(document.body)
 
     /***
@@ -185,14 +187,23 @@
       var el = $('[data-hvl-markup-text="' + url + '"]')
       $('.hvl-markup-text').remove()
 
-      el.length || $.ajax({
-        url: url,
-        dataType: 'text',
-        success: function (html) {
-          $('<aside class="hvl-markup-text">').html(html).appendTo('body').show()
-            .attr('data-hvl-markup-text', url)
-        },
-      })
+      var done = function (html) {
+        markupHelpCache[url] = html
+        $('<aside class="hvl-markup-text">').html(html).appendTo('body').show()
+          .attr('data-hvl-markup-text', url)
+      }
+
+      if (el.length) {
+        // Already visible.
+      } else if (url in markupHelpCache) {
+        done(markupHelpCache[url])
+      } else {
+        $.ajax({
+          url: url,
+          dataType: 'text',
+          success: done,
+        })
+      }
 
       return false
     })
