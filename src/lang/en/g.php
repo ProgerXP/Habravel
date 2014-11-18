@@ -69,7 +69,7 @@ return array(
     'views'               => 'View count, all time',
     'size'                => ':chars characters; :words words',
     'commentCount'        => 'Number of comments',
-    'pubTime'             => 'Publication date',
+    'pubTime'             => 'Publication date: :date',
     'poll'                => 'Poll:',
     'abstain'             => 'Abstain',
     'vote'                => 'Vote',

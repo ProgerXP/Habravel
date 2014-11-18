@@ -56,10 +56,6 @@ abstract class BaseMarkup {
     if (!$this->introHTML) {
       $this->introHTML = trim(\Str::words($this->html));
     }
-
-    if ($this->introHTML and $this->target and method_exists($this->target, 'url')) {
-      $this->introHTML = $this->rebaseLinks($this->introHTML, $this->target->url());
-    }
   }
 
   protected function rebaseLinks($html, $baseURL) {

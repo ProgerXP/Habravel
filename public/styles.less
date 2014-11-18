@@ -267,10 +267,6 @@ body a.hvl-credit {
     cursor: ew-resize;
 
     &:hover ~ pre {
-      & {
-        border-color: gray;
-      }
-
       &:before, &:after {
         position: absolute;
         content: "";
@@ -294,8 +290,6 @@ body a.hvl-credit {
     white-space: pre-wrap;
     font-size: @14px;
     cursor: pointer;
-    border: 1px dotted transparent;
-    border-width: 1px 0;
     margin-left: -1rem;
     margin-right: -1rem;
     padding: 0 1em;
@@ -459,7 +453,11 @@ body .hvl-pedit-tags-from {
   color: #000;
 }
 
-.hvl-pposts .hvl-comments { font-size: 83%; color: gray; }
+.hvl-pposts .hvl-comments {
+  font-size: 83%;
+  color: gray;
+  margin: 1em 0 0 2em;
+}
 
 .hvl-h2 + .hvl-post { margin-top: -1.4em; }
 
@@ -474,8 +472,13 @@ body .hvl-pedit-tags-from {
   .hvl-btn { margin-left: 1em; }
 }
 
+.hvl-post-author {
+  a, & { color: gray; }
+  time { float: right; }
+  .hvl-i-pencilg { margin: 0 0 0 0.5em; vertical-align: top; }
+}
+
 .hvl-post-author-separ { color: gray; margin: 0 0.5em; }
-.hvl-post-author a { color: gray; }
 
 .hvl-post-author-avatar {
   margin-right: 0.2em;
@@ -485,21 +488,41 @@ body .hvl-pedit-tags-from {
 }
 
 .hvl-tag {
-  background: #df5240;
+  background: #e4e4e4;
   padding: 0.1em @10px;
 
   + * { margin-left: 0.5em; }
-  body &, body &:hover { color: white; }
+  body &, body &:hover { color: black; }
 
-  &.hvl-tag-draft { background: #999; }
-  &.hvl-tag-tl { background: olive; }
+  &.hvl-tag-draft { background: #999; color: white; }
+  &.hvl-tag-tl { background: #8AA45B; color: white; }
 }
 
 .hvl-post-footer {
-  color: gray;
   margin-top: 1.5em;
+}
+
+.hvl-post-footer:after {
+  display: table;
+  content: "";
+  clear: both;
+}
+
+.hvl-post-footer-more {
+  float: left;
+}
+
+.hvl-post-footer-more + .hvl-post-footer-ctls {
+  float: right;
+  background: transparent;
+  border-color: transparent;
+  padding: 0;
+}
+
+.hvl-post-footer-ctls {
+  color: gray;
   background: white;
-  padding: 0.5em 0.7em;
+  padding: 0.3em 0.7em;
   border: 1px solid #DDDDDD;
 
   a { color: gray; }
@@ -507,14 +530,10 @@ body .hvl-pedit-tags-from {
 }
 
 .hvl-post-footer-ctl {
-  margin: 0 1.5em 0 0;
   white-space: nowrap;
 
+  & + & { margin-left: 1.5em; }
   > i:first-child { margin-right: 0.2em; }
-}
-
-.hvl-post-footer-more {
-  a { color: #d00; }
 }
 
 .hvl-post-footer-score {
@@ -575,7 +594,6 @@ body .hvl-pedit-tags-from {
   margin-top: 1.2em;
 
   a, u { color: gray; margin-right: 1.2em; }
-  time { margin-left: 2em; }
 }
 
 .hvl-comment-children {

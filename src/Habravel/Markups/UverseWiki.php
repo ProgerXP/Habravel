@@ -58,6 +58,10 @@ class UverseWiki extends BaseMarkup {
   }
 
   protected function configure($doc, array $config) {
+    if ($this->target and method_exists($this->target, 'url')) {
+      $doc->settings->pageForSelfAnchorLinks = $this->target->url();
+    }
+
     foreach ($config as $key => $value) {
       switch ($key) {
       case 'setup':

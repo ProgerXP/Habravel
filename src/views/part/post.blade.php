@@ -16,7 +16,7 @@
       @if ($post->sourceURL)
         <a href="{{{ $post->sourceURL }}}" title="{{{ trans('habravel::g.post.source') }}}" target="_blank">
           {{{ $post->sourceName }}}</a>
-        <span class="hvl-post-author-separ">&larr;</span>
+        <span class="hvl-post-author-separ">&rarr;</span>
       @endif
 
       <span title="{{{ trans('habravel::g.post.author') }}}">
@@ -28,6 +28,14 @@
 
         {{ $author->nameHTML() }}
       </span>
+
+      @if ($time = ($post->pubTime ?: $post->created_at))
+      <time pubdate="pubdate" datetime="{{{ date(DATE_ATOM, $time->timestamp) }}}"
+            title="{{{ trans('habravel::g.post.pubTime', array('date' => DateFmt::Format('[d#my]AT h#m', $time->timestamp, Config::get('app.locale')))) }}}">
+        {{{ DateFmt::Format('AGO-AT[s-d]IF>7[d# m__ y##]', $time->timestamp, Config::get('app.locale')) }}}
+        @if ($post->pubTime) <i class="hvl-i-pencilg"></i> @endif
+      </time>
+    @endif
 
       @if (!empty($canEdit))
         <a href="{{{ url(Habravel\url()) }}}/edit/{{{ $post->id }}}" class="hvl-btn">

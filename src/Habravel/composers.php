@@ -77,7 +77,7 @@ View::composer('habravel::posts', function ($view) {
       $parents[$index] = $post->id;
     }
 
-    $rows = Models\Post
+    $rows = !$parents ? array() : Models\Post
       ::whereIn('parent', $parents)
       ->groupBy('parent')
       ->orderBy('listTime', 'desc')
@@ -163,7 +163,12 @@ View::composer('habravel::part.post', function ($view) {
 
   if (!isset($view->readMore)) {
     $view->readMore = false;
-  } elseif ($view->readMore === true) {
+  } elseif ($view->readMore !== true) {
+    // Keep as is, it's explicitly set.
+  } elseif (strlen($post->introHTML) === strlen($post->html)) {
+    // Post too short.
+    $view->readMore = false;
+  } else {
     $view->readMore = array_get($post->info, 'cut', trans('habravel::g.post.more'));
   }
 
