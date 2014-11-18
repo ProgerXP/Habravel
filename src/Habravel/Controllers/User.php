@@ -120,7 +120,7 @@ class User extends BaseController {
       return View::make('habravel::register', compact('input', 'errors'));
     } else {
       if (!$user->poll) {
-        $poll = new PollModel;
+        $poll = new \Habravel\Models\Poll;
         // System poll captions don't matter, just for pretty database output.
         $poll->caption = '@'.$user->name;
         $poll->save();
