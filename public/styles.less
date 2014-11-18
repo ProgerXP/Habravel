@@ -296,26 +296,6 @@ body a.hvl-credit {
   }
 }
 
-.hvl-markedup {
-  .clearfix;
-  .unmargin;
-
-  p { margin: 1em 0; }
-  ul { margin: 1em 0 1em 1.5em; }
-  ol { margin: 1em 0 1em 2em; }
-  h1:extend(.hvl-h1) { }
-  h2:extend(.hvl-h2) { }
-  h3:extend(.hvl-h3) { }
-}
-
-.hvl-markedup-uversewiki {
-  .missing-page, .missing-anchor {
-    border: 1px dashed red;
-    background: #fcc;
-    padding: 0 0.1em;
-  }
-}
-
 /***
   User Account Pages
  ***/
@@ -388,7 +368,12 @@ body a.hvl-credit {
 .hvl-pedit-text {
   display: block;
   width: 100%;
-  min-height: 400px;
+}
+
+.hvl-pedit-form:not(.hvl-pedit-expanded) .hvl-pedit-text {
+  // Left-side column (post title, tags, polls, etc.) is about as tall so no point
+  // in making text editor shorter than the column - scrollbars will appear anyway.
+  min-height: 630px;
 }
 
 .hvl-pedit-tags {
@@ -499,13 +484,8 @@ body .hvl-pedit-tags-from {
 }
 
 .hvl-post-footer {
+  .clearfix;
   margin-top: 1.5em;
-}
-
-.hvl-post-footer:after {
-  display: table;
-  content: "";
-  clear: both;
 }
 
 .hvl-post-footer-more {
@@ -661,5 +641,260 @@ body .hvl-pedit-tags-from {
     margin: 0.5em 0;
     width: 0;
     border: 0;
+  }
+}
+
+/***
+  Marked Up Text
+ ***/
+
+.hvl-markedup {
+  .clearfix;
+  .unmargin;
+
+  /***
+    Paragraphs
+   ***/
+
+  p { margin: 1em 0; }
+
+  .indent-1, .indent_1, .indent-2, .indent-3 { margin: 1.5em 0 1.5em 2.5em; }
+  .indent-2 { margin-left: 4em; }
+  .indent-3 { margin-left: 6.5em; }
+  .indent-1 + .indent-1, .indent-2 + .indent-2, .indent-3 + .indent-3 { margin-top: -0.5em; }
+
+  /***
+    Headings
+   ***/
+
+  h1:extend(.hvl-h1) { }
+  h2:extend(.hvl-h2) { }
+  h3:extend(.hvl-h3) { }
+
+  h1, h2, h3 {
+    margin: 2.5em 0 1em;
+    border-bottom: 1px solid #d1d1d1;
+    padding-bottom: 0.2em;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    &:target { color: red; }
+  }
+
+  /***
+    Code
+   ***/
+
+  pre, code, kbd { font-size: 86%; }
+
+  pre {
+    background: #fafafa;
+    padding: 0.2em 0.3em;
+  }
+
+  .format > .format-name {
+    background: #555;
+    color: white;
+    position: absolute;
+    margin: -1.8em 0 0;
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+    border: 1px solid silver;
+    text-transform: uppercase;
+    font-size: 0.86rem;
+
+    &:after {
+      content: "";
+      display: block;
+      width: 7px;
+      height: 5px;
+      background: no-repeat url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAFCAYAAACJmvbYAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAA+SURBVHjadMu7CcAwAANRjeEq4KFu7gyS1p/yXBlMwIWqdwrgZSNAv+AboADt/wJq1B3MAx41Uc/g26BmDQA6rEXkQHNA3gAAAABJRU5ErkJggg");
+      position: absolute;
+      left: 50%;
+      margin: 0 0 0 -3px;
+    }
+  }
+
+  .format > .format-name { display: none; }
+  div.format:hover > .format-name { display: block; }
+
+  /***
+    Lists
+   ***/
+
+  ul { margin: 1em 0 1em 1.5em; }
+  ol { margin: 1em 0 1em 2em; }
+
+  li.disc { list-style: disc; }           	    li.square { list-style: square; }
+  li.circle { list-style: circle; }             li.decimal { list-style: decimal; }
+  li.lower-roman { list-style: lower-roman; }   li.upper-roman { list-style: upper-roman; }
+  li.lower-alpha { list-style: lower-alpha; }   li.upper-alpha { list-style: upper-alpha; }
+
+  /***
+    Anchors
+   ***/
+
+  a.block-anchor { position: absolute; right: 0; }
+
+  // Automatic.
+  a.anchor { color: gray; text-decoration: none; visibility: hidden; margin-left: 0.5em; }
+  a.anchor:before { content: "¶"; }
+  *:hover > a.anchor, a.anchor:target { visibility: visible; }
+  a.anchor:hover { color: red; }
+  a.anchor:target { background: red; color: white; padding: 0 0.2em; border: 1px inset; }
+
+  /***
+    Table Of Contents
+   ***/
+
+    fieldset.toc {
+      border: 0;
+      padding: 0;
+      float: right;
+      margin: 0 0 1em 1em;
+      background: #eee;
+      padding: 0.3em 0.6em;
+
+      & + * { margin-top: 0; }
+      legend { display: none; }
+      ol { margin: 0; list-style: none; }
+      ol ol { margin: 0.15em 0 0.15em 1em; }
+      li + li { margin-top: 0.1em; }
+
+      a { color: black; text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      .index, a:visited { color: gray; }
+    }
+
+  /***
+    Custom Classes
+   ***/
+
+  .tl_note { background: #D1E7AB; }
+  .alert { background: #FFE66A; }
+
+  div, p {
+    &.tl_note, &.alert { margin: 1em; padding: 0.5em 0.75em; }
+  }
+
+  .further_reading {
+    font-weight: bold;
+    margin: 2em 0 0 1.5em;
+  }
+
+  .further_reading, .further_reading + * {
+    background: #eee;
+    padding: 0.5em 0.75em;
+    width: 20em;
+  }
+
+  .further_reading + * {
+    padding-top: 0;
+    margin-top: 0;
+
+    li { margin-left: 1.5em; }
+  }
+
+  /***
+    Other Markup
+   ***/
+
+  a { text-decoration: underline; }
+  a[target="_blank"] { border-bottom: 1px dashed; }
+  a:visited { color: purple; }
+
+  /* Pascal highlight: */
+  .format-pascal  .string { color: blue; }
+  .format-pascal  .directive { color: green; }
+  .format-pascal  .comment { color: #4D4D4D; font-style: italic; }
+  .format-pascal  .number, .format-pascal  .char, .format-pascal  .escstr { color: navy; }
+  .format-pascal  .keyword { font-weight: bold; }
+
+  /* Js highlight: */
+  .format-js  .string { color: blue; }
+  .format-js  .comment { color: #4D4D4D; font-style: italic; }
+  .format-js  .regexp { background: #FFE284; color: green; }
+  .format-js  .number { color: navy; }
+  .format-js  .keyword { font-weight: bold; }
+
+  /* Sql highlight: */
+  .format-sql  .string { color: blue; }
+  .format-sql  .comment { color: #4D4D4D; font-style: italic; }
+  .format-sql  .func { color: green; }
+  .format-sql  .number, .format-sql  .char { color: navy; }
+  .format-sql  .keyword { font-weight: bold; }
+
+  /* Plsql highlight: */
+  .format-plsql  .string { color: blue; }
+  .format-plsql  .comment { color: #4D4D4D; font-style: italic; }
+  .format-plsql  .func { color: green; }
+  .format-plsql  .number, .format-plsql  .char { color: navy; }
+  .format-plsql  .keyword { font-weight: bold; }
+
+  /* Xml highlight: */
+  .format-xml  .doctype { color: #3798BE; }
+  .format-xml  .xmldecl { font-weight: bold; }
+  .format-xml  .comment { color: #4D4D4D; font-style: italic; }
+  .format-xml  .tag { font-weight: bold; color: maroon }
+  .format-xml  .single { color: red; }
+  .format-xml  .string { color: blue; }
+  .format-xml  .attribute { font-weight: bold; }
+  .format-xml  .entity { color: navy; }
+
+  /* Css highlight: */
+  .format-css  .spec { color: maroon; border: 1px dashed; padding: 0 1px; }
+  .format-css  .prop { color: green; }
+  .format-css  .url { color: navy; }
+  .format-css  .string { color: blue; }
+  .format-css  .comment { color: #4D4D4D; font-style: italic; }
+  .format-css  .brace { color: purple; }
+  .format-css  .num { color: navy; }
+
+  /* Conf highlight: */
+  .format-conf  .comment { color: green; }
+  .format-conf  .section { background: #FFB95E; padding: 0 0.25em; }
+  .format-conf  .eq { color: blue; }
+
+  /* Log highlight: */
+  .format-log  .ro-br { color: #525252; }
+  .format-log  .sq-br { color: navy; }
+  .format-log  .cu-br { color: purple; }
+  .format-log  .quotes { color: blue; }
+  .format-log  .symbol { color: maroon; }
+  .format-log  .num { font-weight: bold; }
+
+  /* Sh highlight: */
+  .format-sh  .head { font-weight: bold; color: maroon; }
+  .format-sh  .comment { color: green; }
+  .format-sh  .cmd { font-weight: bold; }
+  .format-sh  .string { color: blue; }
+  .format-sh  .num { color: navy; }
+  .format-sh  .redir { text-decoration: underline; }
+
+  /* Shell highlight: */
+  .format-shell  .prompt { color: blue; }
+}
+
+.hvl-markedup-uversewiki {
+  /***
+    Formatter Errors/Messages
+   ***/
+
+  .missing-page, .missing-anchor, .toc .missing-heading {
+    background: #fcc;
+    padding: 0 0.1em;
+  }
+
+  .missing-interwiki {
+    border-bottom: 1px dashed red;
+    color: maroon;
+    font-style: italic;
+    cursor: help;
+  }
+
+  .format-error {
+    background: #FFFFC2;
+    color: #FF0000;
+    font-weight: bold;
   }
 }
