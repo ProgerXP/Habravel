@@ -128,4 +128,20 @@ class Posts extends BaseController {
       return $this->showOn($query, $title);
     }
   }
+
+  // Special version for "system" (fixed) tags like documentation that only
+  // displays published articles (no user drafts even if he's logged in).
+  // There must be only one tag defined with given $tagType.
+  function showByTag($tagType, $title) {
+    $query = PostModel
+      ::whereNotNull('posts.listTime')
+      ->join('post_tag', 'post_tag.post_id', '=', 'posts.id')
+      ->join('tags', 'post_tag.tag_id', '=', 'tags.id')
+      ->where('tags.type', $tagType)
+      ->groupBy('post_tag.post_id')
+      ->orderBy('posts.listTime', 'desc')
+      ->select('posts.*');
+
+    return $this->showOn($query, $title);
+  }
 }

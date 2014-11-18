@@ -4,10 +4,18 @@ $hs = new HyperSafe;
 return array(
   'lineBreaks'            => "\n",
   'keepComments'          => false,
-  // Just keeping defaults.
-  'tags'                  => $hs->tags,
-  'checks'                => $hs->checks,
-  'styles'                => $hs->styles,
+
+  'tags'                  => $hs->tags + array(
+    // Example (see HyperSafe docs for configuration details):
+    //'style'               => array('type mime'),
+  ),
+
+  'checks'                => $hs->checks + array(
+    // Keeping defaults.
+  ),
+
+  'styles'                => $hs->styles + array(
+  ),
 
   // Habravel-specific.
   'hvlLogWarnings'        => true,

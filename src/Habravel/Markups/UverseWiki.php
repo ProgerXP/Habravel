@@ -112,8 +112,8 @@ class UverseWiki extends BaseMarkup {
   }
 
   protected function finalizeUWiki() {
-    if (!array_key_exists('cut', $this->meta)) {
-      $toc = '<fieldset class="toc">';
+    $toc = '<fieldset class="toc">';
+    if (!array_key_exists('cut', $this->meta) and !starts_with($this->html, $toc)) {
       $cut = '<a href="#cut" name="cut" class="hvl-cut"></a>';
       $this->html = str_replace($toc, $cut.$toc, $this->html);
     }

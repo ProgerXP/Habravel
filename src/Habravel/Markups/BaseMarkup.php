@@ -54,7 +54,8 @@ abstract class BaseMarkup {
     }
 
     if (!$this->introHTML) {
-      $this->introHTML = trim(\Str::words($this->html));
+      $html = preg_replace('~<fieldset class="toc">.*?</fieldset>~us', '', $this->html);
+      $this->introHTML = trim(\Str::words($html));
     }
   }
 

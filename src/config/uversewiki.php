@@ -7,12 +7,22 @@
 // smileys) and put your app-specific UWiki *.conf files into app/config/ENV/.
 
 return array(
-  'setup'                 => function (UWikiDocument $doc) { },
+  'setup'                 => function (UWikiDocument $doc) {
+    // Custom initialization.
+  },
+
   'path'                  => __DIR__.'/../../uwiki/',
-  // '/xxx' - absolute path.
-  //  'xxx' - relative to Laravel root.
-  // '$xxx' - relative to UverseWiki root.
-  'settingsPaths'         => array('$config/', 'app/config/'.App::environment().'/'),
+
+  // /xxx   - absolute path.
+  // xxx    - relative to your public folder.
+  // $xxx   - relative to UverseWiki root.
+  'settingsPaths'         => array(
+    '$config/',                                       // /.../uversewiki/config/
+    '../app/config/uwiki/',                           // /.../laravel/app/config/uwiki/
+    '../app/config/'.App::environment().'/uwiki/',    // /.../laravel/app/config/<local>/uwiki/
+    '../app/lang/'.Config::get('app.locale').'/uwiki/',   // /.../laravel/app/lang/<ru>/uwiki/
+  ),
+
   'fetchRemoteTitles'     => false,
   'headingMode'           => 'shifted',
   'showComments'          => false,
