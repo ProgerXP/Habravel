@@ -16,8 +16,8 @@
     })
 
     .on('click', '.hvl-pedit-preview', function (e) {
-      var options = 'left=0,top=0,menubar=no,toolbar=no,location=no,personalbar=no,status=no'
-      var win = window.open('about:blank', 'habravel_preview', options)
+      var options = 'left=0,top=0,menubar=no,toolbar=no,location=no,personalbar=no,status=no,scrollbars=yes'
+      var win = window.open('', 'habravel_preview', options)
       $(this).siblings('.hvl-pedit-preview-blocked').toggle(!win)
 
       var form = $(this).parents('form:first')
@@ -329,7 +329,7 @@
     var canvas = el.find('canvas')
     var chart = new Chart(canvas[0].getContext('2d'))
 
-    function toggle() {
+    var toggle = function () {
       types.length || (types = allTypes.concat())
       var type = types.shift()
 
