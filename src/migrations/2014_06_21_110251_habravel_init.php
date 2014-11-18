@@ -24,10 +24,10 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
     Schema::create('users', function ($table) {
       $table->increments('id');
       $table->timestamps();
-      $table->string('password', 254);
-      $table->string('remember_token', 254);
-      $table->string('email', 254);
-      $table->string('name', 254);
+      $table->string('password', 255);
+      $table->string('remember_token', 255);
+      $table->string('email', 255);
+      $table->string('name', 255);
       $table->mediumText('info');
       $table->integer('poll')->unsigned()->nullable();
       $table->integer('score')->default(0);
@@ -36,7 +36,7 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
       $table->timestamp('loginTime');
       $table->char('loginIP', 15)->default('');
       $table->mediumText('flags');
-      $table->string('avatar', 254)->default('');
+      $table->string('avatar', 255)->default('');
 
       $table->unique('email');
       $table->unique('name');
@@ -71,17 +71,16 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
       $table->timestamps();
       $table->integer('top')->unsigned()->nullable()->default(null);
       $table->integer('parent')->unsigned()->nullable()->default(null);
-      $table->string('url', 254);
+      $table->string('url', 255);
       $table->integer('author')->unsigned();
       $table->integer('poll')->unsigned()->nullable();
       $table->integer('score')->default(0);
       $table->integer('views')->unsigned()->default(0);
-      $table->mediumBlob('seen');
       $table->mediumText('info');
       $table->text('sourceURL');
-      $table->string('sourceName', 254)->default('');
-      $table->string('caption', 254);
-      $table->string('markup', 254);
+      $table->string('sourceName', 255)->default('');
+      $table->string('caption', 255);
+      $table->string('markup', 255);
       $table->mediumText('text');
       $table->mediumText('html');
       $table->mediumText('introHTML');
@@ -108,12 +107,14 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
         ->onUpdate('cascade')->onDelete('cascade');
     });
 
+    DB::unprepared('ALTER TABLE posts ADD `seen` MEDIUMBLOB NOT NULL');
+
     Schema::create('tags', function ($table) {
       $table->increments('id');
       $table->timestamps();
       $table->integer('parent')->unsigned()->nullable()->default(null);
-      $table->string('type', 254)->default('');
-      $table->string('caption', 254);
+      $table->string('type', 255)->default('');
+      $table->string('caption', 255);
       $table->mediumText('flags');
 
       $table->index('type');
@@ -139,13 +140,14 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
     Schema::create('poll_post', function ($table) {
       $table->integer('post_id')->unsigned();
       $table->integer('poll_id')->unsigned();
+      $table->softDeletes();
 
       $table->primary(array('post_id', 'poll_id'));
 
       $table->foreign('post_id')->references('id')->on('posts')
         ->onUpdate('cascade')->onDelete('cascade');
 
-      $table->foreign('poll_id')->references('id')->on('tags')
+      $table->foreign('poll_id')->references('id')->on('polls')
         ->onUpdate('cascade')->onDelete('cascade');
     });
 
@@ -156,8 +158,8 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
     )));
 
     // So that id = ((int) true/false) + 1.
-    DB::table('poll_options')->insert(array(array('id' => 1, 'caption' => 'down'),
-                                            array('id' => 2, 'caption' => 'up')));
+    DB::table('poll_options')->insert(array(array('id' => 1, 'poll' => 1, 'caption' => 'down'),
+                                            array('id' => 2, 'poll' => 1, 'caption' => 'up')));
   }
 
   function down() {
@@ -168,5 +170,6 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
     Schema::drop('posts');
     Schema::drop('tags');
     Schema::drop('post_tag');
+    Schema::drop('poll_post');
   }
 }
