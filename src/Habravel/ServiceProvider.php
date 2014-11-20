@@ -101,7 +101,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider {
           $sql = preg_replace('/\?/', $binding, $sql, 1);
         }
 
-        file_put_contents('/1.sql', "$sql\n", FILE_APPEND | LOCK_EX);
+        file_put_contents(storage_path('logs/1.sql'), "$sql\n", FILE_APPEND | LOCK_EX);
       });
     }
   }
