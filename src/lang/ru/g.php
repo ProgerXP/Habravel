@@ -99,6 +99,7 @@ return array(
 
   'posts'                 => array(
     'title'               => 'Статьи',
+    'titleTag'            => '«:tag»',
     'bestDay'             => 'Лучшее за сутки',
     'bestWeek'            => 'Лучшее за неделю',
     'bestEver'            => 'Лучшее всех времён',

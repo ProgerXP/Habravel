@@ -122,7 +122,7 @@ class User extends BaseController {
       if (!$user->poll) {
         $poll = new \Habravel\Models\Poll;
         // System poll captions don't matter, just for pretty database output.
-        $poll->caption = '@'.$user->name;
+        $poll->caption = '~'.$user->name;
         $poll->save();
         $user->poll = $poll->id;
       }

@@ -124,6 +124,7 @@ class Posts extends BaseController {
 
       $title = join(' | ', $tags);
       $title = mb_strtoupper(mb_substr($title, 0, 1)).mb_substr($title, 1);
+      $title = trans('habravel::g.posts.titleTag', array('tag' => $title));
 
       return $this->showOn($query, $title);
     }

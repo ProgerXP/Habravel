@@ -79,6 +79,10 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider {
       Route::get    ('~{habravel_user}/comments', "$ns\\Comment@showByUserName");
       Route::get    ('~{habravel_user}/up',       "$ns\\User@voteUpByName");
       Route::get    ('~{habravel_user}/down',     "$ns\\User@voteDownByName");
+      // Admin.
+      Route::post   ('admin/regenhtml',           "$ns\\Admin@regenHTML");
+      Route::post   ('admin/resethtml',           "$ns\\Admin@resetHTML");
+      Route::get    ('admin',                     "$ns\\Admin@show");
       // Fallback.
       Route::get    ('{habravel_any}',            "$ns\\Post@showByURL");
       Route::get    ('',                          "$ns\\Posts@showBestWeek");
@@ -101,7 +105,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider {
           $sql = preg_replace('/\?/', $binding, $sql, 1);
         }
 
-        file_put_contents(storage_path('logs/1.sql'), "$sql\n", FILE_APPEND | LOCK_EX);
+        file_put_contents(storage_path('logs/queries.sql'), "$sql\n", FILE_APPEND | LOCK_EX);
       });
     }
   }

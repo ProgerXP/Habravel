@@ -99,11 +99,13 @@ class User extends BaseModel {
   }
 
   function flags() {
-    $flags = $this->flags;
+    $flags = (string) $this->flags;
     if ($flags === '-') {
       return array();
     } elseif ($flags === '') {
       return \Config::get('habravel::g.userPerms');
+    } elseif ($flags[0] === '+') {
+      return array_merge(\Config::get('habravel::g.userPerms'), parent::flags());
     } else {
       return parent::flags();
     }

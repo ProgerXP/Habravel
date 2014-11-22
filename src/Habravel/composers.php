@@ -139,11 +139,6 @@ View::composer('habravel::part.uheader', function ($view) {
 
 View::composer('habravel::part.markups', function ($view) {
   isset($view->markups) or $view->markups = array_keys(\Config::get('habravel::g.markups'));
-
-  if (isset($view->current) and $user = user()) {
-    $view->current = array_get($user->info, 'defaultMarkup');
-  }
-
   isset($view->current) or $view->current = head($view->markups);
 });
 

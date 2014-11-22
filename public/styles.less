@@ -321,6 +321,13 @@ body a.hvl-credit {
   float: right;
 }
 
+.hvl-pedit-topbtn + .hvl-h1 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 50%;
+}
+
 .hvl-pedit-preview-blocked {
   display: none;
   color: #800000;
@@ -446,7 +453,7 @@ body .hvl-pedit-tags-from {
 
 .hvl-h2 + .hvl-post { margin-top: -1.4em; }
 
-.hvl-post, .hvl-comments { max-width: 1000px; }
+.hvl-post, .hvl-comments, .hvl-pages { max-width: 1000px; }
 
 .hvl-post-header {
   margin: 1em 0 2em;
@@ -794,6 +801,21 @@ body .hvl-pedit-tags-from {
 
     li { margin-left: 1.5em; }
   }
+
+  /***
+    Tables
+   ***/
+
+  table { width: 100%; }
+
+  td, th {
+    padding: 0.2em 0.5em;
+    border: 1px solid #ccc;
+    vertical-align: top;
+  }
+
+  th { background: white; }
+  td { background: #fafafa; }
 
   /***
     Other Markup

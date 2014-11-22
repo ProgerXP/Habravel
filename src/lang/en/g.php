@@ -99,6 +99,7 @@ return array(
 
   'posts'                 => array(
     'title'               => 'Articles',
+    'titleTag'            => '“:tag”',
     'bestDay'             => 'Best of the day',
     'bestWeek'            => 'Best of the week',
     'bestEver'            => 'Best articles, ever',
