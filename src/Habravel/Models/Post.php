@@ -162,8 +162,8 @@ class Post extends BaseModel {
     $this->info = $info;
 
     if ($safe) {
-      $this->html = \Habravel\HyperSafe::transform($this->html);
-      $this->introHTML = \Habravel\HyperSafe::transform($this->introHTML, true);
+      $this->html = \Habravel\HyperSafe::transformBody($this->html);
+      $this->introHTML = \Habravel\HyperSafe::transformIntro($this->introHTML);
     }
 
     return $this;

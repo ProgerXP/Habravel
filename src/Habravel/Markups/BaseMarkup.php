@@ -53,10 +53,34 @@ abstract class BaseMarkup {
       $this->introHTML = trim(substr($this->html, 0, $match[0][1]));
     }
 
-    if (!$this->introHTML) {
-      $html = preg_replace('~<fieldset class="toc">.*?</fieldset>~us', '', $this->html);
-      $this->introHTML = trim(\Str::words($html));
+    $this->introHTML or $this->introHTML = $this->introFromHTML($this->html);
+
+    // Some markup engines like GitHubMarkdown let user generate relative links
+    // which won't work anywhere else but that post's page.
+    if ($this->target and method_exists($this->target, 'url')) {
+      $this->introHTML = $this->rebaseLinks($this->introHTML, $this->target->url());
     }
+  }
+
+  protected function introFromHTML($html) {
+    $html = preg_replace('~<fieldset class="toc">.*?</fieldset>~us', '', $this->html);
+    $cutter = "\1\2";
+    $html = \Str::words($html, \Config::get('habravel::g.introWords'), $cutter);
+
+    if (substr($html, -2) === $cutter) {
+      $openTag = strrchr($html, '<');
+      $closeTag = strrchr($html, '>');
+      if (strlen($openTag) < strlen($closeTag) or !$closeTag) {
+        // We have cut in the middle of a tag.
+        $html = substr($html, 0, -strlen($openTag)).$cutter;
+      }
+    }
+
+    if (substr($html, -2) === $cutter) {
+      $html = rtrim($html, "\x00.. .,!?:;-").'&hellip;';
+    }
+
+    return $html;
   }
 
   protected function rebaseLinks($html, $baseURL) {

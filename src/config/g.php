@@ -35,6 +35,7 @@ return array(
   ),
 
   'minPassword'           => 8,
+  'introWords'            => 200,
 
   // Special tags that have extra functionality. Since their IDs can be arbitrary
   // they are matched by exact name (caption).

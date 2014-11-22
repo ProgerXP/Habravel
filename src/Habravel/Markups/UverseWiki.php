@@ -15,6 +15,7 @@ class UverseWiki extends BaseMarkup {
     }
 
     require_once $file;
+    require_once __DIR__.'/uwiki-actions.php';
     UWikiDocument::$loadedHandlers['wacko']['link'][] = array(__CLASS__, 'correctLink');
   }
 
@@ -75,7 +76,10 @@ class UverseWiki extends BaseMarkup {
         }
         break;
       case 'anchorPrefix':
-        if ($value !== false and $this->target) {
+        if ($value !== false and $this->target and
+            strtok($this->target->url, '/') === 'posts') {
+          // Posts not under /posts/ URL (like docs) are special and have
+          // exact anchors for more permanent linking.
           $doc->settings->$key = str_replace('#', $this->target->id, $value);
         }
         break;

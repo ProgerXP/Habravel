@@ -59,7 +59,8 @@ class UverseWikiPager extends \UWikiPager {
   protected function accessibleText(PostModel $model = null) {
     try {
       if ($model) {
-        $resp = Route::call(NS.'Controllers\\Post@showShourceOn', array($model, true));
+        $ctl = new \Habravel\Controllers\Post;
+        $resp = $ctl->showSourceOn($model, true);
         if (method_exists($resp, 'getStatusCode') and $resp->getStatusCode() == 200) {
           return $resp->getContent();
         }
@@ -123,21 +124,3 @@ class UverseWikiPager extends \UWikiPager {
     return $this->pageTitleBy($fileOrCluster);
   }
 }
-
-// {{cut Text for "Read more" link.}}
-class Ucut_Root extends \UWikiBaseElement {
-  public $isBlock = true;
-  public $kind = 'anchor';
-  public $htmlTag = 'a';
-  public $htmlClasses = array('hvl-cut');
-  public $htmlAttributes = array('name' => 'cut', 'href' => '#cut');
-
-  function Parse() {
-    if ($format = &$this->settings->format) {
-      $params = $format->current['params'];
-      $format->topmostDoc->meta['cut'] = key($params);
-    }
-  }
-}
-
-class_alias(__NAMESPACE__.'\\Ucut_Root', 'Ucut_Root');

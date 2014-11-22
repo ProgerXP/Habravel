@@ -3,7 +3,7 @@
 use Config;
 
 class HyperSafe extends \HyperSafe {
-  static function transform($html, $autoClose = false) {
+  static function transformBody($html, $autoClose = false) {
     static $hs;
 
     if (!$hs) {
@@ -27,5 +27,9 @@ class HyperSafe extends \HyperSafe {
     }
 
     return $clean;
+  }
+
+  static function transformIntro($html) {
+    return static::transformBody($html, true);;
   }
 }
