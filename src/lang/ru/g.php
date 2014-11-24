@@ -142,5 +142,15 @@ return array(
     'allComments'         => 'Ещё больше отзывов',
     'regTime'             => 'Вступил в наши ряды: ',
     'loginTime'           => 'Последний раз среди нас: ',
+    'editMyProfile'       => 'Редактировать профиль',
+  ),
+
+  'profile'               => array(
+    'changeInfoTitle'     => 'Редактирование профиля ',
+    'changePasswordTitle' => 'Смена пароля ',
+    'changeAvatarTitle'   => 'Смена аватара ',
+    'changePassword'      => 'Сменить пароль',
+    'changeAvatar'        => 'Сменить аватар',
+    'editMyInfo'          => 'Редактировать информацию',
   ),
 );

@@ -151,6 +151,25 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
         ->onUpdate('cascade')->onDelete('cascade');
     });
 
+    Schema::create('user_info', function ($table) {
+      $table->integer('user_id')->unsigned();
+      $table->string('site', 255)->default('');
+      $table->string('bitbucket', 255)->default('');
+      $table->string('github', 255)->default('');
+      $table->string('facebook', 255)->default('');
+      $table->string('twitter', 255)->default('');
+      $table->string('vk', 255)->default('');
+      $table->string('jabber', 255)->default('');
+      $table->string('skype', 255)->default('');
+      $table->string('icq', 9)->default('');
+      $table->text('info', 5000)->default('');
+
+      $table->index('user_id');
+
+      $table->foreign('user_id')->references('id')->on('users')
+        ->onUpdate('cascade')->onDelete('cascade');
+    });
+
     DB::table('polls')->insert(array(array(
       'id'                => 1,
       'caption'           => 'Vote up/down',

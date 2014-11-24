@@ -16,9 +16,13 @@ class User extends BaseController {
     return Poll::voteOn(UserModel::whereName($name)->first(), false);
   }
 
-  function showCurrent() {
-    user() or App::abort(401);
-    return Redirect::to(user()->url());
+  function showCurrent($view = 'user.current') {
+    if (user()) {
+      $user = UserModel::find(user()->id);
+      return View::make('habravel::'.$view, compact('user'));
+    } else {
+      App::abort(401);
+    }
   }
 
   function showByName($name = '') {
@@ -37,6 +41,18 @@ class User extends BaseController {
   function logout() {
     user(false);
     return Redirect::to(\Habravel\url());
+  }
+
+  function showChangeMyAvatar() {
+    return $this->showCurrent('edit.avatar');
+  }
+
+  function showChangeMyPassword() {
+    return $this->showCurrent('edit.password');
+  }
+
+  function showEditMyInfo() {
+    return $this->showCurrent('edit.profile');
   }
 
   // GET input:
