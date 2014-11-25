@@ -28,7 +28,6 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
       $table->string('remember_token', 255);
       $table->string('email', 255);
       $table->string('name', 255);
-      $table->mediumText('info');
       $table->integer('poll')->unsigned()->nullable();
       $table->integer('score')->default(0);
       $table->integer('rating')->default(0);

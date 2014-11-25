@@ -18,7 +18,7 @@ class User extends BaseController {
 
   function showCurrent($view = 'user.current') {
     if (user()) {
-      $user = UserModel::find(user()->id);
+      $user = user();
       return View::make('habravel::'.$view, compact('user'));
     } else {
       App::abort(401);
@@ -53,6 +53,10 @@ class User extends BaseController {
 
   function showEditMyInfo() {
     return $this->showCurrent('edit.profile');
+  }
+
+  function editMyInfo() {
+
   }
 
   // GET input:

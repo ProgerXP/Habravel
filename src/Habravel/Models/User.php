@@ -98,6 +98,10 @@ class User extends BaseModel {
     return $this->hasMany(__NAMESPACE__.'\\PollVote', 'user');
   }
 
+  function info() {
+    return $this->hasOne(__NAMESPACE__.'\\UserInfo', 'user_id', 'id');
+  }
+
   function flags() {
     $flags = (string) $this->flags;
     if ($flags === '-') {

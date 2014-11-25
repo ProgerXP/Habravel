@@ -34,6 +34,10 @@
       @endif
     </header>
 
+    <div><!-- Info Block -->
+      @include('habravel::part.userInfo')
+    </div>
+
     @if (count($posts) and count($comments))
       <div class="hvl-split-left">
         @include('habravel::user.posts')

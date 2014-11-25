@@ -34,6 +34,10 @@
         <a href="{{{ Habravel\url()."/changemypassword" }}}">{{{ trans('habravel::g.profile.changePassword') }}}</a>
       </p>
 
+      <div><!-- Info Block -->
+        @include('habravel::part.userInfo')
+      </div>
+
       <p>
         <b>{{{ trans('habravel::g.user.regTime') }}}</b>
         {{{ DateFmt::Format('AGO-AT[s-d]IF>7[d# m__ y##]', $user->created_at->timestamp, Config::get('app.locale')) }}}

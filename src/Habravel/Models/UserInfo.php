@@ -28,6 +28,10 @@ class UserInfo extends BaseModel {
     'info'                => '',
   );
 
+  protected $table        = 'user_info';
+  public    $incrementing = false;
+  public    $timestamps   = false;
+
   static function rules(UserInfo $model = null) {
     $rules = parent::rules();
 
@@ -62,16 +66,16 @@ class UserInfo extends BaseModel {
     $this->attributes['jabber'] = e(trim($value));
   }
 
-  function setSiteAttribute($value) {
-    $this->attributes['site'] = e(trim($value));
+  function setSkypeAttribute($value) {
+    $this->attributes['skype'] = e(trim($value));
   }
 
-  function setSiteAttribute($value) {
-    $this->attributes['site'] = e(trim($value));
+  function setIcqAttribute($value) {
+    $this->attributes['icq'] = e(trim($value));
   }
 
-  function setSiteAttribute($value) {
-    $this->attributes['site'] = e(trim($value));
+  function setInfoAttribute($value) {
+    $this->attributes['info'] = e(trim($value));
   }
 
 }
