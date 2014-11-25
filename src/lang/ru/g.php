@@ -162,5 +162,6 @@ return array(
     'skype'               => 'Skype',
     'icq'                 => 'Icq',
     'info'                => 'Информация',
+    'submit'              => 'Обновить',
   ),
 );

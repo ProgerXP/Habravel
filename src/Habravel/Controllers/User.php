@@ -1,11 +1,18 @@
 <?php namespace Habravel\Controllers;
 
 use Habravel\Models\User as UserModel;
+use Habravel\Models\UserInfo as UserInfoModel;
 
 class User extends BaseController {
   function __construct() {
     parent::__construct();
-    $this->beforeFilter('csrf', array('only' => array('voteUpByname', 'voteDownByName')));
+    $this->beforeFilter('csrf', array(
+    'only' => array(
+        'voteUpByname',
+        'voteDownByName',
+        'editMyInfo',
+       )
+    ));
   }
 
   function voteUpByName($name = '') {
@@ -56,7 +63,34 @@ class User extends BaseController {
   }
 
   function editMyInfo() {
+    $info = UserInfoModel::firstOrNew(array('user_id' => user()->id));
+    $input = Input::get();
+    $user = user();
+    $errors = new MessageBag;
 
+    $info->user_id = user()->id;
+    $info->site = array_get($input, 'name');
+    $info->bitbucket = array_get($input, 'bitbucket');
+    $info->github = array_get($input, 'github');
+    $info->facebook = array_get($input, 'facebook');
+    $info->twitter = array_get($input, 'twitter');
+    $info->vk = array_get($input, 'vk');
+    $info->jabber = array_get($input, 'jabber');
+    $info->skype = array_get($input, 'skype');
+    $info->icq = array_get($input, 'icq');
+    $info->info = array_get($input, 'info');
+
+    $copy = new UserInfoModel;
+    $copy->setRawAttributes($info->getAttributes());
+    $copy->validateAndMerge($errors);
+
+    if (count($errors)) {
+      return View::make('habravel::edit.profile', compact('input', 'errors', 'user'));
+    } else {
+      $info->save();
+
+      return Redirect::to(user()->url());
+    }
   }
 
   // GET input:

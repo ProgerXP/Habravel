@@ -1,27 +1,32 @@
+@if(isset($user->info->user_id))
 <p>
-  {{{ trans('habravel::g.profile.site') }}} {{{ $user->info->site or '' }}}
+  {{{ trans('habravel::g.profile.site') }}} {{ Habravel\externalUrl($user->info->site) }}
 </p>
 <p>
-  {{{ trans('habravel::g.profile.bitbucket') }}} {{{ $user->info->bitbucket or '' }}}
+  {{{ trans('habravel::g.profile.bitbucket') }}} {{ Habravel\externalUrl($user->info->bitbucket) }}
 </p>
 <p>
-  {{{ trans('habravel::g.profile.github') }}} {{{ $user->info->github or '' }}}
+  {{{ trans('habravel::g.profile.github') }}} {{ Habravel\externalUrl($user->info->github) }}
 </p>
 <p>
-  {{{ trans('habravel::g.profile.facebook') }}} {{{ $user->info->facebook or '' }}}
+  {{{ trans('habravel::g.profile.facebook') }}} {{ Habravel\externalUrl($user->info->facebook) }}
 </p>
 <p>
-  {{{ trans('habravel::g.profile.twitter') }}} {{{ $user->info->twitter or '' }}}
+  {{{ trans('habravel::g.profile.twitter') }}} {{ Habravel\externalUrl($user->info->twitter) }}
 </p>
 <p>
-  {{{ trans('habravel::g.profile.vk') }}} {{{ $user->info->vk or '' }}}
+  {{{ trans('habravel::g.profile.vk') }}} {{ Habravel\externalUrl($user->info->vk) }}
 </p>
 <p>
-  {{{ trans('habravel::g.profile.jabber') }}} {{{ $user->info->jabber or '' }}}
+  {{{ trans('habravel::g.profile.icq') }}} {{{ $user->info->icq }}}
 </p>
 <p>
-  {{{ trans('habravel::g.profile.skype') }}} {{{ $user->info->skype or '' }}}
+  {{{ trans('habravel::g.profile.jabber') }}} {{ Habravel\jabberUrl($user->info->jabber) }}
+</p>
+<p>
+  {{{ trans('habravel::g.profile.skype') }}} {{ Habravel\skypeUrl($user->info->skype) }}
 </p>
 <p>
   {{{ trans('habravel::g.profile.info') }}} {{{ $user->info->info or '' }}}
 </p>
+@endif

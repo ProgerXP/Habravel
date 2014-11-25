@@ -79,10 +79,11 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider {
       Route::get    ('~{habravel_user}/comments', "$ns\\Comment@showByUserName");
       Route::get    ('~{habravel_user}/up',       "$ns\\User@voteUpByName");
       Route::get    ('~{habravel_user}/down',     "$ns\\User@voteDownByName");
-      // User Profile
+      // User Profile.
       Route::get    ('changemyavatar',            "$ns\\User@showChangeMyAvatar");
       Route::get    ('changemypassword',          "$ns\\User@showChangeMyPassword");
       Route::get    ('editmyinfo',                "$ns\\User@showEditMyInfo");
+      Route::post   ('editmyinfo',                "$ns\\User@editMyInfo");
       // Admin.
       Route::post   ('admin/regenhtml',           "$ns\\Admin@regenHTML");
       Route::post   ('admin/resethtml',           "$ns\\Admin@resetHTML");

@@ -5,7 +5,6 @@ class User extends BaseModel {
     'password'            => 'required|min:',
     'email'               => 'required|max:200|email|unique:users,email',
     'name'                => 'required|max:50|regex:~^\w[\w\d]+$~|unique:users,name',
-    'info'                => '',
     'poll'                => 'exists:polls,id',
     'score'               => '%INT%',
     'rating'              => '%INT%',
@@ -22,7 +21,6 @@ class User extends BaseModel {
     'remember_token'      => '',
     'email'               => '',
     'name'                => '',    // display nickname.
-    'info'                => '',    // serialized.
     'poll'                => null,  // Poll id; for counting score.
     'score'               => 0,
     'rating'              => 0,
@@ -99,7 +97,7 @@ class User extends BaseModel {
   }
 
   function info() {
-    return $this->hasOne(__NAMESPACE__.'\\UserInfo', 'user_id', 'id');
+    return $this->hasOne(__NAMESPACE__.'\\UserInfo');
   }
 
   function flags() {

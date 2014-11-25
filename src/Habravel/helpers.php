@@ -55,3 +55,21 @@ function number($num, $decimals = 0) {
   $locale or $locale = trans('habravel::g.number');
   return number_format($num, $decimals, $locale[0], $locale[1]);
 }
+
+// ссылка на внешний сайт
+function externalUrl($url, $class = 'eurl') {
+  if (starts_with($url, 'http://') or starts_with($url, 'https://')) {
+    $text = explode("//", $url);
+    return '<a href="'.$url.'" class="'.$class.'" rel="external">'.$text[1].'</a>';
+  }
+}
+
+// ссылка на jabber
+function jabberUrl($mail, $class = 'jurl') {
+  return '<a href="xmpp:'.$mail.'" class="'.$class.'">'.$mail.'</a>';
+}
+
+// ссылка на скайп
+function skypeUrl($login, $class = 'surl') {
+  return '<a href="skype:'.$login.'" class="'.$class.'">'.$login.'</a>';
+}

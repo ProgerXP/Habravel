@@ -2,15 +2,15 @@
 
 class UserInfo extends BaseModel {
   protected static $rules = array(
-    'site'                => 'max:255',
-    'bitbucket'           => 'max:255',
-    'github'              => 'max:255',
-    'facebook'            => 'max:255',
-    'twitter'             => 'max:255',
-    'vk'                  => 'max:255',
-    'jabber'              => 'max:255',
-    'skype'               => 'max:255',
-    'icq'                 => 'max:255',
+    'site'                => 'url|max:128',
+    'bitbucket'           => 'url|max:128',
+    'github'              => 'url|max:128',
+    'facebook'            => 'url|max:128',
+    'twitter'             => 'url|max:128',
+    'vk'                  => 'url|max:128',
+    'jabber'              => 'email|max:128',
+    'skype'               => 'max:64',
+    'icq'                 => 'max:9|%INT%',
     'info'                => 'max:5000',
   );
 
@@ -29,10 +29,12 @@ class UserInfo extends BaseModel {
   );
 
   protected $table        = 'user_info';
+  protected $primaryKey   = 'user_id';
+  protected $fillable     = array('*');
   public    $incrementing = false;
   public    $timestamps   = false;
 
-  static function rules(UserInfo $model = null) {
+  static function rules() {
     $rules = parent::rules();
 
     return $rules;
