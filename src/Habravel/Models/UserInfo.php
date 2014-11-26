@@ -1,44 +1,12 @@
 <?php namespace Habravel\Models;
 
-class UserInfo extends BaseModel {
-  protected static $rules = array(
-    'site'                => 'url|max:128',
-    'bitbucket'           => 'url|max:128',
-    'github'              => 'url|max:128',
-    'facebook'            => 'url|max:128',
-    'twitter'             => 'url|max:128',
-    'vk'                  => 'url|max:128',
-    'jabber'              => 'email|max:128',
-    'skype'               => 'max:64',
-    'icq'                 => 'max:9|%INT%',
-    'info'                => 'max:5000',
-  );
-
-  protected $attributes = array(
-    'user_id'             => 0,
-    'site'                => '',
-    'bitbucket'           => '',
-    'github'              => '',
-    'facebook'            => '',
-    'twitter'             => '',
-    'vk'                  => '',
-    'jabber'              => '',
-    'skype'               => '',
-    'icq'                 => '',
-    'info'                => '',
-  );
+class UserInfo extends \Eloquent {
 
   protected $table        = 'user_info';
   protected $primaryKey   = 'user_id';
   protected $fillable     = array('*');
   public    $incrementing = false;
   public    $timestamps   = false;
-
-  static function rules() {
-    $rules = parent::rules();
-
-    return $rules;
-  }
 
   function setSiteAttribute($value) {
     $this->attributes['site'] = e(trim($value));

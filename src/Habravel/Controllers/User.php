@@ -26,7 +26,8 @@ class User extends BaseController {
   function showCurrent($view = 'user.current') {
     if (user()) {
       $user = user();
-      return View::make('habravel::'.$view, compact('user'));
+      $input = array();
+      return View::make('habravel::'.$view, compact('user', 'input'));
     } else {
       App::abort(401);
     }
@@ -50,46 +51,86 @@ class User extends BaseController {
     return Redirect::to(\Habravel\url());
   }
 
-  function showChangeMyAvatar() {
-    return $this->showCurrent('edit.avatar');
+  function showEditMyInfo() {
+    return $this->showCurrent('edit.profile');
   }
 
   function showChangeMyPassword() {
     return $this->showCurrent('edit.password');
   }
 
-  function showEditMyInfo() {
-    return $this->showCurrent('edit.profile');
+  function showChangeMyAvatar() {
+    return $this->showCurrent('edit.avatar');
   }
 
   function editMyInfo() {
-    $info = UserInfoModel::firstOrNew(array('user_id' => user()->id));
-    $input = Input::get();
+    $rules = array(
+      'site'                => 'url|max:128',
+      'bitbucket'           => 'url|max:128',
+      'github'              => 'url|max:128',
+      'facebook'            => 'url|max:128',
+      'twitter'             => 'url|max:128',
+      'vk'                  => 'url|max:128',
+      'jabber'              => 'email|max:128',
+      'skype'               => 'max:64',
+      'icq'                 => 'integer',
+      'info'                => 'max:5000',
+    );
+
     $user = user();
-    $errors = new MessageBag;
+    $input = Input::get();
+    $validator = \Validator::make($input, $rules);
 
-    $info->user_id = user()->id;
-    $info->site = array_get($input, 'name');
-    $info->bitbucket = array_get($input, 'bitbucket');
-    $info->github = array_get($input, 'github');
-    $info->facebook = array_get($input, 'facebook');
-    $info->twitter = array_get($input, 'twitter');
-    $info->vk = array_get($input, 'vk');
-    $info->jabber = array_get($input, 'jabber');
-    $info->skype = array_get($input, 'skype');
-    $info->icq = array_get($input, 'icq');
-    $info->info = array_get($input, 'info');
+    $errors = $validator->errors();
 
-    $copy = new UserInfoModel;
-    $copy->setRawAttributes($info->getAttributes());
-    $copy->validateAndMerge($errors);
+    if ($validator->passes()) {
+      $info = UserInfoModel::firstOrNew(array('user_id' => user()->id));
 
-    if (count($errors)) {
-      return View::make('habravel::edit.profile', compact('input', 'errors', 'user'));
-    } else {
+      $info->user_id = user()->id;
+      $info->site = Input::get('name');
+      $info->bitbucket = Input::get('bitbucket');
+      $info->github = Input::get('github');
+      $info->facebook = Input::get('facebook');
+      $info->twitter = Input::get('twitter');
+      $info->vk = Input::get('vk');
+      $info->jabber = Input::get('jabber');
+      $info->skype = Input::get('skype');
+      $info->icq = Input::get('icq');
+      $info->info = Input::get('info');
       $info->save();
 
-      return Redirect::to(user()->url());
+      return Redirect::to('~');
+    } else {
+      return View::make('habravel::edit.profile', compact('input', 'errors', 'user'));
+    }
+  }
+
+  function changeMyPassword() {
+    $accepted = \Hash::check(Input::get('password'), user()->password);
+    $minPassword = \Config::get('habravel::g.minPassword');
+    $userPassword = user()->password;
+
+    $input = array(
+      'password'                 => Input::get('password'),
+      'hash'                     => $accepted,
+      'newPassword'              => Input::get('newPassword'),
+      'newPassword_confirmation' => Input::get('newPassword_confirmation'),
+    );
+    $rules = array(
+      'password'                 => "required|min:$minPassword",
+      'hash'                     => 'accepted',
+      'newPassword'              => "required|confirmed|min:$minPassword",
+      'newPassword_confirmation' => "required|min:$minPassword",
+    );
+    $validator = \Validator::make($input, $rules);
+
+    if ($validator->passes()) {
+      $user = UserModel::find(user()->id);
+      $user->password = \Hash::make($input['newPassword']);
+      $user->save();
+      return Redirect::to('~');
+    } else {
+      return Redirect::back()->withErrors($validator->errors());
     }
   }
 
