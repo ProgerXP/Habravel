@@ -127,4 +127,42 @@ class User extends BaseModel {
     $html = \View::make('habravel::part.user', array('user' => $this) + $options);
     return preg_replace('~\s+</~u', '</', $html);
   }
+
+  static function saveAvatar($user_id) {
+    $file = \Input::file('avatar');
+    $tmp = public_path('packages/proger/habravel/avatars/tmp/');
+    $dir = public_path('packages/proger/habravel/avatars/');
+
+    $user = User::find($user_id);
+
+    $mime = $file->getClientOriginalExtension();
+    $name = strtolower($user->name.'.png');
+    $tmpName = strtolower($user->name.'.'.$mime);
+    $avatar = $user->avatar;
+
+    if (is_dir($tmp) === false) {
+      \File::makeDirectory($tmp, $mode = 0775, $recursive = true);
+    }
+    if (is_dir($dir) === false) {
+      \File::makeDirectory($dir, $mode = 0775, $recursive = true);
+    }
+
+    \Input::file('avatar')->move($tmp, $tmpName);
+
+    $source_path = $tmp.$tmpName;
+    $destination_path = $dir.$name;
+    $width = 150;
+    $height = 150;
+
+    if ($name !== $user->avatar) {
+      \File::delete($dir.$avatar);
+    }
+
+    User::imageResize($source_path, $destination_path, $width, $height);
+
+    $user->avatar = $name;
+    $user->save();
+
+    \File::delete($source_path);
+  }
 }

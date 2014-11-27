@@ -6,9 +6,8 @@
   @if (isset($errors))
     {{ HTML::ul($errors->all(), array('class' => 'hvl-errors')) }}
   @endif
-  <form action="{{{ url('changemypassword') }}}" method="post" class="hvl-form-list">
+  <form action="{{{ url('changemypassword') }}}" method="post">
     <input type="hidden" name="_token" value="{{{ csrf_token() }}}">
-
     <p>
       <label for="password">{{{ trans('habravel::g.profile.password') }}}
         <input type="password" id="password" name="password" value="">

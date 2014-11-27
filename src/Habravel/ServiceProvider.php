@@ -85,6 +85,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider {
       Route::get    ('changemypassword',          "$ns\\User@showChangeMyPassword");
       Route::post   ('changemypassword',          "$ns\\User@ChangeMyPassword");
       Route::get    ('changemyavatar',            "$ns\\User@showChangeMyAvatar");
+      Route::post   ('changemyavatar',            "$ns\\User@ChangeMyAvatar");
       // Admin.
       Route::post   ('admin/regenhtml',           "$ns\\Admin@regenHTML");
       Route::post   ('admin/resethtml',           "$ns\\Admin@resetHTML");

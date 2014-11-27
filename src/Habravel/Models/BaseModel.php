@@ -61,4 +61,32 @@ class BaseModel extends \Eloquent {
       throw $e;
     }
   }
+
+  static function imageResize($source, $destination, $width, $height = false) {
+
+    list($oldwidth, $oldheight, $type) = getimagesize($source);
+
+    switch ($type) {
+      case IMAGETYPE_JPEG: $typestr = 'jpeg'; break;
+      case IMAGETYPE_GIF: $typestr = 'gif' ;break;
+      case IMAGETYPE_PNG: $typestr = 'png'; break;
+    }
+
+    $function = "imagecreatefrom$typestr";
+    $src_resource = $function($source);
+
+    if (!$height) { $height = round($width * $oldheight/$oldwidth); }
+    elseif (!$width) { $width = round($height * $oldwidth/$oldheight); }
+
+    $destination_resource = imagecreatetruecolor($width, $height);
+
+    imagecopyresampled($destination_resource, $src_resource, 0, 0, 0, 0, $width, $height, $oldwidth, $oldheight);
+
+    imagesavealpha ($destination_resource, true);
+
+    imagepng($destination_resource, $destination);
+
+    imagedestroy($destination_resource);
+    imagedestroy($src_resource);
+  }
 }

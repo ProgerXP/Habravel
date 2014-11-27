@@ -134,6 +134,20 @@ class User extends BaseController {
     }
   }
 
+  function changeMyAvatar() {
+    $rules = array(
+        'avatar' => 'required|mimes:jpeg,gif,png|max:128',
+     );
+    $validator = \Validator::make(Input::all(), $rules);
+
+    if ($validator->passes()) {
+      UserModel::saveAvatar(user()->id);
+      return Redirect::to('~');
+    } else {
+      return Redirect::back()->withErrors($validator->errors());
+    }
+  }
+
   // GET input:
   // - back=rel/url       - optional; relative to Habravel\url()
   // - bad=0/1            - optional
