@@ -13,6 +13,25 @@ class User extends BaseModel {
     'loginIP'             => 'ip',
     'flags'               => '',
     'avatar'              => 'max:200',
+    'site'                => 'url|max:128',
+    'bitbucket'           => 'regex:~^https?://~|max:128',
+    'github'              => 'regex:~^https?://~|max:128',
+    'facebook'            => 'regex:~^https?://~|max:128',
+    'twitter'             => 'regex:~^https?://~|max:128',
+    'vk'                  => 'regex:~^https?://~|max:128',
+    'jabber'              => 'email|max:128',
+    'skype'               => 'max:64',
+    'icq'                 => '%INT%',
+    'info'                => 'max:5000',
+  );
+
+  static $avatarImageRule = array(
+    'avatar'              => 'required|mimes:jpeg,gif,png|max:200',
+  );
+
+  static $changePasswordRule = array(
+    'hash'                => 'accepted',
+    'newPassword'         => 'required|confirmed|min:',
   );
 
   protected $attributes = array(
@@ -29,6 +48,16 @@ class User extends BaseModel {
     'loginIP'             => '',
     'flags'               => '',    // '[group.perm][foo.bar]'.
     'avatar'              => '',    // 'pub/path.jpg'.
+    'site'                => '',
+    'bitbucket'           => '',
+    'github'              => '',
+    'facebook'            => '',
+    'twitter'             => '',
+    'vk'                  => '',
+    'jabber'              => '',
+    'skype'               => '',
+    'icq'                 => '',
+    'info'                => '',
   );
 
   static function rules(User $model = null) {
@@ -41,6 +70,40 @@ class User extends BaseModel {
     }
 
     return $rules;
+  }
+
+  // Virtual attributes
+
+  function getSiteLinkAttribute() {
+    return $this->attributes['siteLink'] = \Habravel\externalUrl(e($this->site));
+  }
+
+  function getBitbucketLinkAttribute() {
+    return $this->attributes['bitbucketLink'] = \Habravel\externalUrl(e($this->bitbucket), true);
+  }
+
+  function getGithubLinkAttribute() {
+    return $this->attributes['githubLink'] = \Habravel\externalUrl(e($this->github), true);
+  }
+
+  function getFacebookLinkAttribute() {
+    return $this->attributes['facebookLink'] = \Habravel\externalUrl(e($this->facebook), true);
+  }
+
+  function getTwitterLinkAttribute() {
+    return $this->attributes['twitterLink'] = \Habravel\externalUrl(e($this->twitter), true);
+  }
+
+  function getVkLinkAttribute() {
+    return $this->attributes['vkLink'] = \Habravel\externalUrl(e($this->vk), true);
+  }
+
+  function getJabberLinkAttribute() {
+    return $this->attributes['JabberLink'] = \Habravel\jabberUrl(e($this->jabber));
+  }
+
+  function getSkypeLinkAttribute() {
+    return $this->attributes['skypeLink'] = \Habravel\skypeUrl(e($this->skype));
   }
 
   function getDates() {
@@ -96,10 +159,6 @@ class User extends BaseModel {
     return $this->hasMany(__NAMESPACE__.'\\PollVote', 'user');
   }
 
-  function info() {
-    return $this->hasOne(__NAMESPACE__.'\\UserInfo');
-  }
-
   function flags() {
     $flags = (string) $this->flags;
     if ($flags === '-') {
@@ -126,43 +185,5 @@ class User extends BaseModel {
     $options += array('link' => true);
     $html = \View::make('habravel::part.user', array('user' => $this) + $options);
     return preg_replace('~\s+</~u', '</', $html);
-  }
-
-  static function saveAvatar($user_id) {
-    $file = \Input::file('avatar');
-    $tmp = public_path('packages/proger/habravel/avatars/tmp/');
-    $dir = public_path('packages/proger/habravel/avatars/');
-
-    $user = User::find($user_id);
-
-    $mime = $file->getClientOriginalExtension();
-    $name = strtolower($user->name.'.png');
-    $tmpName = strtolower($user->name.'.'.$mime);
-    $avatar = $user->avatar;
-
-    if (is_dir($tmp) === false) {
-      \File::makeDirectory($tmp, $mode = 0775, $recursive = true);
-    }
-    if (is_dir($dir) === false) {
-      \File::makeDirectory($dir, $mode = 0775, $recursive = true);
-    }
-
-    \Input::file('avatar')->move($tmp, $tmpName);
-
-    $source_path = $tmp.$tmpName;
-    $destination_path = $dir.$name;
-    $width = 150;
-    $height = 150;
-
-    if ($name !== $user->avatar) {
-      \File::delete($dir.$avatar);
-    }
-
-    User::imageResize($source_path, $destination_path, $width, $height);
-
-    $user->avatar = $name;
-    $user->save();
-
-    \File::delete($source_path);
   }
 }

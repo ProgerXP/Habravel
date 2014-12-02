@@ -1,5 +1,8 @@
+<?php /*
+  - $user             - Models\User instance
+*/?>
 @extends('habravel::page')
-<?php $pageTitle = trans('habravel::g.profile.changeAvatarTitle').$user->name?>
+<?php $pageTitle = trans('habravel::g.profile.changeAvatarTitle')?>
 
 @section('content')
 <h1 class="hvl-h1">{{{ trans('habravel::g.profile.changeAvatarTitle') }}}</h1>

@@ -73,7 +73,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider {
       Route::get    ('register',                  "$ns\\User@showRegister");
       Route::post   ('register',                  "$ns\\User@register");
       Route::get    ('~',                         "$ns\\User@showCurrent");
-      Route::get    ('~{habravel_id}',            "$ns\\User@show");
+      Route::get    ('~{habravel_id}',            "$ns\\User@showById");
       Route::get    ('~{habravel_user}',          "$ns\\User@showByName");
       Route::get    ('~{habravel_user}/posts',    "$ns\\Posts@showByUserName");
       Route::get    ('~{habravel_user}/comments', "$ns\\Comment@showByUserName");

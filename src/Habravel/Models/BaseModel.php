@@ -64,29 +64,34 @@ class BaseModel extends \Eloquent {
 
   static function imageResize($source, $destination, $width, $height = false) {
 
-    list($oldwidth, $oldheight, $type) = getimagesize($source);
+    list($oldWidth, $oldHeight, $type) = getimagesize($source);
 
     switch ($type) {
-      case IMAGETYPE_JPEG: $typestr = 'jpeg'; break;
-      case IMAGETYPE_GIF: $typestr = 'gif' ;break;
-      case IMAGETYPE_PNG: $typestr = 'png'; break;
+      case IMAGETYPE_JPEG: $ext = 'jpeg'; break;
+      case IMAGETYPE_GIF: $ext = 'gif' ;break;
+      case IMAGETYPE_PNG: $ext = 'png'; break;
     }
 
-    $function = "imagecreatefrom$typestr";
-    $src_resource = $function($source);
+    $function = "imagecreatefrom$ext";
+    $srcResource = $function($source);
 
-    if (!$height) { $height = round($width * $oldheight/$oldwidth); }
-    elseif (!$width) { $width = round($height * $oldwidth/$oldheight); }
+    if (!$height) {
+      $height = round($width * $oldHeight/$oldWidth);
+    } elseif (!$width) {
+      $width = round($height * $oldWidth/$oldHeight);
+    }
 
-    $destination_resource = imagecreatetruecolor($width, $height);
+    $destinationResource = imagecreatetruecolor($width, $height);
 
-    imagecopyresampled($destination_resource, $src_resource, 0, 0, 0, 0, $width, $height, $oldwidth, $oldheight);
+    imagecopyresampled($destinationResource, $srcResource, 0, 0, 0, 0, $width, $height, $oldWidth, $oldHeight);
 
-    imagesavealpha ($destination_resource, true);
+    imagesavealpha ($destinationResource, true);
 
-    imagepng($destination_resource, $destination);
+    $result = imagepng($destinationResource, $destination);
 
-    imagedestroy($destination_resource);
-    imagedestroy($src_resource);
+    imagedestroy($destinationResource);
+    imagedestroy($srcResource);
+
+    return $result;
   }
 }

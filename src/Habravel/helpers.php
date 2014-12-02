@@ -56,20 +56,22 @@ function number($num, $decimals = 0) {
   return number_format($num, $decimals, $locale[0], $locale[1]);
 }
 
-// ссылка на внешний сайт
-function externalUrl($url, $class = 'eurl') {
+function externalUrl($url, $explodeName = false, $class = 'eurl') {
   if (starts_with($url, 'http://') or starts_with($url, 'https://')) {
-    $text = explode("//", $url);
-    return '<a href="'.$url.'" class="'.$class.'" rel="external">'.$text[1].'</a>';
+    $text = explode("://", $url);
+    if ($explodeName) {
+      $name = explode('/', $text[1]);
+      return '<a href="'.$url.'" class="'.$class.'" rel="external">'.$name[1].'</a>';
+    } else {
+      return '<a href="'.$url.'" class="'.$class.'" rel="external">'.$text[1].'</a>';
+    }
   }
 }
 
-// ссылка на jabber
 function jabberUrl($mail, $class = 'jurl') {
   return '<a href="xmpp:'.$mail.'" class="'.$class.'">'.$mail.'</a>';
 }
 
-// ссылка на скайп
 function skypeUrl($login, $class = 'surl') {
   return '<a href="skype:'.$login.'" class="'.$class.'">'.$login.'</a>';
 }

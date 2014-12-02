@@ -111,7 +111,7 @@ View::composer('habravel::edit.poll', function ($view) {
   isset($view->options) or $view->options = Models\PollOption::wherePoll($view->poll->id)->get();
 });
 
-View::composer(array('habravel::user', 'habravel::user.current'), function ($view) {
+View::composer(array('habravel::user'), function ($view) {
   $user = $view->user;
 
   if (!isset($view->posts)) {

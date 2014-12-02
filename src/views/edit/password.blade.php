@@ -1,5 +1,8 @@
+<?php /*
+  - $user             - Models\User instance
+*/?>
 @extends('habravel::page')
-<?php $pageTitle = trans('habravel::g.profile.changePasswordTitle').$user->name?>
+<?php $pageTitle = trans('habravel::g.profile.changePasswordTitle')?>
 
 @section('content')
 <h1 class="hvl-h1">{{{ trans('habravel::g.profile.changePasswordTitle') }}}</h1>
@@ -22,7 +25,7 @@
 
     <p>
       <label for="newPassword_confirmation">{{{ trans('habravel::g.profile.newPassword_confirmation') }}}
-        <input type="passwordp" id="newPassword_confirmation" name="newPassword_confirmation" value="">
+        <input type="password" id="newPassword_confirmation" name="newPassword_confirmation" value="">
       </label>
     </p>
 

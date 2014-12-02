@@ -1,17 +1,18 @@
 <?php namespace Habravel\Controllers;
 
 use Habravel\Models\User as UserModel;
-use Habravel\Models\UserInfo as UserInfoModel;
 
 class User extends BaseController {
   function __construct() {
     parent::__construct();
     $this->beforeFilter('csrf', array(
-    'only' => array(
+      'only' => array(
         'voteUpByname',
         'voteDownByName',
         'editMyInfo',
-       )
+        'changeMyPassword',
+        'changeMyAvatar',
+      ),
     ));
   }
 
@@ -23,14 +24,9 @@ class User extends BaseController {
     return Poll::voteOn(UserModel::whereName($name)->first(), false);
   }
 
-  function showCurrent($view = 'user.current') {
-    if (user()) {
-      $user = user();
-      $input = array();
-      return View::make('habravel::'.$view, compact('user', 'input'));
-    } else {
-      App::abort(401);
-    }
+  function showCurrent() {
+    user() or App::abort(401);
+    return Redirect::to(user()->url());
   }
 
   function showByName($name = '') {
@@ -38,8 +34,13 @@ class User extends BaseController {
     return $this->show($user);
   }
 
-  function show($idOrModel = 0) {
-    if ($user = UserModel::find($idOrModel)) {
+  function showById($id = 0) {
+    $user = UserModel::find($id);
+    return $this->show($user);
+  }
+
+  function show($user) {
+    if ($user) {
       return View::make('habravel::user', compact('user'));
     } else {
       App::abort(404);
@@ -52,97 +53,113 @@ class User extends BaseController {
   }
 
   function showEditMyInfo() {
-    return $this->showCurrent('edit.profile');
+    if (user()) {
+      $user = user();
+      return View::make('habravel::edit.profile', compact('user'));
+    } else {
+      App::abort(404);
+    }
   }
 
   function showChangeMyPassword() {
-    return $this->showCurrent('edit.password');
+    if (user()) {
+      $user = user();
+      return View::make('habravel::edit.password', compact('user'));
+    } else {
+      App::abort(404);
+    }
   }
 
   function showChangeMyAvatar() {
-    return $this->showCurrent('edit.avatar');
+    if (user()) {
+      $user = user();
+      return View::make('habravel::edit.avatar', compact('user'));
+    } else {
+      App::abort(404);
+    }
   }
 
   function editMyInfo() {
-    $rules = array(
-      'site'                => 'url|max:128',
-      'bitbucket'           => 'url|max:128',
-      'github'              => 'url|max:128',
-      'facebook'            => 'url|max:128',
-      'twitter'             => 'url|max:128',
-      'vk'                  => 'url|max:128',
-      'jabber'              => 'email|max:128',
-      'skype'               => 'max:64',
-      'icq'                 => 'integer',
-      'info'                => 'max:5000',
-    );
-
     $user = user();
     $input = Input::get();
-    $validator = \Validator::make($input, $rules);
 
-    $errors = $validator->errors();
+    $errors = new MessageBag;
 
-    if ($validator->passes()) {
-      $info = UserInfoModel::firstOrNew(array('user_id' => user()->id));
+    $validation = new UserModel;
 
-      $info->user_id = user()->id;
-      $info->site = Input::get('name');
-      $info->bitbucket = Input::get('bitbucket');
-      $info->github = Input::get('github');
-      $info->facebook = Input::get('facebook');
-      $info->twitter = Input::get('twitter');
-      $info->vk = Input::get('vk');
-      $info->jabber = Input::get('jabber');
-      $info->skype = Input::get('skype');
-      $info->icq = Input::get('icq');
-      $info->info = Input::get('info');
-      $info->save();
+    $validation->setRawAttributes($input + $user->getAttributes());
+    $validation->validateAndMerge($errors);
 
-      return Redirect::to('~');
-    } else {
+    if (count($errors)) {
       return View::make('habravel::edit.profile', compact('input', 'errors', 'user'));
+    } else {
+      $user->site = Input::get('site');
+      $user->bitbucket = Input::get('bitbucket');
+      $user->github = Input::get('github');
+      $user->facebook = Input::get('facebook');
+      $user->twitter = Input::get('twitter');
+      $user->vk = Input::get('vk');
+      $user->jabber = Input::get('jabber');
+      $user->skype = Input::get('skype');
+      $user->icq = Input::get('icq');
+      $user->info = Input::get('info');
+
+      $user->save();
+
+      return Redirect::to($user->url());
     }
   }
 
   function changeMyPassword() {
-    $accepted = \Hash::check(Input::get('password'), user()->password);
+    $user = user();
+    $accepted = \Hash::check(Input::get('password'), $user->password);
     $minPassword = \Config::get('habravel::g.minPassword');
-    $userPassword = user()->password;
-
     $input = array(
       'password'                 => Input::get('password'),
       'hash'                     => $accepted,
       'newPassword'              => Input::get('newPassword'),
       'newPassword_confirmation' => Input::get('newPassword_confirmation'),
     );
-    $rules = array(
-      'password'                 => "required|min:$minPassword",
-      'hash'                     => 'accepted',
-      'newPassword'              => "required|confirmed|min:$minPassword",
-      'newPassword_confirmation' => "required|min:$minPassword",
-    );
+    $rules = $user::$changePasswordRule;
+    $rules['newPassword'] .= \Config::get('habravel::g.minPassword');
+
     $validator = \Validator::make($input, $rules);
 
     if ($validator->passes()) {
-      $user = UserModel::find(user()->id);
       $user->password = \Hash::make($input['newPassword']);
       $user->save();
-      return Redirect::to('~');
+      return Redirect::to($user->url());
     } else {
       return Redirect::back()->withErrors($validator->errors());
     }
   }
 
   function changeMyAvatar() {
-    $rules = array(
-        'avatar' => 'required|mimes:jpeg,gif,png|max:128',
-     );
+    $user = user();
+    $rules = $user::$avatarImageRule;
+
     $validator = \Validator::make(Input::all(), $rules);
 
     if ($validator->passes()) {
-      UserModel::saveAvatar(user()->id);
-      return Redirect::to('~');
+      $file = \Input::file('avatar');
+      $dir = public_path('packages/proger/habravel/avatars/');
+      $mime = $file->getClientOriginalExtension();
+      $name = $user->id.'.png';
+      $avatar = $user->avatar;
+      if (is_dir($dir) === false) {
+        \File::makeDirectory($dir, 0775, true);
+      }
+      $destination = $dir.$name;
+      $width = \Config::get('habravel::g.avatarWidth');
+      $height = \Config::get('habravel::g.avatarHeight');
+      if (UserModel::imageResize($file, $destination, $width, $height)) {
+        $user->avatar = $name;
+        $user->save();
+      } else {
+        \App::abort(500, 'Cannot save '.get_class().'.');
+      }
+      \File::delete($file);
+      return Redirect::to(user()->url());
     } else {
       return Redirect::back()->withErrors($validator->errors());
     }
@@ -152,8 +169,8 @@ class User extends BaseController {
   // - back=rel/url       - optional; relative to Habravel\url()
   // - bad=0/1            - optional
   function showLogin() {
-    if ($user = user()) {
-      return Redirect::to($user->url());
+    if (user()) {
+      return Redirect::to(user()->url());
     } else {
       $vars = array(
         'backURL'         => Input::get('back'),
