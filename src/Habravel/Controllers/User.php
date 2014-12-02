@@ -145,7 +145,7 @@ class User extends BaseController {
       $dir = public_path('packages/proger/habravel/avatars/');
       $mime = $file->getClientOriginalExtension();
       $name = $user->id.'.png';
-      $avatar = $user->avatar;
+
       if (is_dir($dir) === false) {
         \File::makeDirectory($dir, 0775, true);
       }
