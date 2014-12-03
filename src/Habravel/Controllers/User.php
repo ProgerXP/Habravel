@@ -143,7 +143,6 @@ class User extends BaseController {
     if ($validator->passes()) {
       $file = \Input::file('avatar');
       $dir = public_path('packages/proger/habravel/avatars/');
-      $mime = $file->getClientOriginalExtension();
       $name = $user->id.'.png';
 
       if (is_dir($dir) === false) {
