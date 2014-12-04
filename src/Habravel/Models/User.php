@@ -98,14 +98,6 @@ class User extends BaseModel {
     return $this->attributes['vkLink'] = \Habravel\externalUrl($this->vk, true);
   }
 
-  function getJabberLinkAttribute() {
-    return $this->attributes['JabberLink'] = \Habravel\jabberUrl($this->jabber);
-  }
-
-  function getSkypeLinkAttribute() {
-    return $this->attributes['skypeLink'] = \Habravel\skypeUrl($this->skype);
-  }
-
   function getDates() {
     $list = parent::getDates();
     $list[] = 'loginTime';

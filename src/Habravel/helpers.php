@@ -67,11 +67,3 @@ function externalUrl($url, $explodeName = false, $class = 'eurl') {
     return \HTML::link(e($url), e($title), array('class' => $class, 'rel' => 'external'));
   }
 }
-
-function jabberUrl($mail, $class = 'jurl') {
-  return '<a href="xmpp:'.e($mail).'" class="'.$class.'">'.e($mail).'</a>';
-}
-
-function skypeUrl($login, $class = 'surl') {
-  return '<a href="skype:'.e($login).'" class="'.$class.'">'.e($login).'</a>';
-}

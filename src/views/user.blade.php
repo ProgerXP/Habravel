@@ -69,11 +69,11 @@
         </p>
 
         <p>
-          {{{ trans('habravel::g.profile.jabber') }}} {{ $user->jabberLink }}
+          {{{ trans('habravel::g.profile.jabber') }}} <a href="{{{ 'xmpp:'.$user->jabber }}}">{{{ $user->jabber }}}</a>
         </p>
 
         <p>
-          {{{ trans('habravel::g.profile.skype') }}} {{ $user->skypeLink }}
+          {{{ trans('habravel::g.profile.skype') }}} <a href="{{{ 'skype:'.$user->skype }}}">{{{ $user->skype }}}</a>
         </p>
 
         <p>
