@@ -22,7 +22,7 @@
       </h1>
 
       @if (Habravel\user())
-        @if (e(Habravel\user()->id) === e($user->id))
+        @if (Habravel\user()->id === $user->id)
           <div>
             <p>
               <a href="{{{ Habravel\url().'/editmyinfo' }}}">{{{ trans('habravel::g.profile.editMyInfo') }}}</a>

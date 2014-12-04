@@ -75,35 +75,35 @@ class User extends BaseModel {
   // Virtual attributes
 
   function getSiteLinkAttribute() {
-    return $this->attributes['siteLink'] = \Habravel\externalUrl(e($this->site));
+    return $this->attributes['siteLink'] = \Habravel\externalUrl($this->site);
   }
 
   function getBitbucketLinkAttribute() {
-    return $this->attributes['bitbucketLink'] = \Habravel\externalUrl(e($this->bitbucket), true);
+    return $this->attributes['bitbucketLink'] = \Habravel\externalUrl($this->bitbucket, true);
   }
 
   function getGithubLinkAttribute() {
-    return $this->attributes['githubLink'] = \Habravel\externalUrl(e($this->github), true);
+    return $this->attributes['githubLink'] = \Habravel\externalUrl($this->github, true);
   }
 
   function getFacebookLinkAttribute() {
-    return $this->attributes['facebookLink'] = \Habravel\externalUrl(e($this->facebook), true);
+    return $this->attributes['facebookLink'] = \Habravel\externalUrl($this->facebook, true);
   }
 
   function getTwitterLinkAttribute() {
-    return $this->attributes['twitterLink'] = \Habravel\externalUrl(e($this->twitter), true);
+    return $this->attributes['twitterLink'] = \Habravel\externalUrl($this->twitter, true);
   }
 
   function getVkLinkAttribute() {
-    return $this->attributes['vkLink'] = \Habravel\externalUrl(e($this->vk), true);
+    return $this->attributes['vkLink'] = \Habravel\externalUrl($this->vk, true);
   }
 
   function getJabberLinkAttribute() {
-    return $this->attributes['JabberLink'] = \Habravel\jabberUrl(e($this->jabber));
+    return $this->attributes['JabberLink'] = \Habravel\jabberUrl($this->jabber);
   }
 
   function getSkypeLinkAttribute() {
-    return $this->attributes['skypeLink'] = \Habravel\skypeUrl(e($this->skype));
+    return $this->attributes['skypeLink'] = \Habravel\skypeUrl($this->skype);
   }
 
   function getDates() {
