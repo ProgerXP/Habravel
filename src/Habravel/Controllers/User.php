@@ -118,33 +118,42 @@ class User extends BaseController {
 
   function editAvatar() {
     $user = user();
-    $rules = array('avatar' => $user::$avatarImageRule);
+    $dir = \Habravel\publicPath('avatars/');
+    $name = ((int) $user->id).'.png';
+    $destination = $dir.$name;
 
-    $validator = \Validator::make(Input::all(), $rules);
-
-    if ($validator->passes()) {
-      $file = \Input::file('avatar');
-      $dir = \Habravel\publicPath('avatars/');
-      $name = ((int) $user->id).'.png';
-
-      if (is_dir($dir) === false) {
-        \File::makeDirectory($dir, 0775, true);
-      }
-
-      $destination = $dir.$name;
-      $width = \Config::get('habravel::g.avatarWidth');
-      $height = \Config::get('habravel::g.avatarHeight');
-
-      \Habravel\resizeImage($file, $destination, $width, $height);
-      \File::delete($file);
-
-      $user->avatar = $name;
-      $user->save();
-
-      return Redirect::to($user->url());
+    if (\Input::has('delete')) {
+      $file = $destination;
+      $name = '';
     } else {
-      return Redirect::back()->withErrors($validator->errors());
+      $rules = array('avatar' => $user::$avatarImageRule);
+
+      $validator = \Validator::make(Input::all(), $rules);
+
+      if ($validator->passes()) {
+        $file = \Input::file('avatar');
+
+        if (is_dir($dir) === false) {
+          \File::makeDirectory($dir, 0775, true);
+        }
+
+        $width = \Config::get('habravel::g.avatarWidth');
+        $height = \Config::get('habravel::g.avatarHeight');
+
+        \Habravel\resizeImage($file, $destination, $width, $height);
+      } else {
+        return Redirect::back()->withErrors($validator->errors());
+      }
     }
+
+    if (is_file($file)) {
+      \File::delete($file);
+    }
+
+    $user->avatar = $name;
+    $user->save();
+
+    return Redirect::to($user->url());
   }
 
   // GET input:
