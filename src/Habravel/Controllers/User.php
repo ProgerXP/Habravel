@@ -5,7 +5,12 @@ use Habravel\Models\User as UserModel;
 class User extends BaseController {
   function __construct() {
     parent::__construct();
-    $this->beforeFilter('csrf', array('only' => array('voteUpByname', 'voteDownByName')));
+    $this->beforeFilter('csrf', array(
+      'only' => array(
+        'voteUpByName',
+        'voteDownByName',
+      ),
+    ));
   }
 
   function voteUpByName($name = '') {
@@ -39,12 +44,115 @@ class User extends BaseController {
     return Redirect::to(\Habravel\url());
   }
 
+  function showEditProfile() {
+    if ($user = user()) {
+      return View::make('habravel::user.edit', compact('user'));
+    } else {
+      App::abort(401);
+    }
+  }
+
+  function showEditPassword() {
+    if ($user = user()) {
+      return View::make('habravel::user.editPassword', compact('user'));
+    } else {
+      App::abort(401);
+    }
+  }
+
+  function showEditAvatar() {
+    if ($user = user()) {
+      return View::make('habravel::user.editAvatar', compact('user'));
+    } else {
+      App::abort(401);
+    }
+  }
+
+  function editProfile() {
+    $user = user();
+    $input = Input::only(array('site', 'bitbucket', 'github', 'facebook', 'twitter',
+                               'vk', 'jabber', 'skype', 'icq', 'info'));
+    $input = array_map('trim', $input);
+
+    $errors = new MessageBag;
+    $validation = new UserModel;
+
+    $validation->setRawAttributes($input + $user->getAttributes());
+    $validation->validateAndMerge($errors);
+
+    if (count($errors)) {
+      return View::make('habravel::user.edit', compact('input', 'errors', 'user'));
+    } else {
+      foreach ($input as $name => $value) { $user->$name = $value; }
+      $user->save();
+      return Redirect::to($user->url());
+    }
+  }
+
+  function editPassword() {
+    $user = user();
+    $curMatches = (int) \Hash::check(Input::get('password'), $user->password);
+    $minPassword = \Config::get('habravel::g.minPassword');
+
+    $input = array(
+      'currentPassword'           => $curMatches,
+      'newPassword'               => Input::get('newPassword'),
+      'newPassword_confirmation'  => Input::get('newPassword_confirmation'),
+    );
+
+    $rules = array(
+      'currentPassword'     => 'in:1',
+      'newPassword'         => array_get(UserModel::rules(), 'password').'|confirmed',
+    );
+
+    $validator = \Validator::make($input, $rules);
+
+    if ($validator->passes()) {
+      $user->password = \Hash::make($input['newPassword']);
+      $user->save();
+      return Redirect::to($user->url());
+    } else {
+      return Redirect::back()->withErrors($validator->errors());
+    }
+  }
+
+  function editAvatar() {
+    $user = user();
+    $rules = array('avatar' => $user::$avatarImageRule);
+
+    $validator = \Validator::make(Input::all(), $rules);
+
+    if ($validator->passes()) {
+      $file = \Input::file('avatar');
+      $dir = \Habravel\publicPath('avatars/');
+      $name = ((int) $user->id).'.png';
+
+      if (is_dir($dir) === false) {
+        \File::makeDirectory($dir, 0775, true);
+      }
+
+      $destination = $dir.$name;
+      $width = \Config::get('habravel::g.avatarWidth');
+      $height = \Config::get('habravel::g.avatarHeight');
+
+      \Habravel\resizeImage($file, $destination, $width, $height);
+      \File::delete($file);
+
+      $user->avatar = $name;
+      $user->save();
+
+      return Redirect::to($user->url());
+    } else {
+      return Redirect::back()->withErrors($validator->errors());
+    }
+  }
+
   // GET input:
   // - back=rel/url       - optional; relative to Habravel\url()
   // - bad=0/1            - optional
   function showLogin() {
-    if ($user = user()) {
-      return Redirect::to($user->url());
+    if (user()) {
+      return Redirect::to(user()->url());
     } else {
       $vars = array(
         'backURL'         => Input::get('back'),

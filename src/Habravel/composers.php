@@ -114,6 +114,8 @@ View::composer('habravel::edit.poll', function ($view) {
 View::composer('habravel::user', function ($view) {
   $user = $view->user;
 
+  isset($view->canEdit) or $view->canEdit = (user() and $user->id === user()->id);
+
   if (!isset($view->posts)) {
     $query = $user->publishedArticles()->orderBy('listTime', 'desc');
     $view->posts = $query->take(10)->get();
@@ -164,7 +166,7 @@ View::composer('habravel::part.post', function ($view) {
     // Post too short.
     $view->readMore = false;
   } else {
-    $view->readMore = array_get($post->info, 'cut', trans('habravel::g.post.more'));
+    $view->readMore = array_get($post->data(), 'cut', trans('habravel::g.post.more'));
   }
 
   if (!isset($view->html)) {

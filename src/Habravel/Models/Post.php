@@ -14,7 +14,7 @@ class Post extends BaseModel {
     'poll'                => 'exists:polls,id',
     'score'               => '%INT%',
     'views'               => '%INT%|min:0',
-    'info'                => '',
+    'data'                => '',
     'sourceURL'           => 'regex:~^https?://~',
     'sourceName'          => 'required_with:sourceURL|max:100',
     'caption'             => 'max:150',
@@ -36,7 +36,7 @@ class Post extends BaseModel {
     'views'               => 0,     // uint.
     'seen'                => '',    // binary string, each chunk is 4
                                     // bytes (IP or user ID).
-    'info'                => '',    // serialized.
+    'data'                => '',    // serialized.
     'sourceURL'           => '',
     'sourceName'          => '',    // translation/other source.
     'caption'             => '',
@@ -92,10 +92,6 @@ class Post extends BaseModel {
     $this->attributes['text'] = rtrim($value);
   }
 
-  function getInfoAttribute($value) {
-    return (array) (is_scalar($value) ? unserialize($value) : $value);
-  }
-
   function author() {
     return $this->belongsTo(__NAMESPACE__.'\\User', 'author');
   }
@@ -139,6 +135,15 @@ class Post extends BaseModel {
     }
   }
 
+  function data($new = null) {
+    if (func_num_args()) {
+      $this->data = $new ? serialize($new) : '';
+      return $new;
+    } else {
+      return $this->data ? unserialize($this->data) : array();
+    }
+  }
+
   function size() {
     return mb_strlen($this->text);
   }
@@ -153,13 +158,13 @@ class Post extends BaseModel {
     $this->html = $fmt->html;
     $this->introHTML = $fmt->introHTML;
 
-    $info = $this->info;
+    $data = $this->data();
     if ('' === $cut = trim($fmt->meta['cut'])) {
-      unset($info['cut']);
+      unset($data['cut']);
     } else {
-      $info['cut'] = $cut;
+      $data['cut'] = $cut;
     }
-    $this->info = $info;
+    $this->data($data);
 
     if ($safe) {
       $this->html = \Habravel\HyperSafe::transformBody($this->html);
@@ -201,12 +206,6 @@ class Post extends BaseModel {
 
     $this->seen .= $id;
     return true;
-  }
-
-  function save(array $options = array()) {
-    $info = &$this->attributes['info'];
-    is_scalar($info) or $info = $info ? serialize($info) : '';
-    return parent::save($options);
   }
 
   protected function finishSave(array $options) {

@@ -5,7 +5,7 @@ class User extends BaseModel {
     'password'            => 'required|min:',
     'email'               => 'required|max:200|email|unique:users,email',
     'name'                => 'required|max:50|regex:~^\w[\w\d]+$~|unique:users,name',
-    'info'                => '',
+    'data'                => '',
     'poll'                => 'exists:polls,id',
     'score'               => '%INT%',
     'rating'              => '%INT%',
@@ -14,7 +14,19 @@ class User extends BaseModel {
     'loginIP'             => 'ip',
     'flags'               => '',
     'avatar'              => 'max:200',
+    'site'                => 'url',
+    'bitbucket'           => 'alpha_dash',
+    'github'              => 'alpha_dash',
+    'facebook'            => 'regex:/^[\w\d.]+$/',
+    'twitter'             => 'alpha_dash',
+    'vk'                  => 'alpha_dash',
+    'jabber'              => 'email',
+    'skype'               => 'regex:/^[\w\d\-_.,]+$/',
+    'icq'                 => '%INT%',
+    'info'                => 'max:5000',
   );
+
+  static $avatarImageRule = 'required|mimes:jpeg,gif,png|max:500';
 
   protected $attributes = array(
     'id'                  => 0,
@@ -22,7 +34,7 @@ class User extends BaseModel {
     'remember_token'      => '',
     'email'               => '',
     'name'                => '',    // display nickname.
-    'info'                => '',    // serialized.
+    'data'                => '',    // custom serialized data.
     'poll'                => null,  // Poll id; for counting score.
     'score'               => 0,
     'rating'              => 0,
@@ -31,6 +43,16 @@ class User extends BaseModel {
     'loginIP'             => '',
     'flags'               => '',    // '[group.perm][foo.bar]'.
     'avatar'              => '',    // 'pub/path.jpg'.
+    'site'                => '',
+    'bitbucket'           => '',
+    'github'              => '',
+    'facebook'            => '',
+    'twitter'             => '',
+    'vk'                  => '',
+    'jabber'              => '',
+    'skype'               => '',
+    'icq'                 => '',
+    'info'                => '',
   );
 
   static function rules(User $model = null) {

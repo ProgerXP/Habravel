@@ -304,12 +304,50 @@ body a.hvl-credit {
   overflow: auto;
   margin-bottom: 2em;
 
-  p { margin: 0.7em 0; }
+  p { margin-top: 0.7em; }
 }
 
 .hvl-puser-avatar {
   float: left;
-  margin-right: 2em;
+}
+
+body .hvl-puser-avatar ~ * {
+  margin-left: 12rem;
+}
+
+.hvl-puser-editbtns {
+  float: right;
+}
+
+.hvl-puser-info article {
+  margin-top: 1em;
+  font-style: italic;
+}
+
+.hvl-puser-edit {
+  > div {
+    width: 33%;
+    float: left;
+  }
+
+  p { margin: 1em 0; }
+  textarea { width: 100%; }
+}
+
+.hvl-puser-edit-line b {
+  display: inline-block;
+  width: 6em;
+}
+
+p.hvl-puser-edit-btn {
+  text-align: center;
+  clear: both;
+  padding-top: 1em;
+}
+
+.hvl-puser-edit-avatar > img {
+  margin: 2em 0;
+  display: block;
 }
 
 /***
