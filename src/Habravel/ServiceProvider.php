@@ -73,19 +73,19 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider {
       Route::get    ('register',                  "$ns\\User@showRegister");
       Route::post   ('register',                  "$ns\\User@register");
       Route::get    ('~',                         "$ns\\User@showCurrent");
-      Route::get    ('~{habravel_id}',            "$ns\\User@showById");
+      Route::get    ('~{habravel_id}',            "$ns\\User@show");
       Route::get    ('~{habravel_user}',          "$ns\\User@showByName");
       Route::get    ('~{habravel_user}/posts',    "$ns\\Posts@showByUserName");
       Route::get    ('~{habravel_user}/comments', "$ns\\Comment@showByUserName");
       Route::get    ('~{habravel_user}/up',       "$ns\\User@voteUpByName");
       Route::get    ('~{habravel_user}/down',     "$ns\\User@voteDownByName");
       // User Profile.
-      Route::get    ('editmyinfo',                "$ns\\User@showEditMyInfo");
-      Route::post   ('editmyinfo',                "$ns\\User@editMyInfo");
-      Route::get    ('changemypassword',          "$ns\\User@showChangeMyPassword");
-      Route::post   ('changemypassword',          "$ns\\User@ChangeMyPassword");
-      Route::get    ('changemyavatar',            "$ns\\User@showChangeMyAvatar");
-      Route::post   ('changemyavatar',            "$ns\\User@ChangeMyAvatar");
+      Route::get    ('~/edit',                    "$ns\\User@showEditProfile");
+      Route::post   ('~/edit',                    "$ns\\User@editProfile");
+      Route::get    ('~/password',                "$ns\\User@showEditPassword");
+      Route::post   ('~/password',                "$ns\\User@editPassword");
+      Route::get    ('~/avatar',                  "$ns\\User@showEditAvatar");
+      Route::post   ('~/avatar',                  "$ns\\User@editAvatar");
       // Admin.
       Route::post   ('admin/regenhtml',           "$ns\\Admin@regenHTML");
       Route::post   ('admin/resethtml',           "$ns\\Admin@resetHTML");

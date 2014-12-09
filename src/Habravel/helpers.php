@@ -35,6 +35,46 @@ function user($login = null) {
   return $user;
 }
 
+function publicPath($path) {
+  return \Config::get('habravel::g.publicPath').$path;
+}
+
+// Will fit the image into given $width * $height box.
+//
+//? resizeImage('/tmp/php5E1.tmp', '/.../public/upload.png', 200, 150)
+function resizeImage($source, $destination, $width, $height) {
+  list($srcWidth, $srcHeight, $type) = getimagesize($source);
+
+  $ratio = min($width / $srcWidth, $height / $srcHeight);
+  $width = $srcWidth * $ratio;
+  $height = $srcHeight * $ratio;
+
+  switch ($type) {
+  case IMAGETYPE_JPEG:  $ext = 'jpeg'; break;
+  case IMAGETYPE_GIF:   $ext = 'gif'; break;
+  case IMAGETYPE_PNG:   $ext = 'png'; break;
+  default:
+    App::fail(400, "Bad image type [$type] to resize.");
+  }
+
+  $function = "imagecreatefrom$ext";
+  $srcResource = $function($source);
+
+  $destinationResource = imagecreatetruecolor($width, $height);
+
+  imagecopyresampled($destinationResource, $srcResource, 0, 0, 0, 0,
+                     $width, $height, $srcWidth, $srcHeight);
+
+  imagesavealpha($destinationResource, true);
+
+  if (!imagepng($destinationResource, $destination)) {
+    App::abort(500, "Cannot save resized image to $destination.");
+  }
+
+  imagedestroy($destinationResource);
+  imagedestroy($srcResource);
+}
+
 function tagLink(Models\Tag $tag, $newTab = false, $class = 'hvl-tag') {
   $key = "habravel::tags.$tag->type";
 
@@ -56,14 +96,15 @@ function number($num, $decimals = 0) {
   return number_format($num, $decimals, $locale[0], $locale[1]);
 }
 
-function externalUrl($url, $explodeName = false, $class = 'eurl') {
-  if (starts_with($url, 'http://') or starts_with($url, 'https://')) {
-    $text = explode("://", $url);
-    $title = $text[1];
-    if ($explodeName) {
-      $name = explode('/', $text[1]);
-      $title = $name[1];
-    }
-    return \HTML::link(e($url), e($title), array('class' => $class, 'rel' => 'external'));
+function externalLink($url, $domainTitle = false, $class = 'eurl') {
+  $re = $domainTitle ? '([^/]+)' : '(.+)';
+  if (!preg_match("~(?:\w+://)$re~u", $url, $match)) {
+    $match = array($url, $url);
   }
+
+  return \HTML::link($url, $match[1], array(
+    'class'   => $class,
+    'rel'     => 'external nofollow',
+    'target'  => '_blank',
+  ));
 }

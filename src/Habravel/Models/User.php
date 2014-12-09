@@ -5,6 +5,7 @@ class User extends BaseModel {
     'password'            => 'required|min:',
     'email'               => 'required|max:200|email|unique:users,email',
     'name'                => 'required|max:50|regex:~^\w[\w\d]+$~|unique:users,name',
+    'data'                => '',
     'poll'                => 'exists:polls,id',
     'score'               => '%INT%',
     'rating'              => '%INT%',
@@ -13,26 +14,19 @@ class User extends BaseModel {
     'loginIP'             => 'ip',
     'flags'               => '',
     'avatar'              => 'max:200',
-    'site'                => 'url|max:128',
-    'bitbucket'           => 'regex:~^https?://~|max:128',
-    'github'              => 'regex:~^https?://~|max:128',
-    'facebook'            => 'regex:~^https?://~|max:128',
-    'twitter'             => 'regex:~^https?://~|max:128',
-    'vk'                  => 'regex:~^https?://~|max:128',
-    'jabber'              => 'email|max:128',
-    'skype'               => 'max:64',
+    'site'                => 'url',
+    'bitbucket'           => 'alpha_dash',
+    'github'              => 'alpha_dash',
+    'facebook'            => 'regex:/^[\w\d.]+$/',
+    'twitter'             => 'alpha_dash',
+    'vk'                  => 'alpha_dash',
+    'jabber'              => 'email',
+    'skype'               => 'regex:/^[\w\d\-_.,]+$/',
     'icq'                 => '%INT%',
     'info'                => 'max:5000',
   );
 
-  static $avatarImageRule = array(
-    'avatar'              => 'required|mimes:jpeg,gif,png|max:200',
-  );
-
-  static $changePasswordRule = array(
-    'hash'                => 'accepted',
-    'newPassword'         => 'required|confirmed|min:',
-  );
+  static $avatarImageRule = 'required|mimes:jpeg,gif,png|max:500';
 
   protected $attributes = array(
     'id'                  => 0,
@@ -40,6 +34,7 @@ class User extends BaseModel {
     'remember_token'      => '',
     'email'               => '',
     'name'                => '',    // display nickname.
+    'data'                => '',    // custom serialized data.
     'poll'                => null,  // Poll id; for counting score.
     'score'               => 0,
     'rating'              => 0,
@@ -70,32 +65,6 @@ class User extends BaseModel {
     }
 
     return $rules;
-  }
-
-  // Virtual attributes
-
-  function getSiteLinkAttribute() {
-    return $this->attributes['siteLink'] = \Habravel\externalUrl($this->site);
-  }
-
-  function getBitbucketLinkAttribute() {
-    return $this->attributes['bitbucketLink'] = \Habravel\externalUrl($this->bitbucket, true);
-  }
-
-  function getGithubLinkAttribute() {
-    return $this->attributes['githubLink'] = \Habravel\externalUrl($this->github, true);
-  }
-
-  function getFacebookLinkAttribute() {
-    return $this->attributes['facebookLink'] = \Habravel\externalUrl($this->facebook, true);
-  }
-
-  function getTwitterLinkAttribute() {
-    return $this->attributes['twitterLink'] = \Habravel\externalUrl($this->twitter, true);
-  }
-
-  function getVkLinkAttribute() {
-    return $this->attributes['vkLink'] = \Habravel\externalUrl($this->vk, true);
   }
 
   function getDates() {

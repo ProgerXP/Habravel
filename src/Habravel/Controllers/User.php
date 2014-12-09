@@ -7,11 +7,8 @@ class User extends BaseController {
     parent::__construct();
     $this->beforeFilter('csrf', array(
       'only' => array(
-        'voteUpByname',
+        'voteUpByName',
         'voteDownByName',
-        'editMyInfo',
-        'changeMyPassword',
-        'changeMyAvatar',
       ),
     ));
   }
@@ -34,13 +31,8 @@ class User extends BaseController {
     return $this->show($user);
   }
 
-  function showById($id = 0) {
-    $user = UserModel::find($id);
-    return $this->show($user);
-  }
-
-  function show($user) {
-    if ($user) {
+  function show($idOrModel = 0) {
+    if ($user = UserModel::find($idOrModel)) {
       return View::make('habravel::user', compact('user'));
     } else {
       App::abort(404);
@@ -52,76 +44,66 @@ class User extends BaseController {
     return Redirect::to(\Habravel\url());
   }
 
-  function showEditMyInfo() {
-    if (user()) {
-      $user = user();
-      return View::make('habravel::edit.profile', compact('user'));
+  function showEditProfile() {
+    if ($user = user()) {
+      return View::make('habravel::user.edit', compact('user'));
     } else {
-      App::abort(404);
+      App::abort(401);
     }
   }
 
-  function showChangeMyPassword() {
-    if (user()) {
-      $user = user();
-      return View::make('habravel::edit.password', compact('user'));
+  function showEditPassword() {
+    if ($user = user()) {
+      return View::make('habravel::user.editPassword', compact('user'));
     } else {
-      App::abort(404);
+      App::abort(401);
     }
   }
 
-  function showChangeMyAvatar() {
-    if (user()) {
-      $user = user();
-      return View::make('habravel::edit.avatar', compact('user'));
+  function showEditAvatar() {
+    if ($user = user()) {
+      return View::make('habravel::user.editAvatar', compact('user'));
     } else {
-      App::abort(404);
+      App::abort(401);
     }
   }
 
-  function editMyInfo() {
+  function editProfile() {
     $user = user();
-    $input = Input::get();
+    $input = Input::only(array('site', 'bitbucket', 'github', 'facebook', 'twitter',
+                               'vk', 'jabber', 'skype', 'icq', 'info'));
+    $input = array_map('trim', $input);
 
     $errors = new MessageBag;
-
     $validation = new UserModel;
 
     $validation->setRawAttributes($input + $user->getAttributes());
     $validation->validateAndMerge($errors);
 
     if (count($errors)) {
-      return View::make('habravel::edit.profile', compact('input', 'errors', 'user'));
+      return View::make('habravel::user.edit', compact('input', 'errors', 'user'));
     } else {
-      $user->site = Input::get('site');
-      $user->bitbucket = Input::get('bitbucket');
-      $user->github = Input::get('github');
-      $user->facebook = Input::get('facebook');
-      $user->twitter = Input::get('twitter');
-      $user->vk = Input::get('vk');
-      $user->jabber = Input::get('jabber');
-      $user->skype = Input::get('skype');
-      $user->icq = Input::get('icq');
-      $user->info = Input::get('info');
-
+      foreach ($input as $name => $value) { $user->$name = $value; }
       $user->save();
-
       return Redirect::to($user->url());
     }
   }
 
-  function changeMyPassword() {
+  function editPassword() {
     $user = user();
-    $accepted = \Hash::check(Input::get('password'), $user->password);
+    $curMatches = (int) \Hash::check(Input::get('password'), $user->password);
     $minPassword = \Config::get('habravel::g.minPassword');
+
     $input = array(
-      'password'                 => Input::get('password'),
-      'hash'                     => $accepted,
-      'newPassword'              => Input::get('newPassword'),
-      'newPassword_confirmation' => Input::get('newPassword_confirmation'),
+      'currentPassword'           => $curMatches,
+      'newPassword'               => Input::get('newPassword'),
+      'newPassword_confirmation'  => Input::get('newPassword_confirmation'),
     );
-    $rules = $user::$changePasswordRule;
-    $rules['newPassword'] .= \Config::get('habravel::g.minPassword');
+
+    $rules = array(
+      'currentPassword'     => 'in:1',
+      'newPassword'         => array_get(UserModel::rules(), 'password').'|confirmed',
+    );
 
     $validator = \Validator::make($input, $rules);
 
@@ -134,31 +116,32 @@ class User extends BaseController {
     }
   }
 
-  function changeMyAvatar() {
+  function editAvatar() {
     $user = user();
-    $rules = $user::$avatarImageRule;
+    $rules = array('avatar' => $user::$avatarImageRule);
 
     $validator = \Validator::make(Input::all(), $rules);
 
     if ($validator->passes()) {
       $file = \Input::file('avatar');
-      $dir = public_path('packages/proger/habravel/avatars/');
-      $name = $user->id.'.png';
+      $dir = \Habravel\publicPath('avatars/');
+      $name = ((int) $user->id).'.png';
 
       if (is_dir($dir) === false) {
         \File::makeDirectory($dir, 0775, true);
       }
+
       $destination = $dir.$name;
       $width = \Config::get('habravel::g.avatarWidth');
       $height = \Config::get('habravel::g.avatarHeight');
-      if (UserModel::imageResize($file, $destination, $width, $height)) {
-        $user->avatar = $name;
-        $user->save();
-      } else {
-        \App::abort(500, 'Cannot save '.get_class().'.');
-      }
+
+      \Habravel\resizeImage($file, $destination, $width, $height);
       \File::delete($file);
-      return Redirect::to(user()->url());
+
+      $user->avatar = $name;
+      $user->save();
+
+      return Redirect::to($user->url());
     } else {
       return Redirect::back()->withErrors($validator->errors());
     }

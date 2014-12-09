@@ -28,6 +28,7 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
       $table->string('remember_token', 255);
       $table->string('email', 255);
       $table->string('name', 255);
+      $table->mediumText('data');
       $table->integer('poll')->unsigned()->nullable();
       $table->integer('score')->default(0);
       $table->integer('rating')->default(0);
@@ -36,16 +37,16 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
       $table->char('loginIP', 15)->default('');
       $table->mediumText('flags');
       $table->string('avatar', 255)->default('');
-      $table->string('site', 128)->default('');
-      $table->string('bitbucket', 128)->default('');
-      $table->string('github', 128)->default('');
-      $table->string('facebook', 128)->default('');
-      $table->string('twitter', 128)->default('');
-      $table->string('vk', 128)->default('');
-      $table->string('jabber', 128)->default('');
-      $table->string('skype', 64)->default('');
-      $table->string('icq', 9)->default('');
-      $table->text('info', 5000)->default('');
+      $table->string('site', 255)->default('');
+      $table->string('bitbucket', 255)->default('');
+      $table->string('github', 255)->default('');
+      $table->string('facebook', 255)->default('');
+      $table->string('twitter', 255)->default('');
+      $table->string('vk', 255)->default('');
+      $table->string('jabber', 255)->default('');
+      $table->string('skype', 255)->default('');
+      $table->string('icq', 255)->default('');
+      $table->mediumText('info');
 
       $table->unique('email');
       $table->unique('name');
@@ -85,7 +86,7 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
       $table->integer('poll')->unsigned()->nullable();
       $table->integer('score')->default(0);
       $table->integer('views')->unsigned()->default(0);
-      $table->mediumText('info');
+      $table->mediumText('data');
       $table->text('sourceURL');
       $table->string('sourceName', 255)->default('');
       $table->string('caption', 255);
