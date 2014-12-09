@@ -39,6 +39,10 @@ return array(
   'avatarWidth'           => 150,
   'avatarHeight'          => 150,
 
+  // Hardlinks on Windows may cause PHP file functions to fail on such a path.
+  // In this case point it to base_path('vendor/proger/habravel/public/').
+  'publicPath'            => public_path('packages/proger/habravel/'),
+
   // Special tags that have extra functionality. Since their IDs can be arbitrary
   // they are matched by exact name (caption).
   'tags'                  => array(
