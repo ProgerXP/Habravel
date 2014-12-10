@@ -279,10 +279,13 @@ class PostEditor {
     $records = array();
 
     foreach ($this->newPolls as $poll) {
+      $newOptions = $poll->_editing_newOptions;
+      unset($poll->_editing_newOptions);
+
       $poll->save();
       $records[] = array('post_id' => $this->post->id, 'poll_id' => $poll->id);
 
-      foreach ($poll->_editing_newOptions as $option) {
+      foreach ($newOptions as $option) {
         $option->poll = $poll->id;  // since a new poll might have been created.
         $option->save();
       }
