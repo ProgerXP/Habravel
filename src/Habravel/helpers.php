@@ -110,3 +110,8 @@ function externalLink($url, $domainTitle = false, $class = 'eurl') {
     'target'  => '_blank',
   ));
 }
+
+function alert($message, $class = 'success') {
+  \Session::flash('message', $message);
+  \Session::flash('class', $class);
+}

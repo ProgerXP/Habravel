@@ -45,5 +45,9 @@
     <p class="hvl-form-list-label">
       <a href="{{{ Habravel\url() }}}/register">{{{ trans('habravel::g.login.register') }}}</a> &rarr;
     </p>
+
+    <p class="hvl-form-list-label">
+      <a href="{{{ Habravel\url() }}}/remindpassword">{{{ trans('habravel::g.login.remindPassword') }}}</a> &rarr;
+    </p>
   </form>
 @stop

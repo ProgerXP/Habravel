@@ -56,6 +56,13 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
         ->onUpdate('cascade')->onDelete('set null');
     });
 
+    Schema::create('remind_passwords', function ($table) {
+        $table->char('token', 64)->primary();
+        $table->string('email', 255)->index();
+        $table->timestamp('created_at');
+      }
+    );
+
     Schema::create('poll_votes', function ($table) {
       $table->timestamps();
       $table->integer('poll')->unsigned();
@@ -176,6 +183,7 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
     Schema::drop('polls');
     Schema::drop('poll_options');
     Schema::drop('users');
+    Schema::drop('remind_passwords');
     Schema::drop('poll_votes');
     Schema::drop('posts');
     Schema::drop('tags');

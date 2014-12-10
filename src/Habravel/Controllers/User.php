@@ -92,7 +92,6 @@ class User extends BaseController {
   function editPassword() {
     $user = user();
     $curMatches = (int) \Hash::check(Input::get('password'), $user->password);
-    $minPassword = \Config::get('habravel::g.minPassword');
 
     $input = array(
       'currentPassword'           => $curMatches,
@@ -248,6 +247,92 @@ class User extends BaseController {
 
       user(array('id' => $user->id, 'password' => $input['password']));
       return Redirect::to($user->url());
+    }
+  }
+
+  function showRemindPassword() {
+    if (user()) {
+      return Redirect::to(user()->url());
+    } else {
+      \Habravel\Models\RemindPassword::expired()->delete();
+      return View::make('habravel::user.remindPassword');
+    }
+  }
+
+  function remindPassword() {
+    $input = Input::get();
+    $rules = \Habravel\Models\RemindPassword::rules();
+
+    $validator = \Validator::make($input, $rules);
+
+    if ($validator->passes()) {
+      $email = array_get($input, 'email');
+      $subject = trans('habravel::g.remindPassword.mailSubject');
+      $str = str_random(64);
+      $data['url'] = link_to("resetpassword/$str", trans('habravel::g.remindPassword.mailLink'));
+
+      \Mail::queue('habravel::emails.remindPassword', $data,
+        function($message) use ($email, $subject) {
+          $message->to($email)->subject($subject);
+        }
+      );
+
+      $reminder = new \Habravel\Models\RemindPassword;
+      $reminder->token = $str;
+      $reminder->email = $email;
+      $reminder->created_at = \Carbon\Carbon::now();
+
+      $reminder->save();
+
+      \Habravel\alert(trans('habravel::g.remindPassword.success'));
+
+      return Redirect::to(\Habravel\url());
+    } else {
+      return Redirect::back()->withErrors($validator->errors());
+    }
+  }
+
+  function showResetPassword($token) {
+    if (user()) {
+      return Redirect::to(user()->url());
+    } else {
+      $obliviousUser = \Habravel\Models\RemindPassword::token($token)->first();
+      if ($obliviousUser){
+        return View::make('habravel::user.resetPassword', compact('token'));
+      } else {
+        \Habravel\alert(trans('habravel::g.resetPassword.fail'), 'error');
+        return Redirect::to(\Habravel\url());
+      }
+    }
+  }
+
+  function resetPassword($token) {
+    $input = array(
+      'newPassword'              => Input::get('newPassword'),
+      'newPassword_confirmation' => Input::get('newPassword_confirmation'),
+    );
+
+    $rules = array(
+      'newPassword' => array_get(UserModel::rules(), 'password').'|confirmed',
+    );
+
+    $validator = \Validator::make($input, $rules);
+
+    if ($validator->passes()) {
+      $obliviousUser = \Habravel\Models\RemindPassword::token($token)->first();
+
+      $user = UserModel::whereEmail($obliviousUser->email)->first();
+
+      $user->password = \Hash::make($input['newPassword']);
+      $user->save();
+
+      user(array('email' => $obliviousUser->email, 'password' => $input['newPassword']));
+
+      $obliviousUser->delete();
+
+      return Redirect::to($user->url());
+    } else {
+      return Redirect::back()->withErrors($validator->errors());
     }
   }
 }

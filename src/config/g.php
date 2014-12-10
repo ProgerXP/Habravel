@@ -38,6 +38,7 @@ return array(
   'introWords'            => 200,
   'avatarWidth'           => 150,
   'avatarHeight'          => 150,
+  'remindPasswordExpire'  => 60,
 
   // Hardlinks on Windows may cause PHP file functions to fail on such a path.
   // In this case point it to base_path('vendor/proger/habravel/public/').
