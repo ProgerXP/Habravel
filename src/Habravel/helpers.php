@@ -115,3 +115,40 @@ function alert($message, $class = 'success') {
   \Session::flash('message', $message);
   \Session::flash('class', $class);
 }
+
+function captcha() {
+  $actions = trans('habravel::captcha.actions');
+  $digitStrings = trans('habravel::captcha.digitStrings');
+  $conjunction = trans('habravel::captcha.conjunction');
+  $digit = rand(1, 20);
+  $actionKey = array_rand($actions);
+  $action = $actions[$actionKey];
+  $digitStringKey = array_rand($digitStrings);
+  $digitString = $digitStrings[$digitStringKey];
+
+  if ($actionKey === 1) {
+    $digit = rand(10, 20);
+    $result = $digit - ($digitStringKey + 1);
+  } else {
+    $result = $digit + ($digitStringKey + 1);
+  }
+
+  $data = array(
+    'hash'     => \Habravel\captchaHash($result),
+    'question' => $action.$digitString.$conjunction[$actionKey].$digit,
+  );
+
+  return $data;
+}
+
+function captchaHash($result) {
+  $appKey = \Config::get('app.key');
+  $ip = \Request::getClientIp();
+  $date = \Carbon\Carbon::now()->format('dmyh');
+
+  return md5($appKey.$ip.$date.$result);
+}
+
+function captchaChecked($hash, $captcha) {
+  return $hash === \Habravel\captchaHash($captcha) ? 1 : 0;
+}
