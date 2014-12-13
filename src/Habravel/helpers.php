@@ -132,9 +132,10 @@ function captcha() {
   return array(
     'hash'          => \Habravel\captchaHash($result),
     'question'      => trans('habravel::captcha.question', array(
-      'action'      => trans('habravel::captcha.actions.'.$isSub),
+      'action'      => trans("habravel::captcha.actions.$isSub"),
       'digit1'      => $digitStrings[$digit1],
-      'digit2'      => $digitStrings[$digit2],
+      'conjunction' => trans("habravel::captcha.conjunctions.$isSub"),
+      'digit2'      => $digit2,
     )),
   );
 }
