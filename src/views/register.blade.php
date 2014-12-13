@@ -1,6 +1,7 @@
 <?php /*
   - $errors           - optional; MessageBag instance
   - $input            - optional; array of old input (given on error)
+  - $captcha          - array of 'hash', 'question'
 */?>
 
 @extends('habravel::page')
@@ -48,7 +49,7 @@
     </p>
     <p class="hvl-form-list-value">
       {{{ $captcha['question'] }}}
-      <input class="hvl-input" name="captcha" type="text" required="required" value="">
+      <input class="hvl-input" name="captcha" required="required" size="3">
     </p>
 
     <p class="hvl-form-list-btn">

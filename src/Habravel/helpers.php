@@ -117,28 +117,26 @@ function alert($message, $class = 'success') {
 }
 
 function captcha() {
-  $actions = trans('habravel::captcha.actions');
-  $digitStrings = trans('habravel::captcha.digitStrings');
-  $conjunction = trans('habravel::captcha.conjunction');
-  $digit = rand(1, 20);
-  $actionKey = array_rand($actions);
-  $action = $actions[$actionKey];
-  $digitStringKey = array_rand($digitStrings);
-  $digitString = $digitStrings[$digitStringKey];
+  $digitStrings = trans('habravel::captcha.digits');
 
-  if ($actionKey === 1) {
-    $digit = rand(10, 20);
-    $result = $digit - ($digitStringKey + 1);
-  } else {
-    $result = $digit + ($digitStringKey + 1);
+  $digit1 = mt_rand(0, 9);
+  $digit2 = mt_rand(0, 9);
+  $isSub = mt_rand(0, 1);
+
+  if ($isSub and $digit2 > $digit1) {
+    list($digit1, $digit2) = array($digit2, $digit1);
   }
 
-  $data = array(
-    'hash'     => \Habravel\captchaHash($result),
-    'question' => $action.$digitString.$conjunction[$actionKey].$digit,
-  );
+  $result = $isSub ? ($digit1 - $digit2) : ($digit1 + $digit2);
 
-  return $data;
+  return array(
+    'hash'          => \Habravel\captchaHash($result),
+    'question'      => trans('habravel::captcha.question', array(
+      'action'      => trans('habravel::captcha.actions.'.$isSub),
+      'digit1'      => $digitStrings[$digit1],
+      'digit2'      => $digitStrings[$digit2],
+    )),
+  );
 }
 
 function captchaHash($result) {
@@ -146,7 +144,7 @@ function captchaHash($result) {
   $ip = \Request::getClientIp();
   $date = \Carbon\Carbon::now()->format('dmyh');
 
-  return md5($appKey.$ip.$date.$result);
+  return md5("$appKey.$ip.$date.$result");
 }
 
 function captchaChecked($hash, $captcha) {
