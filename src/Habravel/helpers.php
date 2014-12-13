@@ -62,6 +62,8 @@ function resizeImage($source, $destination, $width, $height) {
 
   $destinationResource = imagecreatetruecolor($width, $height);
 
+  imagealphablending($destinationResource, false);
+
   imagecopyresampled($destinationResource, $srcResource, 0, 0, 0, 0,
                      $width, $height, $srcWidth, $srcHeight);
 

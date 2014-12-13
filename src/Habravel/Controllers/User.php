@@ -118,33 +118,41 @@ class User extends BaseController {
 
   function editAvatar() {
     $user = user();
-    $rules = array('avatar' => $user::$avatarImageRule);
+    $dir = \Habravel\publicPath('avatars/');
+    $name = ((int) $user->id).'.png';
+    $destination = $dir.$name;
 
-    $validator = \Validator::make(Input::all(), $rules);
+    if (\Input::get('delete')) {
+      $file = $destination;
+      $name = '';
+    } else {
+      $name .= '?'.dechex(time() - 1388530800);  // 1.1.2014
+      $rules = array('avatar' => $user::$avatarImageRule);
 
-    if ($validator->passes()) {
+      $validator = \Validator::make(Input::all(), $rules);
+
+      if ($validator->fails()) {
+        return Redirect::back()->withErrors($validator->errors());
+      }
+
       $file = \Input::file('avatar');
-      $dir = \Habravel\publicPath('avatars/');
-      $name = ((int) $user->id).'.png';
 
       if (is_dir($dir) === false) {
         \File::makeDirectory($dir, 0775, true);
       }
 
-      $destination = $dir.$name;
       $width = \Config::get('habravel::g.avatarWidth');
       $height = \Config::get('habravel::g.avatarHeight');
 
       \Habravel\resizeImage($file, $destination, $width, $height);
-      \File::delete($file);
-
-      $user->avatar = $name;
-      $user->save();
-
-      return Redirect::to($user->url());
-    } else {
-      return Redirect::back()->withErrors($validator->errors());
     }
+
+    is_file($file) and \File::delete($file);
+
+    $user->avatar = $name;
+    $user->save();
+
+    return Redirect::to($user->url());
   }
 
   // GET input:
