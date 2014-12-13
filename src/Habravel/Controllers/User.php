@@ -122,28 +122,29 @@ class User extends BaseController {
     $name = ((int) $user->id).'.png';
     $destination = $dir.$name;
 
-    if (\Input::has('delete')) {
+    if (\Input::get('delete')) {
       $file = $destination;
       $name = '';
     } else {
+      $name .= '?'.dechex(time() - 1388530800);  // 1.1.2014
       $rules = array('avatar' => $user::$avatarImageRule);
 
       $validator = \Validator::make(Input::all(), $rules);
 
-      if ($validator->passes()) {
-        $file = \Input::file('avatar');
-
-        if (is_dir($dir) === false) {
-          \File::makeDirectory($dir, 0775, true);
-        }
-
-        $width = \Config::get('habravel::g.avatarWidth');
-        $height = \Config::get('habravel::g.avatarHeight');
-
-        \Habravel\resizeImage($file, $destination, $width, $height);
-      } else {
+      if ($validator->fails()) {
         return Redirect::back()->withErrors($validator->errors());
       }
+
+      $file = \Input::file('avatar');
+
+      if (is_dir($dir) === false) {
+        \File::makeDirectory($dir, 0775, true);
+      }
+
+      $width = \Config::get('habravel::g.avatarWidth');
+      $height = \Config::get('habravel::g.avatarHeight');
+
+      \Habravel\resizeImage($file, $destination, $width, $height);
     }
 
     if (is_file($file)) {
