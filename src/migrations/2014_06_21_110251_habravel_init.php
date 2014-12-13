@@ -57,7 +57,7 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
     });
 
     Schema::create('remind_passwords', function ($table) {
-        $table->char('token', 64)->primary();
+        $table->char('token', 255)->primary();
         $table->string('email', 255)->index();
         $table->timestamp('created_at');
       }

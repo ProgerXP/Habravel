@@ -165,6 +165,7 @@ class User extends BaseController {
       $vars = array(
         'backURL'         => Input::get('back'),
         'badLogin'        => Input::get('bad'),
+        'badRestoreLink'  => Input::get('badrepw'),
       );
 
       return View::make('habravel::login', $vars);
@@ -268,25 +269,22 @@ class User extends BaseController {
     if ($validator->passes()) {
       $email = array_get($input, 'email');
       $subject = trans('habravel::g.remindPassword.mailSubject');
-      $str = str_random(64);
-      $data['url'] = link_to("resetpassword/$str", trans('habravel::g.remindPassword.mailLink'));
+      $token = str_random(64);
+      $data['url'] = url()."/resetpw/$token";
 
-      \Mail::queue('habravel::emails.remindPassword', $data,
+      \Mail::queue('habravel::email.remindPassword', $data,
         function($message) use ($email, $subject) {
           $message->to($email)->subject($subject);
         }
       );
 
       $reminder = new \Habravel\Models\RemindPassword;
-      $reminder->token = $str;
+      $reminder->token = $token;
       $reminder->email = $email;
       $reminder->created_at = \Carbon\Carbon::now();
-
       $reminder->save();
 
-      \Habravel\alert(trans('habravel::g.remindPassword.success'));
-
-      return Redirect::to(\Habravel\url());
+      return View::make('habravel::user.remindPassword', array('sent' => $email));
     } else {
       return Redirect::back()->withErrors($validator->errors());
     }
@@ -300,8 +298,7 @@ class User extends BaseController {
       if ($obliviousUser){
         return View::make('habravel::user.resetPassword', compact('token'));
       } else {
-        \Habravel\alert(trans('habravel::g.resetPassword.fail'), 'error');
-        return Redirect::to(\Habravel\url());
+        return Redirect::to(\Habravel\url().'/login?badrepw=1');
       }
     }
   }

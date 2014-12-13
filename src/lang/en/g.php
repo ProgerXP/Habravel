@@ -116,11 +116,13 @@ return array(
   'login'                 => array(
     'title'               => 'Have we met before?',
     'wrong'               => 'Sorry, can’t find anyone like that.',
+    'wrongRestore'        => 'It looks like password reset link has expired. Try again – but be more responsive.',
     'register'            => 'You can register an account here',
     'login'               => 'Your e-mail or display name:',
-    'password'            => 'Your password:',
+    'password'            => 'Your password',
+    'remindPassword'      => '(:0forgot?:1):',
     'submit'              => 'Log in',
-    'remember'            => '…and remember me next time',
+    'remember'            => '…and remember me for the next time',
   ),
 
   'register'              => array(
@@ -178,5 +180,19 @@ return array(
     'oldPassword'               => 'Remember your current password?',
     'newPassword'               => 'New password',
     'newPassword_confirmation'  => 'And repeat:',
+  ),
+
+  'remindPassword'              => array(
+    'title'                     => 'Forgot your password? Common thing…',
+    'email'                     => 'What was the e-mail you\'ve signed up with?',
+    'submit'                    => 'Restore access',
+    'sent'                      => 'We\'ve sent instructions to :email – follow the link there to reset your password.',
+    'mailSubject'               => 'Password reset',
+    'mailText'                  => 'Follow this link to reset your password:',
+  ),
+
+  'resetPassword'               => array(
+    'title'                     => 'Almost there! Pick your new password',
+    'submit'                    => 'Save password and log in',
   ),
 );

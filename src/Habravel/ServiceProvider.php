@@ -72,10 +72,10 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider {
       Route::post   ('login',                        "$ns\\User@login");
       Route::get    ('register',                     "$ns\\User@showRegister");
       Route::post   ('register',                     "$ns\\User@register");
-      Route::get    ('remindpassword',               "$ns\\User@showRemindPassword");
-      Route::post   ('remindpassword',               "$ns\\User@RemindPassword");
-      Route::get    ('resetpassword/{habravel_any}', "$ns\\User@showResetPassword");
-      Route::post   ('resetpassword/{habravel_any}', "$ns\\User@resetPassword");
+      Route::get    ('remindpw',                     "$ns\\User@showRemindPassword");
+      Route::post   ('remindpw',                     "$ns\\User@RemindPassword");
+      Route::get    ('resetpw/{habravel_any}',       "$ns\\User@showResetPassword");
+      Route::post   ('resetpw/{habravel_any}',       "$ns\\User@resetPassword");
       Route::get    ('~',                            "$ns\\User@showCurrent");
       Route::get    ('~{habravel_id}',               "$ns\\User@show");
       Route::get    ('~{habravel_user}',             "$ns\\User@showByName");

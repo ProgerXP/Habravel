@@ -11,10 +11,6 @@
   <div class="hvl-pposts">
     <h1 class="hvl-h1">{{{ $title }}}</h1>
 
-    @if(\Session::has('message'))
-      @include('habravel::alert')
-    @endif
-
     @foreach ($posts as $index => $post)
       @include('habravel::part.postTitle', compact('post'), array('level' => 2, 'link' => true))
       @include('habravel::part.post', compact('post'), array('readMore' => true, 'downshift' => 3))

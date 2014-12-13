@@ -12,7 +12,7 @@
     {{ HTML::ul($errors->all(), array('class' => 'hvl-errors')) }}
   @endif
 
-  <form action="{{{ Habravel\url()."/resetpassword/$token" }}}" method="post"
+  <form action="{{{ Habravel\url()."/resetpw/$token" }}}" method="post"
         class="hvl-form-list">
     <input type="hidden" name="_token" value="{{{ csrf_token() }}}">
 
@@ -21,7 +21,7 @@
       {{{ trans('habravel::g.register.passwordHint', array('min' => Config::get('habravel::g.minPassword'))) }}}
     </p>
     <p class="hvl-form-list-value">
-      <input class="hvl-input" type="password" name="newPassword"  required="required">
+      <input class="hvl-input" type="password" name="newPassword" required="required" autofocus="autofocus">
     </p>
 
     <p class="hvl-form-list-label">
