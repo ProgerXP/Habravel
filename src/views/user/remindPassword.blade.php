@@ -8,15 +8,15 @@
 @section('content')
   <h1 class="hvl-h1">{{{ trans('habravel::g.remindPassword.title') }}}</h1>
 
-  @if (isset($errors))
-    {{ HTML::ul($errors->all(), array('class' => 'hvl-errors')) }}
-  @endif
-
   @if (isset($sent))
     <p>
       {{ trans('habravel::g.remindPassword.sent', array('email' => '<b>'.e($sent).'</b>')) }}
     </p>
   @else
+    @if (count($errors))
+      {{ HTML::ul(array(trans('habravel::g.remindPassword.wrongEmail')), array('class' => 'hvl-errors')) }}
+    @endif
+
     <form action="{{{ Habravel\url().'/remindpw' }}}" method="post"
           class="hvl-form-list">
       <input type="hidden" name="_token" value="{{{ csrf_token() }}}">
@@ -33,6 +33,10 @@
         <button type="submit" class="hvl-btn">
           {{{ trans('habravel::g.remindPassword.submit') }}}
         </button>
+      </p>
+
+      <p class="hvl-form-list-label">
+        <a href="{{{ Habravel\url() }}}/register">{{{ trans('habravel::g.login.register') }}}</a> &rarr;
       </p>
     </form>
   @endif

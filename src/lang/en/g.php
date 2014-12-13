@@ -184,6 +184,7 @@ return array(
 
   'remindPassword'              => array(
     'title'                     => 'Forgot your password? Common thing…',
+    'wrongEmail'                => 'No such e-mail. Are you sure you\'ve signed up with us?',
     'email'                     => 'What was the e-mail you\'ve signed up with?',
     'submit'                    => 'Restore access',
     'sent'                      => 'We\'ve sent instructions to :email – follow the link there to reset your password.',
