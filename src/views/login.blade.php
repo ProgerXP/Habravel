@@ -1,6 +1,7 @@
 <?php /*
   - $backURL          - 'rel/to/root/'
   - $badLogin         - if set means user credentials were wrong
+  - $badRestoreLink   - if set means password recovery link is outdated or wrong
 */?>
 
 @extends('habravel::page')
@@ -11,6 +12,10 @@
   @if ($badLogin)
     <ul class="hvl-errors">
       <li>{{{ trans('habravel::g.login.wrong') }}}</li>
+    </ul>
+  @elseif ($badRestoreLink)
+    <ul class="hvl-errors">
+      <li>{{{ trans('habravel::g.login.wrongRestore') }}}</li>
     </ul>
   @endif
 
@@ -27,6 +32,7 @@
 
     <p class="hvl-form-list-label">
       <b>{{{ trans('habravel::g.login.password') }}}</b>
+      {{ trans('habravel::g.login.remindPassword', array('<a href="'.Habravel\url().'/remindpw">', '</a>')) }}
     </p>
     <p class="hvl-form-list-value">
       <input class="hvl-input" name="password" type="password" required="required">

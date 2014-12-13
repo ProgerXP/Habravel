@@ -39,6 +39,10 @@ return array(
   'avatarWidth'           => 150,
   'avatarHeight'          => 150,
 
+  // Interval in minutes after which password reset link sent by e-mail
+  // will become invalid.
+  'remindPasswordExpire'  => 4 * 60,
+
   // Hardlinks on Windows may cause PHP file functions to fail on such a path.
   // In this case point it to base_path('vendor/proger/habravel/public/').
   'publicPath'            => public_path('packages/proger/habravel/'),

@@ -50,49 +50,53 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider {
     Route::group(array('prefix' => \Config::get('habravel::g.rootURL')), function () {
       $ns = NS.'Controllers';
       // Article.
-      Route::get    ('markup/{name}',             "$ns\\Markup@showHelp");
-      Route::get    ('compose',                   "$ns\\Post@showCreate");
-      Route::get    ('posts/{habravel_id}',       "$ns\\Post@show");
-      Route::get    ('posts',                     "$ns\\Posts@showAll");
-      Route::get    ('source/{habravel_id}',      "$ns\\Post@showSource");
-      Route::get    ('edit/{habravel_id}',        "$ns\\Post@showEdit");
-      Route::post   ('edit',                      "$ns\\Post@edit");
-      Route::get    ('tags/{habravel_any}',       "$ns\\Posts@showByTags");
-      Route::post   ('vote',                      "$ns\\Poll@vote");
-      Route::get    ('up/{habravel_id}',          "$ns\\Post@voteUp");
-      Route::get    ('down/{habravel_id}',        "$ns\\Post@voteDown");
-      Route::post   ('reply',                     "$ns\\Comment@reply");
-      Route::get    ('drafts',                    "$ns\\Posts@showDrafts");
-      Route::get    ('best/day',                  "$ns\\Posts@showBestDay");
-      Route::get    ('best/week',                 "$ns\\Posts@showBestWeek");
-      Route::get    ('best',                      "$ns\\Posts@showBestAllTime");
+      Route::get    ('markup/{name}',                "$ns\\Markup@showHelp");
+      Route::get    ('compose',                      "$ns\\Post@showCreate");
+      Route::get    ('posts/{habravel_id}',          "$ns\\Post@show");
+      Route::get    ('posts',                        "$ns\\Posts@showAll");
+      Route::get    ('source/{habravel_id}',         "$ns\\Post@showSource");
+      Route::get    ('edit/{habravel_id}',           "$ns\\Post@showEdit");
+      Route::post   ('edit',                         "$ns\\Post@edit");
+      Route::get    ('tags/{habravel_any}',          "$ns\\Posts@showByTags");
+      Route::post   ('vote',                         "$ns\\Poll@vote");
+      Route::get    ('up/{habravel_id}',             "$ns\\Post@voteUp");
+      Route::get    ('down/{habravel_id}',           "$ns\\Post@voteDown");
+      Route::post   ('reply',                        "$ns\\Comment@reply");
+      Route::get    ('drafts',                       "$ns\\Posts@showDrafts");
+      Route::get    ('best/day',                     "$ns\\Posts@showBestDay");
+      Route::get    ('best/week',                    "$ns\\Posts@showBestWeek");
+      Route::get    ('best',                         "$ns\\Posts@showBestAllTime");
       // User.
-      Route::get    ('logout',                    "$ns\\User@logout");
-      Route::get    ('login',                     "$ns\\User@showLogin");
-      Route::post   ('login',                     "$ns\\User@login");
-      Route::get    ('register',                  "$ns\\User@showRegister");
-      Route::post   ('register',                  "$ns\\User@register");
-      Route::get    ('~',                         "$ns\\User@showCurrent");
-      Route::get    ('~{habravel_id}',            "$ns\\User@show");
-      Route::get    ('~{habravel_user}',          "$ns\\User@showByName");
-      Route::get    ('~{habravel_user}/posts',    "$ns\\Posts@showByUserName");
-      Route::get    ('~{habravel_user}/comments', "$ns\\Comment@showByUserName");
-      Route::get    ('~{habravel_user}/up',       "$ns\\User@voteUpByName");
-      Route::get    ('~{habravel_user}/down',     "$ns\\User@voteDownByName");
+      Route::get    ('logout',                       "$ns\\User@logout");
+      Route::get    ('login',                        "$ns\\User@showLogin");
+      Route::post   ('login',                        "$ns\\User@login");
+      Route::get    ('register',                     "$ns\\User@showRegister");
+      Route::post   ('register',                     "$ns\\User@register");
+      Route::get    ('remindpw',                     "$ns\\User@showRemindPassword");
+      Route::post   ('remindpw',                     "$ns\\User@RemindPassword");
+      Route::get    ('resetpw/{habravel_any}',       "$ns\\User@showResetPassword");
+      Route::post   ('resetpw/{habravel_any}',       "$ns\\User@resetPassword");
+      Route::get    ('~',                            "$ns\\User@showCurrent");
+      Route::get    ('~{habravel_id}',               "$ns\\User@show");
+      Route::get    ('~{habravel_user}',             "$ns\\User@showByName");
+      Route::get    ('~{habravel_user}/posts',       "$ns\\Posts@showByUserName");
+      Route::get    ('~{habravel_user}/comments',    "$ns\\Comment@showByUserName");
+      Route::get    ('~{habravel_user}/up',          "$ns\\User@voteUpByName");
+      Route::get    ('~{habravel_user}/down',        "$ns\\User@voteDownByName");
       // User Profile.
-      Route::get    ('~/edit',                    "$ns\\User@showEditProfile");
-      Route::post   ('~/edit',                    "$ns\\User@editProfile");
-      Route::get    ('~/password',                "$ns\\User@showEditPassword");
-      Route::post   ('~/password',                "$ns\\User@editPassword");
-      Route::get    ('~/avatar',                  "$ns\\User@showEditAvatar");
-      Route::post   ('~/avatar',                  "$ns\\User@editAvatar");
+      Route::get    ('~/edit',                       "$ns\\User@showEditProfile");
+      Route::post   ('~/edit',                       "$ns\\User@editProfile");
+      Route::get    ('~/password',                   "$ns\\User@showEditPassword");
+      Route::post   ('~/password',                   "$ns\\User@editPassword");
+      Route::get    ('~/avatar',                     "$ns\\User@showEditAvatar");
+      Route::post   ('~/avatar',                     "$ns\\User@editAvatar");
       // Admin.
-      Route::post   ('admin/regenhtml',           "$ns\\Admin@regenHTML");
-      Route::post   ('admin/resethtml',           "$ns\\Admin@resetHTML");
-      Route::get    ('admin',                     "$ns\\Admin@show");
+      Route::post   ('admin/regenhtml',              "$ns\\Admin@regenHTML");
+      Route::post   ('admin/resethtml',              "$ns\\Admin@resetHTML");
+      Route::get    ('admin',                        "$ns\\Admin@show");
       // Fallback.
-      Route::get    ('{habravel_any}',            "$ns\\Post@showByURL");
-      Route::get    ('',                          "$ns\\Posts@showBestWeek");
+      Route::get    ('{habravel_any}',               "$ns\\Post@showByURL");
+      Route::get    ('',                             "$ns\\Posts@showBestWeek");
     });
   }
 
