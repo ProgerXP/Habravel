@@ -270,10 +270,10 @@ class User extends BaseController {
       $email = array_get($input, 'email');
       $subject = trans('habravel::g.remindPassword.mailSubject');
       $token = str_random(64);
-      $data['url'] = url()."/resetpw/$token";
+      $data = array('url' => url()."/resetpw/$token");
 
       \Mail::queue('habravel::email.remindPassword', $data,
-        function($message) use ($email, $subject) {
+        function ($message) use ($email, $subject) {
           $message->to($email)->subject($subject);
         }
       );
@@ -281,7 +281,6 @@ class User extends BaseController {
       $reminder = new \Habravel\Models\RemindPassword;
       $reminder->token = $token;
       $reminder->email = $email;
-      $reminder->created_at = \Carbon\Carbon::now();
       $reminder->save();
 
       return View::make('habravel::user.remindPassword', array('sent' => $email));
