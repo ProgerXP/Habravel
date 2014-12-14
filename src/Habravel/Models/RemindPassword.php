@@ -6,8 +6,7 @@ class RemindPassword extends BaseModel {
   );
 
   protected $primaryKey = 'token';
-  public $timestamps    = false;
-  public $incrementing  = false;
+  public $incrementing = false;
 
   function scopeExpired($query) {
     $date = \Carbon\Carbon::now();
