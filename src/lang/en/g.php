@@ -134,6 +134,8 @@ return array(
     'email'               => 'What’s your e-mail?',
     'password'            => 'Choose your very secret password',
     'passwordHint'        => '(:min symbols or longer):',
+    'captcha'             => 'You sure are human?',
+    'captchaHint'         => '(the answer is an integer)',
     'submit'              => 'Register',
   ),
 
