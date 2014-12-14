@@ -110,3 +110,38 @@ function externalLink($url, $domainTitle = false, $class = 'eurl') {
     'target'  => '_blank',
   ));
 }
+
+function captcha() {
+  $digitStrings = trans('habravel::captcha.digits');
+
+  $digit1 = mt_rand(0, 9);
+  $digit2 = mt_rand(0, 9);
+  $isSub = mt_rand(0, 1);
+
+  if ($isSub and $digit1 > $digit2) {
+    list($digit1, $digit2) = array($digit2, $digit1);
+  }
+
+  $result = $isSub ? ($digit2 - $digit1) : ($digit1 + $digit2);
+
+  return array(
+    'hash'          => \Habravel\captchaHash($result),
+    'question'      => trans('habravel::captcha.question', array(
+      'action'      => trans("habravel::captcha.actions.$isSub"),
+      'digit1'      => $digitStrings[$digit1],
+      'conjunction' => trans("habravel::captcha.conjunctions.$isSub"),
+      'digit2'      => $digit2,
+    )),
+  );
+}
+
+function captchaHash($result, $oneHourBack = false) {
+  $appKey = \Config::get('app.key');
+  $ip = \Request::getClientIp();
+
+  $date = \Carbon\Carbon::now();
+  $oneHourBack and $date->subHour();
+  $date = $date->format('dmyh');
+
+  return md5("$appKey.$ip.$date.$result");
+}

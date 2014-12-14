@@ -1,6 +1,7 @@
 <?php /*
   - $errors           - optional; MessageBag instance
   - $input            - optional; array of old input (given on error)
+  - $captcha          - array of 'hash', 'question'
 */?>
 
 @extends('habravel::page')
@@ -14,6 +15,7 @@
 
   <form action="{{{ Habravel\url() }}}/register" method="post" class="hvl-form-list">
     <input type="hidden" name="_token" value="{{{ csrf_token() }}}">
+    <input type="hidden" name="hash" value="{{{ $captcha['hash'] }}}">
 
     <p class="hvl-form-list-label">
       <b>{{{ trans('habravel::g.register.name') }}}</b>
@@ -39,6 +41,15 @@
     <p class="hvl-form-list-value">
       <input class="hvl-input" name="password" type="password" required="required"
              value="{{{ array_get($input, 'password') }}}">
+    </p>
+
+    <p class="hvl-form-list-label">
+      <b>{{{ trans('habravel::g.register.captcha') }}}</b>
+      {{{ trans('habravel::g.register.captchaHint') }}}
+    </p>
+    <p class="hvl-form-list-value">
+      {{{ $captcha['question'] }}}
+      <input class="hvl-input" name="captcha" required="required" size="3">
     </p>
 
     <p class="hvl-form-list-btn">

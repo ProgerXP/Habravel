@@ -221,18 +221,23 @@ class User extends BaseController {
 
     $user = new UserModel;
     $input = Input::get();
-    $errors = new MessageBag;
 
     $user->name = array_get($input, 'name');
     $user->email = array_get($input, 'email');
     $user->password = \Hash::make(array_get($input, 'password'));
     $user->regIP = Request::getClientIp();
 
-    $copy = new UserModel;
-    $copy->setRawAttributes(array_only($input, 'password') + $user->getAttributes());
-    $copy->validateAndMerge($errors);
+    $toValidate = array_only($input, 'password') + $user->getAttributes();
+    $toValidate['captcha'] = $input['hash'];
 
-    if (count($errors)) {
+    $rules = $user->rules();
+    $rules['captcha'] = 'required|in:'.\Habravel\captchaHash($input['captcha']).
+                                   ','.\Habravel\captchaHash($input['captcha'], true);
+
+    $validator = \Validator::make($toValidate, $rules);
+
+    if ($validator->fails()) {
+      $errors = $validator->messages();
       return View::make('habravel::register', compact('input', 'errors'));
     } else {
       if (!$user->poll) {
