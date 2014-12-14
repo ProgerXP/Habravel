@@ -91,6 +91,30 @@ View::composer('habravel::posts', function ($view) {
 
     $view->comments = $comments;
   }
+
+  $list = isset($view->pageSidebar) ? $view->pageSidebar  : array();
+
+  $list['top-users'] = \Cache::remember('hvl.topusers', 30, function () {
+    return View::make('habravel::sidebar.topUsers')
+      ->with('users', Models\User
+        ::where('score', '>', 3)
+        ->orderBy('score', 'desc')
+        ->take(10)
+        ->get())
+      ->render();
+  });
+
+  $list['top-posts'] = \Cache::remember('hvl.topposts', 30, function () {
+    return View::make('habravel::sidebar.topPosts')
+      ->with('posts', Models\Post
+        ::where('score', '>', 3)
+        ->orderBy('score', 'desc')
+        ->take(10)
+        ->get())
+      ->render();
+  });
+
+  $view->pageSidebar = $list;
 });
 
 View::composer('habravel::edit', function ($view) {

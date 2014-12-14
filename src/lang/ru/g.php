@@ -198,4 +198,9 @@ return array(
     'title'                     => 'Полдела сделано! Введи свой новый пароль',
     'submit'                    => 'Сохранить пароль и войти',
   ),
+
+  'sidebar'                     => array(
+    'topUsersTitle'             => 'Лучшие',
+    'topPostsTitle'             => 'Лучшее',
+  ),
 );

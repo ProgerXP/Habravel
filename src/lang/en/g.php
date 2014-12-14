@@ -198,4 +198,9 @@ return array(
     'title'                     => 'Almost there! Pick your new password',
     'submit'                    => 'Save password and log in',
   ),
+
+  'sidebar'                     => array(
+    'topUsersTitle'             => 'Best People',
+    'topPostsTitle'             => 'Best Reading',
+  ),
 );
