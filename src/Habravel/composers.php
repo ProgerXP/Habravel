@@ -111,6 +111,10 @@ View::composer('habravel::edit.poll', function ($view) {
   isset($view->options) or $view->options = Models\PollOption::wherePoll($view->poll->id)->get();
 });
 
+View::composer('habravel::register', function ($view) {
+  isset($view->captcha) or $view->captcha = captcha();
+});
+
 View::composer('habravel::user', function ($view) {
   $user = $view->user;
 

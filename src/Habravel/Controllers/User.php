@@ -209,9 +209,7 @@ class User extends BaseController {
 
   function showRegister() {
     user(false);
-    $captcha = \Habravel\captcha();
-
-    return View::make('habravel::register', array('input' => array(), 'captcha' => $captcha));
+    return View::make('habravel::register', array('input' => array()));
   }
 
   // POST input:
@@ -221,27 +219,27 @@ class User extends BaseController {
   function register() {
     \Session::regenerate();   // prevent session fixation.
 
-    $captchaChecked = \Habravel\captchaChecked(Input::get('hash'), Input::get('captcha'));
+    $user = new UserModel;
+    $input = Input::get();
 
-    $input = array(
-      'captchaChecked' => $captchaChecked,
-      'name'           => Input::get('name'),
-      'email'          => Input::get('email'),
-      'password'       => Input::get('password'),
-    );
+    $user->name = array_get($input, 'name');
+    $user->email = array_get($input, 'email');
+    $user->password = \Hash::make(array_get($input, 'password'));
+    $user->regIP = Request::getClientIp();
 
-    $rules = array_only(UserModel::rules(), array('name', 'email', 'password'));
-    $rules = array_add($rules, 'captchaChecked', 'in:1');
+    $toValidate = array_only($input, 'password') + $user->getAttributes();
+    $toValidate['captcha'] = $input['hash'];
 
-    $validator = \Validator::make($input, $rules);
+    $rules = $user->rules();
+    $rules['captcha'] = 'required|in:'.\Habravel\captchaHash($input['captcha']).
+                                   ','.\Habravel\captchaHash($input['captcha'], true);
 
-    if ($validator->passes()) {
-      $user = new UserModel;
-      $user->name = $input['name'];
-      $user->email = $input['email'];
-      $user->password = \Hash::make($input['password']);
-      $user->regIP = Request::getClientIp();
+    $validator = \Validator::make($toValidate, $rules);
 
+    if ($validator->fails()) {
+      $errors = $validator->messages();
+      return View::make('habravel::register', compact('input', 'errors'));
+    } else {
       if (!$user->poll) {
         $poll = new \Habravel\Models\Poll;
         // System poll captions don't matter, just for pretty database output.
@@ -253,12 +251,7 @@ class User extends BaseController {
       $user->save();
 
       user(array('id' => $user->id, 'password' => $input['password']));
-
       return Redirect::to($user->url());
-    } else {
-      $captcha = \Habravel\captcha();
-      $errors = $validator->errors();
-      return View::make('habravel::register', compact('input', 'errors', 'captcha'));
     }
   }
 

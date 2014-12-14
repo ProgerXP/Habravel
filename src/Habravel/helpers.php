@@ -123,11 +123,11 @@ function captcha() {
   $digit2 = mt_rand(0, 9);
   $isSub = mt_rand(0, 1);
 
-  if ($isSub and $digit2 > $digit1) {
+  if ($isSub and $digit1 > $digit2) {
     list($digit1, $digit2) = array($digit2, $digit1);
   }
 
-  $result = $isSub ? ($digit1 - $digit2) : ($digit1 + $digit2);
+  $result = $isSub ? ($digit2 - $digit1) : ($digit1 + $digit2);
 
   return array(
     'hash'          => \Habravel\captchaHash($result),
@@ -140,14 +140,13 @@ function captcha() {
   );
 }
 
-function captchaHash($result) {
+function captchaHash($result, $oneHourBack = false) {
   $appKey = \Config::get('app.key');
   $ip = \Request::getClientIp();
-  $date = \Carbon\Carbon::now()->format('dmyh');
+
+  $date = \Carbon\Carbon::now();
+  $oneHourBack and $date->subHour();
+  $date = $date->format('dmyh');
 
   return md5("$appKey.$ip.$date.$result");
-}
-
-function captchaChecked($hash, $captcha) {
-  return $hash === \Habravel\captchaHash($captcha) ? 1 : 0;
 }
