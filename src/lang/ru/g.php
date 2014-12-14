@@ -200,7 +200,8 @@ return array(
   ),
 
   'sidebar'                     => array(
-    'topUsersTitle'             => 'Лучшие',
-    'topPostsTitle'             => 'Лучшее',
+    'topUsers'                  => 'Лучшие',
+    'topPosts'                  => 'Лучшее',
+    'postSource'                => 'Исходник статьи',
   ),
 );

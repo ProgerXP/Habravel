@@ -185,24 +185,6 @@ body p.hvl-pages {
   padding-right: @sidebarWidth;
 }
 
-.hvl-sidebar {
-  width: @sidebarWidth;
-  margin-left: -@sidebarWidth;
-  float: left;
-  padding-left: 2em;
-}
-
-.hvl-sidebar-title {
-  font-size: @24px;
-  font-family: @Gothic;
-  margin: 0 0 0.8em;
-  font-weight: normal;
-}
-
-.hvl-sidebar-box {
-  + * { margin-top: 4em; }
-}
-
 body a.hvl-credit {
   float: right;
   color: silver;
@@ -309,6 +291,7 @@ body a.hvl-credit {
 
 .hvl-puser-avatar {
   float: left;
+  border-radius: 20px;
 }
 
 body .hvl-puser-avatar ~ * {
@@ -514,7 +497,7 @@ body .hvl-pedit-tags-from {
   margin-right: 0.2em;
 
   .hvl-root &:hover { text-decoration: none; }
-  img { height: 20px; vertical-align: top; }
+  img { height: 20px; vertical-align: top; border-radius: 5px; }
 }
 
 .hvl-tag {
@@ -963,15 +946,51 @@ body .hvl-pedit-tags-from {
   Sidebars
  ***/
 
+.hvl-sidebar {
+  width: @sidebarWidth;
+  margin-left: -@sidebarWidth;
+  float: left;
+  padding-left: 2em;
+  font-size: @14px;
+}
+
+.hvl-sidebar-title {
+  font-size: @24px;
+  font-family: @Gothic;
+  margin: 0 0 0.8em;
+  font-weight: normal;
+}
+
+.hvl-sidebar-box {
+  + * { margin-top: 4em; }
+}
+
 .hvl-sidebar-top-users, .hvl-sidebar-top-posts {
   li {
     list-style: none;
     line-height: 1em;
     margin-top: 1em;
-    font-size: 0.875em;
   }
 
   a { color: #555; }
-  img { height: 25px; margin-right: 0.65em; vertical-align: middle; }
-  span { color: green; font-weight: bold; margin-left: 0.2em; }
+
+  img {
+    height: 25px;
+    margin-right: 0.65em;
+    vertical-align: middle;
+    border-radius: 5px;
+  }
+
+  span {
+    color: green;
+    font-weight: bold;
+    margin-left: 0.2em;
+  }
+}
+
+.hvl-sidebar-post-info {
+  color: gray;
+
+  p { margin-bottom: 0.5em; }
+  a { color: black; }
 }

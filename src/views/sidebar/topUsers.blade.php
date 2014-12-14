@@ -3,7 +3,7 @@
 */?>
 
 <h6 class="hvl-sidebar-title">
-  {{{ trans('habravel::g.sidebar.topUsersTitle') }}}
+  {{{ trans('habravel::g.sidebar.topUsers') }}}
 </h6>
 
 <ol>

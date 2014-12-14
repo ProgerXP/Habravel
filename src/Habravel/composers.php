@@ -25,6 +25,15 @@ View::composer('habravel::post', function ($view) {
       $post->x_children = (array) array_get($tree, $post->id);
     }
   }
+
+  $list = isset($view->pageSidebar) ? $view->pageSidebar  : array();
+
+  $list['post-info'] = View::make('habravel::sidebar.post')
+    ->with('post', $post)
+    ->with('author', $post->author()->first())
+    ->render();
+
+  $view->pageSidebar = $list;
 });
 
 View::composer('habravel::post.poll', function ($view) {

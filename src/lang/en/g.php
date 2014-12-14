@@ -200,7 +200,8 @@ return array(
   ),
 
   'sidebar'                     => array(
-    'topUsersTitle'             => 'Best People',
-    'topPostsTitle'             => 'Best Reading',
+    'topUsers'                  => 'Best People',
+    'topPosts'                  => 'Best Reading',
+    'postSource'                => 'Text source of this post',
   ),
 );
