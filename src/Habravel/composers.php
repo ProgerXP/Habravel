@@ -177,7 +177,7 @@ View::composer('habravel::user', function ($view) {
   }
 });
 
-View::composer('habravel::part.uheader', function ($view) {
+View::composer('habravel::part.userHeader', function ($view) {
   isset($view->pageUser) or $view->pageUser = user();
 
   if (!isset($view->pageDraftCount)) {
@@ -239,6 +239,6 @@ View::composer('habravel::page', function ($view) {
   isset($view->pageTitle) or $view->pageTitle = trans('habravel::g.pageTitle');
   isset($view->pageMetaDesc) or $view->pageMetaDesc = '';
   isset($view->pageMetaKeys) or $view->pageMetaKeys = '';
-  $view->pageHeader .= View::make('habravel::part.uheader');
+  $view->pageHeader .= View::make('habravel::part.userHeader');
   isset($view->pageSidebar) or $view->pageSidebar = array();
 });

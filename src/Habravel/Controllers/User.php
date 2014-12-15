@@ -260,7 +260,7 @@ class User extends BaseController {
       return Redirect::to(user()->url());
     } else {
       \Habravel\Models\RemindPassword::expired()->delete();
-      return View::make('habravel::user.remindPassword');
+      return View::make('habravel::remindPassword');
     }
   }
 
@@ -287,7 +287,7 @@ class User extends BaseController {
       $reminder->email = $email;
       $reminder->save();
 
-      return View::make('habravel::user.remindPassword', array('sent' => $email));
+      return View::make('habravel::remindPassword', array('sent' => $email));
     } else {
       return Redirect::back()->withErrors($validator->errors());
     }
@@ -299,7 +299,7 @@ class User extends BaseController {
     } else {
       $obliviousUser = \Habravel\Models\RemindPassword::token($token)->first();
       if ($obliviousUser){
-        return View::make('habravel::user.resetPassword', compact('token'));
+        return View::make('habravel::resetPassword', compact('token'));
       } else {
         return Redirect::to(\Habravel\url().'/login?badrepw=1');
       }
