@@ -202,6 +202,7 @@ return array(
   'sidebar'                     => array(
     'topUsers'                  => 'Best People',
     'topPosts'                  => 'Best Reading',
+    'tagPool'                   => 'Tags',
     'postSource'                => 'Text source of this post',
   ),
 );

@@ -202,6 +202,7 @@ return array(
   'sidebar'                     => array(
     'topUsers'                  => 'Лучшие',
     'topPosts'                  => 'Лучшее',
+    'tagPool'                   => 'Теги',
     'postSource'                => 'Исходник статьи',
   ),
 );

@@ -103,6 +103,15 @@ View::composer('habravel::posts', function ($view) {
 
   $list = isset($view->pageSidebar) ? $view->pageSidebar  : array();
 
+  $list['tag-cloud'] = \Cache::remember('hvl.tagcloud', 60, function () {
+    return View::make('habravel::sidebar.tagCloud')
+      ->with('tags', Models\Tag
+        ::where('flags', 'LIKE', '%[pool.cloud]%')
+        ->orderBy('caption')
+        ->get())
+      ->render();
+  });
+
   $list['top-users'] = \Cache::remember('hvl.topusers', 30, function () {
     return View::make('habravel::sidebar.topUsers')
       ->with('users', Models\User
