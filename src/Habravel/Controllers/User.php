@@ -14,11 +14,21 @@ class User extends BaseController {
   }
 
   function voteUpByName($name = '') {
-    return Poll::voteOn(UserModel::whereName($name)->first(), true);
+    return $this->doVote($name, true);
   }
 
   function voteDownByName($name = '') {
-    return Poll::voteOn(UserModel::whereName($name)->first(), false);
+    return $this->doVote($name, false);
+  }
+
+  protected function doVote($name, $up) {
+    $name = trim($name);
+
+    if (user() and $name === user()->name) {
+      return Redirect::to( \Habravel\referer(\URL::previous()) );
+    } else {
+      return Poll::voteOn(UserModel::whereName($name)->first(), $up);
+    }
   }
 
   function showCurrent() {
@@ -249,6 +259,7 @@ class User extends BaseController {
       }
 
       $user->save();
+      \Event::fire('habravel.register', compact('user'));
 
       user(array('id' => $user->id, 'password' => $input['password']));
       return Redirect::to($user->url());

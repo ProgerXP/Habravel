@@ -41,18 +41,32 @@
       @include('habravel::user.info', compact('user'))
     </header>
 
-    @if (count($posts) and count($comments))
-      <div class="hvl-split-left">
-        @include('habravel::user.posts')
-      </div>
+    @if ($canEdit)
+      @if (count($comments))
+        <div class="hvl-split-left">
+          @include('habravel::user.posts')
+        </div>
 
-      <div class="hvl-split-right">
+        <div class="hvl-split-right">
+          @include('habravel::user.comments')
+        </div>
+      @else
+        @include('habravel::user.posts')
+      @endif
+    @else
+      @if (count($posts) and count($comments))
+        <div class="hvl-split-left">
+          @include('habravel::user.posts')
+        </div>
+
+        <div class="hvl-split-right">
+          @include('habravel::user.comments')
+        </div>
+      @elseif (count($posts))
+        @include('habravel::user.posts')
+      @elseif (count($comments))
         @include('habravel::user.comments')
-      </div>
-    @elseif (count($posts))
-      @include('habravel::user.posts')
-    @elseif (count($comments))
-      @include('habravel::user.comments')
+      @endif
     @endif
   </div>
 @stop

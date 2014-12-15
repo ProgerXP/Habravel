@@ -1,5 +1,6 @@
 <?php /*
   - $user             - Models\User instance
+  - $badges           - array of string
 */
 
   $fields = array(
@@ -14,6 +15,15 @@
 ?>
 
 <div class="hvl-puser-info">
+  @if ($badges)
+    <p>
+      @foreach ($badges as $badge)
+        <img src="{{{ asset("packages/proger/habravel/badges/$badge.png") }}}"
+             title="{{{ trans("habravel::badges.$badge", $user->getAttributes()) }}}">
+      @endforeach
+    </p>
+  @endif
+
   <p>
     <b>{{{ trans('habravel::g.user.regTime') }}}</b>
     {{{ DateFmt::Format('AGO-AT[s-d]IF>7[d# m__ y##]', $user->created_at->timestamp, Config::get('app.locale')) }}}

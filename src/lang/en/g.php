@@ -147,6 +147,7 @@ return array(
     'posts'               => 'Articles',
     'allPosts'            => 'There are more articles',
     'comments'            => 'Comments',
+    'writeFirstPost'      => 'Compose your first article',
     'allComments'         => 'Even more comments',
     'regTime'             => 'Joined at: ',
     'loginTime'           => 'Last seen around: ',

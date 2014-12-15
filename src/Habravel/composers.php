@@ -175,6 +175,15 @@ View::composer('habravel::user', function ($view) {
     foreach ($view->comments as $post) { $post->needHTML(); }
     $view->commentCount = $query->count();
   }
+
+  if (!isset($view->badges)) {
+    $view->badges = array();
+
+    foreach ($user->flags() as $flag) {
+      $parts = explode('badge.', $flag, 2);
+      $parts[0] === '' and $view->badges[] = $parts[1];
+    }
+  }
 });
 
 View::composer('habravel::part.userHeader', function ($view) {

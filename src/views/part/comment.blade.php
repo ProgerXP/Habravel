@@ -45,6 +45,8 @@
 
   {{-- Must be present because Reply button puts reply form here. --}}
   <div class="hvl-comment-children">
+    <?php unset($author)?>
+    <?php unset($canEdit)?>
     @foreach ($post->x_children as $post)
       @include('habravel::part.comment')
     @endforeach

@@ -67,7 +67,7 @@ class Comment extends BaseController {
       ::whereIn('id', array($topPost->author, $parent->author))
       ->lists('name', 'email');
 
-    $emails = array_unique($emails);
+    $emails += \Config::get('habravel::g.allNotify');
     unset($emails[user()->email]);
 
     if ($emails) {

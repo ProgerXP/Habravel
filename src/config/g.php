@@ -47,6 +47,9 @@ return array(
   // In this case point it to base_path('vendor/proger/habravel/public/').
   'publicPath'            => public_path('packages/proger/habravel/'),
 
+  // array('e@ma.il' => 'Admin Name') to notify of site events.
+  'allNotify'             => array(),
+
   // Special tags that have extra functionality. Since their IDs can be arbitrary
   // they are matched by exact name (caption).
   'tags'                  => array(

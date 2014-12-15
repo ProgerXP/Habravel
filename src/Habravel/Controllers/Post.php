@@ -123,9 +123,11 @@ class Post extends BaseController {
 
     if (empty($input['id'])) {
       $post = new PostModel;
+      $oldPost = null;
     } else {
       $post = PostModel::find($input['id']);
       $post or App::abort(404);
+      $oldPost = $post->getAttributes();
     }
 
     static::writeAccess($post);
@@ -144,15 +146,29 @@ class Post extends BaseController {
       return $this->showEditOn($post, $errors);
     } else {
       $editor->save();
+
+      $event = empty($input['id']) ? 'habravel.post' : 'habravel.edit';
+      \Event::fire($event, compact('post', 'oldPost'));
+
       return Redirect::to($post->url());
     }
   }
 
   function voteUp($idOrModel = 0) {
-    return Poll::voteOn(PostModel::find($idOrModel), true);
+    return $this->doVote($idOrModel, true);
   }
 
   function voteDown($idOrModel = 0) {
-    return Poll::voteOn(PostModel::find($idOrModel), false);
+    return $this->doVote($idOrModel, false);
+  }
+
+  protected function doVote($idOrModel, $up) {
+    $post = PostModel::find($idOrModel);
+
+    if ($post and user() and $post->author === user()->id) {
+      return Redirect::to( \Habravel\referer(\URL::previous()) );
+    } else {
+      return Poll::voteOn($post, $up);
+    }
   }
 }
