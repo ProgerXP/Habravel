@@ -9,7 +9,7 @@
 <ol>
   @foreach ($users as $user)
     <li>
-      {{-- one liner to prevent underscored spaces around the name (link) --}}
+      {{-- One liner to prevent underscored spaces around the name (link) --}}
       <a href="{{{ $user->url() }}}"><img src="{{{ $user->avatarURL() }}}" alt="{{{ $user->name }}}">{{{ $user->name }}}</a>
 
       <span>+{{{ $user->score }}}</span>

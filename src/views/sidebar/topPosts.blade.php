@@ -10,8 +10,7 @@
   @foreach ($posts as $post)
     <li>
       <a href="{{{ $post->url() }}}">
-        {{{ $post->caption }}}
-      </a>
+        {{{ $post->caption }}}</a>
 
       <span>+{{{ $post->score }}}</span>
     </li>

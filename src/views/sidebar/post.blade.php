@@ -5,10 +5,7 @@
 
 <p class="hvl-post-author">
   <a href="{{{ $author->url() }}}" class="hvl-post-author-avatar">
-    @if ($author->avatar)
-      <img src="{{{ $author->avatarURL() }}}" alt="{{{ $author->name }}}">
-    @endif
-
+    <img src="{{{ $author->avatarURL() }}}" alt="{{{ $author->name }}}">
     {{ $author->nameHTML() }}
   </a>
 </p>
