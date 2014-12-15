@@ -594,7 +594,7 @@ body .hvl-pedit-tags-from {
   margin-top: 3px;
   position: absolute;
 
-  img { width: 50px; }
+  img { width: 50px; border-radius: 8px; }
 }
 
 .hvl-comment-footer {
@@ -993,4 +993,10 @@ body .hvl-pedit-tags-from {
 
   p { margin-bottom: 0.5em; }
   a { color: black; }
+}
+
+.hvl-sidebar-tag-cloud {
+  .hvl-tags { line-height: 2em; margin-top: -0.35em; }
+  .hvl-tag { white-space: nowrap; margin-right: 0.5em; border-radius: 2px; }
+  .hvl-tag + * { margin-left: 0; }
 }

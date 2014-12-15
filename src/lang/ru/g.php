@@ -95,6 +95,10 @@ return array(
   'comment'                     => array(
     'reply'                     => 'Ответить',
     'anchor'                    => 'Ссылка на этот отзыв',
+    'mailSubject'               => 'Новый комментарий к «:0»',
+    'mailText'                  => ':user только что написал :linksкомментарий:linke к статье «:article»:',
+    'mailTextReply'             => '…в ответ на :linksкомментарий:linke :user:',
+    'mailTextReplyToSelf'       => '…в ответ на свой же :linksкомментарий:linke:',
   ),
 
   'posts'                       => array(

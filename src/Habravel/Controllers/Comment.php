@@ -47,7 +47,42 @@ class Comment extends BaseController {
       $post->url = strtok($parent->url, '#').'#cmt-%ID%';
       $post->save();
 
+      $this->sendEmailNotifications($post, $parent);
       return Redirect::to($post->url());
+    }
+  }
+
+  protected function sendEmailNotifications(PostModel $post, PostModel $parent) {
+    $topPost = $parent->top ? $parent->top()->first() : $parent;
+    $parent->needHTML();
+
+    $data = compact('topPost', 'parent', 'post');
+
+    foreach ($data as $key => &$value) {
+      $value = $value->getAttributes();
+      $value['url'] = $$key->url();
+    }
+
+    $emails = \Habravel\Models\User
+      ::whereIn('id', array($topPost->author, $parent->author))
+      ->lists('name', 'email');
+
+    $emails = array_unique($emails);
+    unset($emails[user()->email]);
+
+    if ($emails) {
+      $data['parent']['author'] = $parent->author()->first();
+      $data['post']['author'] = user();
+
+      $subject = trans('habravel::g.comment.mailSubject', array($topPost->caption));
+
+      \Mail::queue('habravel::email.reply', $data,
+        function ($message) use ($emails, $subject) {
+          foreach ($emails as $email => $name) {
+            $message->to($email, $name)->subject($subject);
+          }
+        }
+      );
     }
   }
 }

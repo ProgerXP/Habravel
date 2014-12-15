@@ -95,6 +95,10 @@ return array(
   'comment'               => array(
     'reply'               => 'Reply',
     'anchor'              => 'Link to this comment',
+    'mailSubject'         => 'New reply to «:0»',
+    'mailText'            => ':user has just posted a :linksnew comment:linke on «:article»:',
+    'mailTextReply'       => '…in reply to :user:\'s :linkscomment:linke:',
+    'mailTextReplyToSelf' => '…in reply to his own :linkscomment:linke:',
   ),
 
   'posts'                 => array(
