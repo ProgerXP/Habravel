@@ -5,27 +5,24 @@ use View;
 View::composer('habravel::post', function ($view) {
   $post = $view->post;
 
-  if (!isset($view->polls)) {
-    $view->polls = $post->polls()->get();
-  }
+  $view->polls = $post->polls()->get();
 
   // Add root comments.
-  if (!isset($post->x_children)) {
-    $all = Models\Post::whereTop($post->id)->orderBy('listTime')->get()->all();
-    $view->commentCount = count($all);
-    array_unshift($all, $post);
-    $byID = $tree = array();
+  $all = Models\Post::whereTop($post->id)->orderBy('listTime')->get()->all();
+  $view->commentCount = count($all);
+  array_unshift($all, $post);
+  $byID = $tree = array();
 
-    foreach ($all as $post) {
-      $tree[$post->parent][] = $post;
-      $byID[$post->id] = $post;
-    }
-
-    foreach ($all as $post) {
-      $post->x_children = (array) array_get($tree, $post->id);
-    }
+  foreach ($all as $comment) {
+    $tree[$comment->parent][] = $comment;
+    $byID[$comment->id] = $comment;
   }
 
+  foreach ($all as $comment) {
+    $comment->x_children = (array) array_get($tree, $comment->id);
+  }
+
+  // Add sidebars.
   $list = isset($view->pageSidebar) ? $view->pageSidebar  : array();
 
   $list['post-info'] = View::make('habravel::sidebar.post')
@@ -79,28 +76,28 @@ View::composer('habravel::post.poll', function ($view) {
 });
 
 View::composer('habravel::posts', function ($view) {
-  if (!isset($view->comments)) {
-    $parents = array();
+  // Add comments.
+  $parents = array();
 
-    foreach ($view->posts as $index => $post) {
-      $parents[$index] = $post->id;
-    }
-
-    $rows = !$parents ? array() : Models\Post
-      ::whereIn('parent', $parents)
-      ->groupBy('parent')
-      ->orderBy('listTime', 'desc')
-      ->get();
-
-    $comments = array();
-
-    foreach ($rows as $comment) {
-      $comments[ array_search($comment->parent, $parents) ] = array($comment);
-    }
-
-    $view->comments = $comments;
+  foreach ($view->posts as $index => $post) {
+    $parents[$index] = $post->id;
   }
 
+  $rows = !$parents ? array() : Models\Post
+    ::whereIn('parent', $parents)
+    ->groupBy('parent')
+    ->orderBy('listTime', 'desc')
+    ->get();
+
+  $comments = array();
+
+  foreach ($rows as $comment) {
+    $comments[ array_search($comment->parent, $parents) ] = array($comment);
+  }
+
+  $view->comments = $comments;
+
+  // Add sidebars.
   $list = isset($view->pageSidebar) ? $view->pageSidebar  : array();
 
   $list['tag-cloud'] = \Cache::remember('hvl.tagcloud', 60, function () {
@@ -154,7 +151,7 @@ View::composer('habravel::edit.poll', function ($view) {
 });
 
 View::composer('habravel::register', function ($view) {
-  isset($view->captcha) or $view->captcha = captcha();
+  $view->captcha = captcha();
 });
 
 View::composer('habravel::user', function ($view) {
@@ -162,36 +159,26 @@ View::composer('habravel::user', function ($view) {
 
   isset($view->canEdit) or $view->canEdit = (user() and $user->id === user()->id);
 
-  if (!isset($view->posts)) {
-    $query = $user->publishedArticles()->orderBy('listTime', 'desc');
-    $view->posts = $query->take(10)->get();
-    foreach ($view->posts as $post) { $post->needHTML(); }
-    $view->postCount = $query->count();
-  }
+  $query = $user->publishedArticles()->orderBy('listTime', 'desc');
+  $view->posts = $query->take(10)->get();
+  foreach ($view->posts as $post) { $post->needHTML(); }
+  $view->postCount = $query->count();
 
-  if (!isset($view->comments)) {
-    $query = $user->comments()->orderBy('listTime', 'desc');
-    $view->comments = $query->take(20)->get();
-    foreach ($view->comments as $post) { $post->needHTML(); }
-    $view->commentCount = $query->count();
-  }
+  $query = $user->comments()->orderBy('listTime', 'desc');
+  $view->comments = $query->take(20)->get();
+  foreach ($view->comments as $post) { $post->needHTML(); }
+  $view->commentCount = $query->count();
 
-  if (!isset($view->badges)) {
-    $view->badges = array();
-
-    foreach ($user->flags() as $flag) {
-      $parts = explode('badge.', $flag, 2);
-      $parts[0] === '' and $view->badges[] = $parts[1];
-    }
+  $view->badges = array();
+  foreach ($user->flags() as $flag) {
+    $parts = explode('badge.', $flag, 2);
+    $parts[0] === '' and $view->badges[] = $parts[1];
   }
 });
 
 View::composer('habravel::part.userHeader', function ($view) {
-  isset($view->pageUser) or $view->pageUser = user();
-
-  if (!isset($view->pageDraftCount)) {
-    $view->pageDraftCount = !$view->pageUser ? 0 : $view->pageUser->drafts()->count();
-  }
+  $view->pageUser = user();
+  $view->pageDraftCount = !$view->pageUser ? 0 : $view->pageUser->drafts()->count();
 });
 
 View::composer('habravel::part.markups', function ($view) {
@@ -202,9 +189,9 @@ View::composer('habravel::part.markups', function ($view) {
 View::composer('habravel::part.post', function ($view) {
   $post = $view->post;
 
-  isset($view->parentPost) or $view->parentPost = $post->parentPost()->first();
-  isset($view->author) or $view->author = $post->author()->first();
-  isset($view->tags) or $view->tags = $post->tags()->get();
+  $view->parentPost = $post->parentPost()->first();
+  $view->author = $post->author()->first();
+  $view->tags = $post->tags()->get();
 
   isset($view->classes) or $view->classes = '';
   $post->sourceURL and $view->classes .= ' hvl-post-sourced';
@@ -224,9 +211,7 @@ View::composer('habravel::part.post', function ($view) {
     $view->readMore = array_get($post->data(), 'cut', trans('habravel::g.post.more'));
   }
 
-  if (!isset($view->html)) {
-    $view->html = $view->readMore === false ? $post->html : $post->introHTML;
-  }
+  $view->html = $view->readMore === false ? $post->html : $post->introHTML;
 
   if ($minH = $view->downshift) {
     $view->html = preg_replace_callback('~(</?h)(\d)\b~ui', function ($match) use ($minH) {
@@ -238,10 +223,12 @@ View::composer('habravel::part.post', function ($view) {
 View::composer('habravel::part.comment', function ($view) {
   $post = $view->post;
 
-  isset($view->topPost) or $view->topPost = $post->top()->first();
-  isset($view->author) or $view->author = $post->author()->first();
+  $view->topPost = $post->top()->first();
+  $view->author = $post->author()->first();
   isset($post->x_children) or $post->x_children = array();
-  isset($view->canEdit) or $view->canEdit = ($user = user() and $post->isEditable($user));
+
+  $view->canEditValue = isset($view->canEdit)
+    ? $view->canEdit : ($user = user() and $post->isEditable($user));
 });
 
 View::composer('habravel::page', function ($view) {

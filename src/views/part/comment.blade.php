@@ -5,7 +5,8 @@
   - $hasTop           - optional; true to display original post title; needs $top
   - $topPost          - optional unless $hasTop is false; Models\Post
   - $hasReply         - optional; true to display Reply button
-  - $canEdit          - boolean
+  - $canEdit          - optional; boolean
+  - $canEditValue     - boolean (set by composer, do not pass)
 */?>
 
 <div class="hvl-comment" id="cmt-{{{ $post->id }}}" data-hvl-post-id="{{{ $post->id }}}">
@@ -28,7 +29,7 @@
         {{{ trans('habravel::g.comment.reply') }}}</u>
     @endif
 
-    @if (!empty($canEdit))
+    @if (!empty($canEditValue))
       <u class="hvl-comment-edit-btn">
         {{{ trans('habravel::g.post.edit') }}}</u>
     @endif
@@ -45,8 +46,6 @@
 
   {{-- Must be present because Reply button puts reply form here. --}}
   <div class="hvl-comment-children">
-    <?php unset($author)?>
-    <?php unset($canEdit)?>
     @foreach ($post->x_children as $post)
       @include('habravel::part.comment')
     @endforeach
