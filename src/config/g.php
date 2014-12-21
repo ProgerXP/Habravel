@@ -35,7 +35,7 @@ return array(
   ),
 
   'minPassword'           => 8,
-  'introWords'            => 200,
+  'introWords'            => 100,
   'avatarWidth'           => 150,
   'avatarHeight'          => 150,
 

@@ -4,6 +4,8 @@ use Illuminate\Support\MessageBag;
 use Habravel\Models\Post as PostModel;
 
 class PostEditor {
+  public $votable = null;
+
   protected $user;      // Models\User - the user that is editing the post.
   protected $post;      // Models\Post.
   protected $postExisted;
@@ -228,8 +230,7 @@ class PostEditor {
   protected function saveBasic() {
     $post = $this->post;
 
-    // Each post (article/comment) should be vote-able so it must have a Poll.
-    if (!$post->poll) {
+    if (!$post->poll and $this->votable) {
       $poll = new Models\Poll;
       $poll->caption = '"'.$post->caption.'"';
       $poll->save();

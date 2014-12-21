@@ -120,8 +120,9 @@ class Post extends BaseController {
   // - options[][]        - array of caption, one array per each item in polls
   function edit() {
     $input = Input::get();
+    $isNew = empty($input['id']);
 
-    if (empty($input['id'])) {
+    if ($isNew) {
       $post = new PostModel;
       $oldPost = null;
     } else {
@@ -135,6 +136,7 @@ class Post extends BaseController {
     $editor = \Habravel\PostEditor::make($post)
       ->applyInput($input);
 
+    $editor->votable = $isNew;
     $errors = $editor->errors();
 
     if (!empty($input['preview'])) {
@@ -147,7 +149,7 @@ class Post extends BaseController {
     } else {
       $editor->save();
 
-      $event = empty($input['id']) ? 'habravel.post' : 'habravel.edit';
+      $event = $isNew ? 'habravel.post' : 'habravel.edit';
       \Event::fire($event, compact('post', 'oldPost'));
 
       return Redirect::to($post->url());

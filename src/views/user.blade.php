@@ -33,9 +33,15 @@
       @endif
 
       <h1 class="hvl-h1">
-        <a href="{{{ Habravel\url()."/~".urlencode($user->name)."/up?_token=".urlencode(csrf_token()) }}}"><i class="hvl-i-upg"></i></a>
+        @if ($user->poll)
+          <a href="{{{ Habravel\url()."/~".urlencode($user->name)."/up?_token=".urlencode(csrf_token()) }}}"><i class="hvl-i-upg"></i></a>
+        @endif
+
         {{ $user->nameHTML(array('link' => false)) }}
-        <a href="{{{ Habravel\url()."/~".urlencode($user->name)."/down?_token=".urlencode(csrf_token()) }}}"><i class="hvl-i-downg"></i></a>
+
+        @if ($user->poll)
+          <a href="{{{ Habravel\url()."/~".urlencode($user->name)."/down?_token=".urlencode(csrf_token()) }}}"><i class="hvl-i-downg"></i></a>
+        @endif
       </h1>
 
       @include('habravel::user.info', compact('user'))

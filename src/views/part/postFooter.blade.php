@@ -11,11 +11,13 @@
   @endif
 
   <span class="hvl-post-footer-ctls">
-    <span class="hvl-post-footer-ctl hvl-post-footer-score">
-      <a href="{{{ "$root/up/$post->id?_token=".urlencode(csrf_token()) }}}"><i class="hvl-i-upg"></i></a>
-      <b>{{{ ($post->score > 0 ? '+' : '').((int) $post->score) }}}</b>
-      <a href="{{{ "$root/down/$post->id?_token=".urlencode(csrf_token()) }}}"><i class="hvl-i-downg"></i></a>
-    </span>
+    @if ($post->poll)
+      <span class="hvl-post-footer-ctl hvl-post-footer-score">
+        <a href="{{{ "$root/up/$post->id?_token=".urlencode(csrf_token()) }}}"><i class="hvl-i-upg"></i></a>
+        <b>{{{ ($post->score > 0 ? '+' : '').((int) $post->score) }}}</b>
+        <a href="{{{ "$root/down/$post->id?_token=".urlencode(csrf_token()) }}}"><i class="hvl-i-downg"></i></a>
+      </span>
+    @endif
 
     <span class="hvl-post-footer-ctl" title="{{{ trans('habravel::g.post.views') }}}">
       <i class="hvl-i-reloadg"></i>
