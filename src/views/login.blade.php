@@ -27,7 +27,7 @@
       <b>{{{ trans('habravel::g.login.login') }}}</b>
     </p>
     <p class="hvl-form-list-value">
-      <input class="hvl-input" name="login" required="required" autofocus="autofocus">
+      <input class="hvl-input" name="login" required="required" autofocus="autofocus" tabindex="1">
     </p>
 
     <p class="hvl-form-list-label">
@@ -35,7 +35,7 @@
       {{ trans('habravel::g.login.remindPassword', array('<a href="'.Habravel\url().'/remindpw">', '</a>')) }}
     </p>
     <p class="hvl-form-list-value">
-      <input class="hvl-input" name="password" type="password" required="required">
+      <input class="hvl-input" name="password" type="password" required="required" tabindex="2">
     </p>
 
     <p class="hvl-form-list-btn">
