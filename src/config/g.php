@@ -12,7 +12,10 @@ return array(
   // If $login is === false then current client should be logged out.
   'user'                  => function ($login = null) {
     if (is_array($login)) {
-      return Auth::attempt($login) ? Habravel\Models\User::find(Auth::user()->id) : null;
+      $remember = !empty($login['remember']);
+      if (Auth::attempt(array_except($login, 'remember'), $remember)) {
+        return Habravel\Models\User::find(Auth::user()->id);
+      }
     } elseif ($login === false) {
       Auth::logout();
     } elseif (!func_num_args() and $user = Auth::user()) {

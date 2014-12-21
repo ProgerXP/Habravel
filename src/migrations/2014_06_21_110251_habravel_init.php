@@ -25,7 +25,7 @@ class HabravelInit extends Illuminate\Database\Migrations\Migration {
       $table->increments('id');
       $table->timestamps();
       $table->string('password', 255);
-      $table->string('remember_token', 255);
+      $table->rememberToken();
       $table->string('email', 255);
       $table->string('name', 255);
       $table->mediumText('data');
