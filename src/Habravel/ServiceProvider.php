@@ -104,9 +104,14 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider {
     require_once __DIR__.'/composers.php';
 
     App::error(function ($e) {
-      if (method_exists($e, 'getStatusCode') and $e->getStatusCode() === 401) {
-        $url = \Request::fullUrl();
-        return \Redirect::to(url().'/login?back='.urlencode($url));
+      if (method_exists($e, 'getStatusCode')) {
+        switch ($e->getStatusCode()) {
+        case 401:
+          $url = \Request::fullUrl();
+          return \Redirect::to(url().'/login?back='.urlencode($url));
+        case 404:
+          return \View::make('habravel::404');
+        }
       }
     });
 

@@ -24,6 +24,11 @@ return array(
     'profile'             => 'Profile',
   ),
 
+  404                           => array(
+    'title'                     => 'Not Found',
+    'text'                      => 'Requested resource does not exist.',
+  ),
+
   /***
     Article Routes
    ***/
