@@ -50,6 +50,7 @@ class User extends BaseController {
   }
 
   function logout() {
+    \Event::fire('habravel.logout');
     user(false);
     return Redirect::to(\Habravel\url());
   }
@@ -119,6 +120,7 @@ class User extends BaseController {
     if ($validator->passes()) {
       $user->password = \Hash::make($input['newPassword']);
       $user->save();
+      \Event::fire('habravel.password', array($user, $input));
       return Redirect::to($user->url());
     } else {
       return Redirect::back()->withErrors($validator->errors());
@@ -210,6 +212,7 @@ class User extends BaseController {
     } elseif ($user = user($auth)) {
       $user->loginTime = new \Carbon\Carbon;
       $user->loginIP = Request::getClientIp();
+      $user->save();
       return Redirect::to( array_get($input, 'back', $user->url()) );
     } else {
       Input::merge(array('bad' => 1, 'back' => $back));
@@ -338,6 +341,7 @@ class User extends BaseController {
       $user->save();
 
       user(array('email' => $obliviousUser->email, 'password' => $input['newPassword']));
+      \Event::fire('habravel.password', array($user, $input));
 
       $obliviousUser->delete();
 

@@ -39,6 +39,10 @@ class PostEditor {
     return $this->postExisted;
   }
 
+  function newTags() {
+    return $this->newTags;
+  }
+
   function errors() {
     return $this->errors;
   }
@@ -238,6 +242,7 @@ class PostEditor {
     }
 
     $post->url or $post->url = 'posts/%ID%';
+    $post->calcStats();
     $post->save();
 
     if (!$this->postExisted) {

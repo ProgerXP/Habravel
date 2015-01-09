@@ -17,9 +17,13 @@ function url() {
 //? referer('http://www.mydomain/foo')    //=> as is
 //? referer('https://www.mydomain/foo')   //=> as is
 function referer($url) {
-  $host = parse_url(url(), PHP_URL_HOST);
-  preg_match('~^https?://(www\.)?'.$host.'/~i', $url) or $url = url();
-  return $url;
+  if (!parse_url($url, PHP_URL_HOST)) {
+    return url().'/'.ltrim($url, '/');
+  } else {
+    $host = parse_url(url(), PHP_URL_HOST);
+    preg_match('~^https?://(www\.)?'.$host.'/~i', $url) or $url = url();
+    return $url;
+  }
 }
 
 function user($login = null) {

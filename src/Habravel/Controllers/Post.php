@@ -8,7 +8,7 @@ class Post extends BaseController {
       return;
     } elseif (!user()) {
       App::abort(401);
-    } elseif (user()->id !== $post->author and user()->hasFlag("can.draft.$action")) {
+    } elseif (user()->id !== $post->author and !user()->hasFlag("can.draft.$action")) {
       App::abort(403, "Cannot $action author's draft.");
     }
   }
@@ -141,6 +141,11 @@ class Post extends BaseController {
 
     if (!empty($input['preview'])) {
       count($errors) or $errors = null;
+
+      View::composer('habravel::part.post', function ($view) use ($editor) {
+        $view->tags = $editor->newTags();
+      });
+
       return View::make('habravel::preview', compact('post', 'errors'));
     } elseif (count($errors)) {
       $input = array_intersect_key($input, PostModel::rules());

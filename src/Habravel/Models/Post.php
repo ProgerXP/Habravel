@@ -60,6 +60,39 @@ class Post extends BaseModel {
     return $rules;
   }
 
+  static function stripCodeFrom($html) {
+    $html = preg_replace('~<fieldset class="toc">.*?</fieldset>~us', '', $html);
+    $withCodeTags = strip_tags($html, '<kbd><code><pre>');
+    $withoutCode = '';
+    $parts = preg_split('~(<[^>]+>)~u', $withCodeTags, -1, PREG_SPLIT_DELIM_CAPTURE);
+    $level = 0;
+
+    foreach ($parts as $i => $part) {
+      if ($i % 2 == 0) {
+        $level or $withoutCode .= $part;
+      } elseif ($part[1] === '/') {
+        if (--$level < 0) {
+          throw new \Exception('stripCodeFrom(): bad tag nesting.');
+        }
+      } else {
+        ++$level;
+      }
+    }
+
+    return $withoutCode;
+  }
+
+  static function calcStatsFor($html) {
+    $text = strip_tags($html);
+    $text = preg_replace(array('~[^\pL\pZ]+~u', '~\pZ+~u'), ' ', $text);
+
+    return array(
+      'words'             => $words = mb_substr_count($text, ' ') + 1,
+      'symbols'           => $symbols = mb_strlen($text),
+      'noSpaceSymbols'    => $symbols - $words + 1,
+    );
+  }
+
   function __construct(array $attributes = array()) {
     parent::__construct($attributes);
     $this->markup or $this->markup = head(array_keys(\Config::get('habravel::g.markups')));
@@ -148,11 +181,6 @@ class Post extends BaseModel {
     return mb_strlen($this->text);
   }
 
-  function wordCount() {
-    preg_match_all('~[\pC\pZ#>*\-_`|/(\~+=%[]\pL{2,}~u', ' '.$this->text, $matches);
-    return count($matches[0]);
-  }
-
   function format($safe = true) {
     $fmt = \Habravel\Markups\Factory::make($this->markup)->format($this->text, $this);
     $this->html = $fmt->html;
@@ -181,6 +209,42 @@ class Post extends BaseModel {
       $this->save();
     }
     return $this;
+  }
+
+  function needStats() {
+    $data = $this->data();
+
+    if (empty($data['stats'])) {
+      $data = array('stats' => $this->calcStats());
+      $this->id > 0 and $this->save();
+    }
+
+    return $data['stats'];
+  }
+
+  function calcStats() {
+    $data = $this->data();
+
+    $data['stats'] = array(
+      'code'      => $this->calcStatsFor($this->html),
+      'noCode'    => $this->calcStatsFor($this->stripCodeFrom($this->html)),
+    );
+
+    $this->data($data);
+    return $data['stats'];
+  }
+
+  function statString() {
+    $stats = $this->needStats();
+    $vars = $stats['code'];
+
+    foreach ($stats['noCode'] as $name => $value) {
+      $vars["nc$name"] = $value;
+    }
+
+    foreach ($vars as &$ref) { $ref = \Habravel\number($ref); }
+
+    return trans('habravel::g.post.size', $vars);
   }
 
   // Returns true if $client hasn't yet seen this post and also adds it

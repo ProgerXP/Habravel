@@ -25,6 +25,10 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider {
     $this->routes();
     $this->events();
     $this->helpers();
+
+    if (\e('&amp;') !== '&amp;amp;') {
+      App::abort(500, 'e() is unsafe.');
+    }
   }
 
   function register() { }
@@ -96,7 +100,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider {
       Route::get    ('admin',                        "$ns\\Admin@show");
       // Fallback.
       Route::get    ('{habravel_any}',               "$ns\\Post@showByURL");
-      Route::get    ('',                             "$ns\\Posts@showBestWeek");
+      Route::get    ('',                             "$ns\\Posts@showAll");
     });
   }
 

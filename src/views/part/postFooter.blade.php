@@ -32,7 +32,7 @@
     @endif
 
     <?php $size = $post->size()?>
-    <span class="hvl-post-footer-ctl" title="{{{ trans('habravel::g.post.size', array('chars' => $size, 'words' => $post->wordCount())) }}}">
+    <span class="hvl-post-footer-ctl" title="{{{ $post->statString() }}}">
       <i class="hvl-i-file"></i>
       <a href="{{{ "$root/source/$post->id" }}}">
         {{ $size >= 1000 ? Habravel\number(round($size / 1000)).'K' : $size }}</a>

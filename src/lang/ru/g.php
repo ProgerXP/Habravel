@@ -72,7 +72,7 @@ return array(
     'source'                    => 'Источник',
     'author'                    => 'Автор статьи',
     'views'                     => 'Число просмотров за всё время',
-    'size'                      => 'Символов — :chars, слов — :words',
+    'size'                      => 'Символов — :symbols/:noSpaceSymbols без пробелов (:ncsymbols/:ncnoSpaceSymbols без кода):, слов — :ncwords',
     'commentCount'              => 'Число комментариев',
     'pubTime'                   => 'Дата публикации: :date',
     'poll'                      => 'Опрос:',

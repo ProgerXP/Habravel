@@ -11,7 +11,7 @@
   <header class="hvl-psource-header">
     <p>
       <b>{{{ trans('habravel::g.source.size') }}}</b>
-      {{ trans('habravel::g.post.size', array('chars' => Habravel\number($post->size()), 'words' => Habravel\number($post->wordCount()))) }}
+      {{{ $post->statString() }}}
     </p>
 
     <p>

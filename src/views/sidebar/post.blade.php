@@ -6,8 +6,8 @@
 <p class="hvl-post-author">
   <a href="{{{ $author->url() }}}" class="hvl-post-author-avatar">
     <img src="{{{ $author->avatarURL() }}}" alt="{{{ $author->name }}}">
-    {{ $author->nameHTML() }}
   </a>
+  {{ $author->nameHTML() }}
 </p>
 
 @if ($author->site)
@@ -19,7 +19,7 @@
 
 <p>
   {{{ trans('habravel::g.source.size') }}}
-  {{ trans('habravel::g.post.size', array('chars' => Habravel\number($post->size()), 'words' => Habravel\number($post->wordCount()))) }}
+  {{{ $post->statString() }}}
 </p>
 
 <p>
