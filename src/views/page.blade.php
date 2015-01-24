@@ -25,7 +25,7 @@
     <script>
       var less = {env: 'development', async: false}
     </script>
-    <script src="https://raw.githubusercontent.com/less/less.js/master/dist/less-1.7.2.min.js"></script>
+    <script src="https://raw.githubusercontent.com/less/less.js/v1.7.5/dist/less-1.7.5.min.js"></script>
   </head>
   <body class="hvl-root {{ $pageSidebar ? 'hvl-with-sidebar' : '' }}">
     {{ $pageHeader }}

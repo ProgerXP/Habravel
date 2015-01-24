@@ -5,7 +5,7 @@
 
 <span class="hvl-markups {{{ count($markups) > 1 ? '' : 'hvl-markups-none' }}}">
   @if (count($markups) === 1)
-    <input type="hidden" name="markup" value-"{{{ head($markups) }}}">
+    <input type="hidden" name="markup" value="{{{ head($markups) }}}">
   @else
     @foreach ($markups as $markup)
       <label>
