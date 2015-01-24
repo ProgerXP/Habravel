@@ -47,6 +47,8 @@ class Comment extends BaseController {
       $post->url = strtok($parent->url, '#').'#cmt-%ID%';
       $post->save();
 
+      \Event::fire('habravel.reply', compact('post'));
+
       $this->sendEmailNotifications($post, $parent);
       return Redirect::to($post->url());
     }
@@ -56,13 +58,6 @@ class Comment extends BaseController {
     $topPost = $parent->top ? $parent->top()->first() : $parent;
     $parent->needHTML();
 
-    $data = compact('topPost', 'parent', 'post');
-
-    foreach ($data as $key => &$value) {
-      $value = $value->getAttributes();
-      $value['url'] = $$key->url();
-    }
-
     $emails = \Habravel\Models\User
       ::whereIn('id', array($topPost->author, $parent->author))
       ->lists('name', 'email');
@@ -71,8 +66,24 @@ class Comment extends BaseController {
     unset($emails[user()->email]);
 
     if ($emails) {
-      $data['parent']['author'] = $parent->author()->first();
-      $data['post']['author'] = user();
+      $data = array(
+        'topPost' => array(
+          'id'        => $topPost->id,
+          'caption'   => $topPost->caption,
+          'url'       => $topPost->url(),
+        ),
+        'parent' => array(
+          'id'        => $parent->id,
+          'url'       => $parent->url(),
+          'author'    => $parent->author()->first()->getAttributes(),
+          'html'      => $parent->html,
+        ),
+        'post' => array(
+          'author'    => user()->getAttributes(),
+          'url'       => $post->url(),
+          'html'      => $post->html,
+        ),
+      );
 
       $subject = trans('habravel::g.comment.mailSubject', array($topPost->caption));
 

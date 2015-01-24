@@ -85,14 +85,14 @@ View::composer('habravel::posts', function ($view) {
 
   $rows = !$parents ? array() : Models\Post
     ::whereIn('parent', $parents)
-    ->groupBy('parent')
     ->orderBy('listTime', 'desc')
     ->get();
 
   $comments = array();
 
   foreach ($rows as $comment) {
-    $comments[ array_search($comment->parent, $parents) ] = array($comment);
+    $ref = &$comments[ array_search($comment->parent, $parents) ];
+    $ref or $ref = array($comment);
   }
 
   $view->comments = $comments;

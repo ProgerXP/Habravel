@@ -8,7 +8,8 @@ class Post extends BaseController {
       return;
     } elseif (!user()) {
       App::abort(401);
-    } elseif (user()->id !== $post->author and !user()->hasFlag("can.draft.$action")) {
+    } elseif ($post->id > 0 and user()->id !== $post->author and
+              !user()->hasFlag("can.draft.$action")) {
       App::abort(403, "Cannot $action author's draft.");
     }
   }

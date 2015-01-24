@@ -67,11 +67,11 @@ class PostEditor {
     $post = $this->post;
 
     if ($this->user and $this->user->hasFlag('post.setURL') and $this->input('url') !== null) {
-      $post->url = $this->input('url');
+      $post->url = trim($this->input('url'));
     }
 
     if ($this->input('sourceURL') !== null) {
-      $url = $post->sourceURL = (string) $this->input('sourceURL');
+      $url = $post->sourceURL = trim($this->input('sourceURL'));
       if ($url !== '' and !preg_match('~^https?://~', $url)) {
         $post->sourceURL = 'http://'.ltrim($url, '\\/:');
       }
@@ -79,7 +79,7 @@ class PostEditor {
 
     foreach (array('sourceName', 'caption', 'markup', 'text') as $prop) {
       $value = $this->input($prop);
-      $value === null or $post->$prop = $value;
+      $value === null or $post->$prop = trim($value);
     }
 
     $post->author or $post->author = $this->user->id;
@@ -95,7 +95,7 @@ class PostEditor {
 
   protected function applyTags() {
     foreach ((array) $this->input('tags') as $caption) {
-      $tag = Models\Tag::fromCaption($caption);
+      $tag = Models\Tag::fromCaption(trim($caption));
       $tag and $this->newTags[] = $tag;
     }
   }
