@@ -1,11 +1,12 @@
 <?php /*
   - $post             - Models\Post instance
   - $readMore         - false or string (link text)
+  - $afterVote        - optional; bool
 */?>
 
 <?php $root = url(Habravel\url())?>
 
-@if ($post->poll)
+@if ($post->poll and !empty($afterVote))
   <p class="hvl-post-aftervote">
     {{{ trans('habravel::g.post.afterVote') }}}
     <a href="{{{ "$root/up/$post->id?_token=".urlencode(csrf_token()) }}}"><i class="hvl-i-up"></i> {{{ trans('habravel::g.post.afterVoteUp') }}}</a>

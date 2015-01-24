@@ -6,6 +6,7 @@
   - $tags             - array of Models\Tag
   - $canEdit          - boolean
   - $readMore         - false or string (link text)
+  - $afterVote        - bool
   - $html             - string, actual post body to be output
   - $downshift        - integer, minimum <hN> tag to generate
 */?>
@@ -50,5 +51,5 @@
     {{ $html }}
   </article>
 
-  @include('habravel::part.postFooter', compact('post', 'readMore'))
+  @include('habravel::part.postFooter', compact('post', 'readMore', 'afterVote'))
 </div>

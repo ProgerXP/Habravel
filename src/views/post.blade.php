@@ -11,7 +11,7 @@
 
 @section('content')
   @include('habravel::part.postTitle', compact('post'), array())
-  @include('habravel::part.post', array('captionTag' => 'h1'))
+  @include('habravel::part.post', array('captionTag' => 'h1', 'afterVote' => true))
 
   @if (count($polls))
     <form action="{{{ Habravel\url() }}}/vote" method="post" id="polls" class="hvl-polls">
