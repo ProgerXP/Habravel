@@ -5,6 +5,15 @@
 
 <?php $root = url(Habravel\url())?>
 
+@if ($post->poll)
+  <p class="hvl-post-aftervote">
+    {{{ trans('habravel::g.post.afterVote') }}}
+    <a href="{{{ "$root/up/$post->id?_token=".urlencode(csrf_token()) }}}"><i class="hvl-i-up"></i> {{{ trans('habravel::g.post.afterVoteUp') }}}</a>
+    <a href="{{{ "$root/down/$post->id?_token=".urlencode(csrf_token()) }}}"><i class="hvl-i-down"></i> {{{ trans('habravel::g.post.afterVoteDown') }}}</a>
+  </span>
+  </p>
+@endif
+
 <footer class="hvl-post-footer">
   @if ($readMore !== false)
     <a class="hvl-post-footer-more hvl-btn" href="{{{ $post->url() }}}">{{{ $readMore }}}</a>
