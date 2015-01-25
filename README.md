@@ -25,3 +25,12 @@ function e($str) {
 И настроить:
   1. Для форматирования сообщений нужно установить хотя бы один форматтер. Markdown можно добавить, выполнив в папке `workbench/proger/habravel` команду `php ..\..\..\composer.phar require michelf/php-markdown`, а затем раскомментировав строчку с **githubmarkdown** в настройках `habravel/src/config/g.php`
   2. Изначально пользователей нет. Можно зарегистрировать первого пользователя и дать ему полные права, вписав в поле `flags` таблицы `users` значение `+[admin][can.edit]`
+
+#### Настройка public-ресурсов 
+
+Ресурсы пакетов в Laravel 4 располагаются вне папки **public**, корневой для сайта (`DocumentRoot` в Apache). Поэтому один раз после подключения Habravel и затем каждый раз при изменении его ресурсов нужно выполнять эту команду в папке проекта:
+```
+php artisan asset:publish --bench=proger/habravel
+```
+
+Либо можно создать папку-ссылку `public/packages/proger/habravel`, указывающую на `workbench/proger/habravel/public`. В *nix это делается через `ln -s`, в Windows - через `fsutil`.
